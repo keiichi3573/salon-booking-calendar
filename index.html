@@ -24,8 +24,80 @@
       <span class="chip closed">定休日</span>
       <span class="chip note">📝 メモあり</span>
     </div>
+
     <div class="calendar" id="calendar"></div>
   </main>
+
+  <!-- Day Editor Modal -->
+  <div class="modal" id="dayModal" aria-hidden="true">
+    <div class="modalCard">
+      <div class="modalHeader">
+        <div>
+          <div class="modalTitle" id="dayTitle"></div>
+          <div class="modalSub" id="daySub"></div>
+        </div>
+        <button class="x" id="dayCloseBtn">✕</button>
+      </div>
+
+      <div class="section">
+        <label class="label">当日全体メモ</label>
+        <textarea id="dayMemo" rows="2" placeholder="例：午前混雑、雪でキャンセル多い など"></textarea>
+      </div>
+
+      <div class="section">
+        <div class="labelRow">
+          <div class="label">スタッフ別 予約数（0〜20） / メモ</div>
+        </div>
+        <div id="staffRows"></div>
+      </div>
+
+      <div class="modalFooter">
+        <button class="btn" id="saveDayBtn">保存</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Settings Modal -->
+  <div class="modal" id="settingsModal" aria-hidden="true">
+    <div class="modalCard">
+      <div class="modalHeader">
+        <div class="modalTitle">設定（スタッフ管理）</div>
+        <button class="x" id="settingsCloseBtn">✕</button>
+      </div>
+
+      <div id="pinGate" class="section">
+        <label class="label">管理者PIN</label>
+        <div class="row">
+          <input id="pinInput" type="password" inputmode="numeric" placeholder="PINを入力" />
+          <button class="btn" id="pinEnterBtn">入る</button>
+        </div>
+        <div class="hint">※ 初期PINは 4043（あとで変更できます）</div>
+        <div class="error" id="pinError"></div>
+      </div>
+
+      <div id="settingsBody" class="section hidden">
+        <div class="block">
+          <div class="label">スタッフ</div>
+          <div id="staffList"></div>
+          <div class="row">
+            <input id="newStaffName" placeholder="スタッフ名を追加" />
+            <button class="btn" id="addStaffBtn">追加</button>
+          </div>
+          <div class="hint">並び替え：↑↓ / 退職者は「無効」に（削除しない）</div>
+        </div>
+
+        <div class="block">
+          <div class="label">管理者PIN変更</div>
+          <div class="row">
+            <input id="newPin" type="password" inputmode="numeric" placeholder="新しいPIN（4桁以上推奨）" />
+            <button class="btn" id="changePinBtn">変更</button>
+          </div>
+          <div class="hint">推測されやすい番号は避けるのがおすすめです。</div>
+          <div class="ok" id="pinOk"></div>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <script src="app.js"></script>
 </body>
