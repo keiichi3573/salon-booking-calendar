@@ -1,8 +1,8 @@
-// ====== Storage ======
+// ========= Storage Keys =========
 const KEY = "salonBooking_v1";
-const KEY_PIN = "salonBooking_pin";
+const KEY_PIN = "salonBooking_pin"; // localStorage
 
-// ====== Defaults ======
+// ========= Defaults =========
 const DEFAULT_PIN = "4043";
 const DEFAULT_STAFFS = [
   { id: crypto.randomUUID(), name: "けい", sort: 1, active: true },
@@ -12,82 +12,466 @@ const DEFAULT_STAFFS = [
 
 const WEEKDAYS = ["日","月","火","水","木","金","土"];
 
-// ====== Utils ======
-const pad2 = n => String(n).padStart(2,"0");
-const toKey = d => `${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())}`;
-const fromKey = s => { const [y,m,d]=s.split("-").map(Number); return new Date(y,m-1,d); };
+// ========= Utils =========
+function pad2(n){ return String(n).padStart(2,"0"); }
+function toDateKey(d){ return `${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())}`; }
+function fromDateKey(s){
+  const [y,m,d]=s.split("-").map(Number);
+  return new Date(y, m-1, d);
+}
+function endOfMonth(y,m){ return new Date(y, m+1, 0); }
+function addMonths(d, delta){ return new Date(d.getFullYear(), d.getMonth()+delta, 1); }
 
 function hashPin(pin){
-  let h=0; for(const c of pin) h=(h*31+c.charCodeAt(0))>>>0;
+  // local-only obfuscation
+  let h = 0;
+  for (let i=0;i<pin.length;i++) h = (h*31 + pin.charCodeAt(i)) >>> 0;
   return String(h);
 }
 
-// ====== 定休日：毎週月曜＋第1・第3火曜 ======
-function isClosed(d){
-  if(d.getDay()===1) return true;
-  if(d.getDay()===2){
-    let c=0;
-    for(let i=1;i<=d.getDate();i++){
-      const t=new Date(d.getFullYear(),d.getMonth(),i);
-      if(t.getDay()===2) c++;
+// ========= Closing Days =========
+// Closed: every Monday + 1st/3rd Tuesday
+function isClosedDay(date){
+  const day = date.getDay(); // 0 Sun ... 1 Mon ... 2 Tue
+  if (day === 1) return true;
+
+  if (day === 2) {
+    const year = date.getFullYear();
+    const month = date.getMonth();
+    const d = date.getDate();
+    let tuesdayCount = 0;
+    for (let i = 1; i <= d; i++) {
+      const tmp = new Date(year, month, i);
+      if (tmp.getDay() === 2) tuesdayCount++;
     }
-    return c===1||c===3;
+    if (tuesdayCount === 1 || tuesdayCount === 3) return true;
   }
   return false;
 }
 
-// ====== State ======
-function load(){
-  const raw=localStorage.getItem(KEY);
-  if(!raw){
-    const init={ staffs:DEFAULT_STAFFS, daily:{} };
-    localStorage.setItem(KEY,JSON.stringify(init));
-    localStorage.setItem(KEY_PIN,hashPin(DEFAULT_PIN));
+// ========= State =========
+function loadState(){
+  const raw = localStorage.getItem(KEY);
+  if (!raw){
+    const init = { staffs: DEFAULT_STAFFS, daily: {} };
+    localStorage.setItem(KEY, JSON.stringify(init));
+    if (!localStorage.getItem(KEY_PIN)) localStorage.setItem(KEY_PIN, hashPin(DEFAULT_PIN));
     return init;
   }
-  return JSON.parse(raw);
+  try{
+    const obj = JSON.parse(raw);
+    if (!obj.staffs) obj.staffs = DEFAULT_STAFFS;
+    if (!obj.daily) obj.daily = {};
+    if (!localStorage.getItem(KEY_PIN)) localStorage.setItem(KEY_PIN, hashPin(DEFAULT_PIN));
+    return obj;
+  }catch{
+    const init = { staffs: DEFAULT_STAFFS, daily: {} };
+    localStorage.setItem(KEY, JSON.stringify(init));
+    localStorage.setItem(KEY_PIN, hashPin(DEFAULT_PIN));
+    return init;
+  }
 }
-function save(){ localStorage.setItem(KEY,JSON.stringify(state)); }
+function saveState(){ localStorage.setItem(KEY, JSON.stringify(state)); }
 
-let state = load();
-let view = new Date(new Date().getFullYear(),new Date().getMonth(),1);
+let state = loadState();
+let viewDate = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
+let selectedDateKey = null;
+let pinUnlocked = false;
 
-// ====== DOM ======
-const cal=document.getElementById("calendar");
-const title=document.getElementById("monthTitle");
+// ========= DOM =========
+const monthTitle = document.getElementById("monthTitle");
+const prevBtn = document.getElementById("prevBtn");
+const nextBtn = document.getElementById("nextBtn");
+const calendarEl = document.getElementById("calendar");
 
-// ====== Render ======
+const dayModal = document.getElementById("dayModal");
+const dayTitle = document.getElementById("dayTitle");
+const daySub = document.getElementById("daySub");
+const dayCloseBtn = document.getElementById("dayCloseBtn");
+const staffRows = document.getElementById("staffRows");
+const dayMemo = document.getElementById("dayMemo");
+const saveDayBtn = document.getElementById("saveDayBtn");
+
+const settingsBtn = document.getElementById("settingsBtn");
+const settingsModal = document.getElementById("settingsModal");
+const settingsCloseBtn = document.getElementById("settingsCloseBtn");
+
+const pinGate = document.getElementById("pinGate");
+const pinInput = document.getElementById("pinInput");
+const pinEnterBtn = document.getElementById("pinEnterBtn");
+const pinError = document.getElementById("pinError");
+
+const settingsBody = document.getElementById("settingsBody");
+const staffList = document.getElementById("staffList");
+const newStaffName = document.getElementById("newStaffName");
+const addStaffBtn = document.getElementById("addStaffBtn");
+const newPin = document.getElementById("newPin");
+const changePinBtn = document.getElementById("changePinBtn");
+const pinOk = document.getElementById("pinOk");
+
+const exportCsvBtn = document.getElementById("exportCsvBtn");
+
+// ========= Helpers =========
+function getActiveStaffs(){
+  return [...state.staffs]
+    .filter(s => s.active !== false)
+    .sort((a,b)=> (a.sort||0)-(b.sort||0));
+}
+
+// ========= Render Calendar =========
 function render(){
-  const y=view.getFullYear(), m=view.getMonth();
-  title.textContent=`${y}年 ${m+1}月`;
-  cal.innerHTML="";
+  const y = viewDate.getFullYear();
+  const m = viewDate.getMonth();
+  monthTitle.textContent = `${y}年 ${m+1}月`;
 
-  WEEKDAYS.forEach(w=>{
-    const d=document.createElement("div");
-    d.className="dow"; d.textContent=w; cal.appendChild(d);
-  });
+  calendarEl.innerHTML = "";
 
-  const first=new Date(y,m,1);
-  for(let i=0;i<first.getDay();i++){
-    const e=document.createElement("div");
-    e.style.visibility="hidden"; cal.appendChild(e);
+  // DOW header
+  for (let i=0;i<7;i++){
+    const dow = document.createElement("div");
+    dow.className = "dow";
+    dow.textContent = WEEKDAYS[i];
+    calendarEl.appendChild(dow);
   }
 
-  const last=new Date(y,m+1,0).getDate();
-  for(let day=1;day<=last;day++){
-    const d=new Date(y,m,day);
-    const key=toKey(d);
-    const cell=document.createElement("div");
-    cell.className="cell clickable"+(isClosed(d)?" closed":"");
-    cell.onclick=()=>alert("ここに編集画面が出ます（完成後）");
+  const first = new Date(y,m,1);
+  const last = endOfMonth(y,m);
+  const startWeekday = first.getDay();
+  const totalDays = last.getDate();
 
-    cell.innerHTML=`<div class="date">${day}</div>`;
-    cal.appendChild(cell);
+  for (let i=0;i<startWeekday;i++){
+    const empty = document.createElement("div");
+    empty.className = "cell";
+    empty.style.visibility = "hidden";
+    calendarEl.appendChild(empty);
+  }
+
+  const activeStaffs = getActiveStaffs();
+
+  for (let day=1; day<=totalDays; day++){
+    const d = new Date(y,m,day);
+    const key = toDateKey(d);
+    const closed = isClosedDay(d);
+
+    const cell = document.createElement("div");
+    cell.className = "cell clickable" + (closed ? " closed" : "");
+    cell.addEventListener("click", ()=> openDay(key));
+
+    const top = document.createElement("div");
+    top.className = "top";
+
+    const dateEl = document.createElement("div");
+    dateEl.className = "date";
+    dateEl.textContent = String(day);
+
+    const badges = document.createElement("div");
+    badges.className = "badges";
+    if (closed){
+      const b = document.createElement("div");
+      b.className = "badge";
+      b.textContent = "定休";
+      badges.appendChild(b);
+    }
+
+    const dayData = state.daily[key] || {};
+    const hasMemo = (dayData.memo && dayData.memo.trim().length>0) ||
+      Object.values(dayData.staff || {}).some(v => (v.memo||"").trim().length>0);
+    if (hasMemo){
+      const icon = document.createElement("div");
+      icon.className = "noteIcon";
+      icon.textContent = "📝";
+      badges.appendChild(icon);
+    }
+
+    top.appendChild(dateEl);
+    top.appendChild(badges);
+    cell.appendChild(top);
+
+    let sum = 0;
+    const lines = document.createElement("div");
+    for (const s of activeStaffs){
+      const v = (dayData.staff && dayData.staff[s.id]) ? dayData.staff[s.id].count : 0;
+      sum += Number(v||0);
+
+      const l = document.createElement("div");
+      l.className = "staffMini";
+      l.textContent = `${s.name}: ${v || 0}`;
+      lines.appendChild(l);
+    }
+
+    const sumEl = document.createElement("div");
+    sumEl.className = "sum";
+    sumEl.textContent = `合計: ${sum}`;
+
+    cell.appendChild(sumEl);
+    cell.appendChild(lines);
+
+    calendarEl.appendChild(cell);
   }
 }
 
-// ====== Nav ======
-document.getElementById("prevBtn").onclick=()=>{ view=new Date(view.getFullYear(),view.getMonth()-1,1); render(); }
-document.getElementById("nextBtn").onclick=()=>{ view=new Date(view.getFullYear(),view.getMonth()+1,1); render(); }
+// ========= Day Modal =========
+function openDay(dateKey){
+  selectedDateKey = dateKey;
+  const d = fromDateKey(dateKey);
 
+  dayTitle.textContent = `${d.getFullYear()}年${d.getMonth()+1}月${d.getDate()}日（${WEEKDAYS[d.getDay()]}）`;
+  daySub.textContent = isClosedDay(d) ? "定休日（必要なら入力可）" : "";
+
+  const dayData = state.daily[dateKey] || { memo:"", staff:{} };
+  dayMemo.value = dayData.memo || "";
+
+  staffRows.innerHTML = "";
+  const staffs = getActiveStaffs();
+
+  for (const s of staffs){
+    const row = document.createElement("div");
+    row.className = "staffRow";
+    row.dataset.staffId = s.id;
+
+    const top = document.createElement("div");
+    top.className = "staffRowTop";
+
+    const name = document.createElement("div");
+    name.className = "staffName";
+    name.textContent = s.name;
+
+    const select = document.createElement("select");
+    for (let i=0;i<=20;i++){
+      const opt = document.createElement("option");
+      opt.value = String(i);
+      opt.textContent = String(i);
+      select.appendChild(opt);
+    }
+    const current = dayData.staff?.[s.id]?.count ?? 0;
+    select.value = String(current);
+
+    top.appendChild(name);
+    top.appendChild(select);
+
+    const memo = document.createElement("textarea");
+    memo.rows = 2;
+    memo.placeholder = "スタッフ別メモ（任意）";
+    memo.value = dayData.staff?.[s.id]?.memo || "";
+
+    row.appendChild(top);
+    row.appendChild(memo);
+    staffRows.appendChild(row);
+  }
+
+  dayModal.setAttribute("aria-hidden","false");
+}
+
+function closeDay(){
+  dayModal.setAttribute("aria-hidden","true");
+  selectedDateKey = null;
+}
+
+function saveDay(){
+  if (!selectedDateKey) return;
+
+  const dayData = state.daily[selectedDateKey] || { memo:"", staff:{} };
+  dayData.memo = dayMemo.value || "";
+  if (!dayData.staff) dayData.staff = {};
+
+  const rows = [...staffRows.querySelectorAll(".staffRow")];
+  for (const r of rows){
+    const staffId = r.dataset.staffId;
+    const select = r.querySelector("select");
+    const memo = r.querySelector("textarea");
+    dayData.staff[staffId] = {
+      count: Number(select.value),
+      memo: memo.value || ""
+    };
+  }
+
+  state.daily[selectedDateKey] = dayData;
+  saveState();
+  closeDay();
+  render();
+}
+
+// ========= Settings (PIN gate) =========
+function openSettings(){
+  pinError.textContent = "";
+  pinOk.textContent = "";
+  pinInput.value = "";
+
+  if (pinUnlocked){
+    pinGate.classList.add("hidden");
+    settingsBody.classList.remove("hidden");
+    renderStaffList();
+  }else{
+    pinGate.classList.remove("hidden");
+    settingsBody.classList.add("hidden");
+  }
+  settingsModal.setAttribute("aria-hidden","false");
+}
+
+function closeSettings(){
+  settingsModal.setAttribute("aria-hidden","true");
+}
+
+function enterPin(){
+  pinError.textContent = "";
+  const pin = (pinInput.value || "").trim();
+  if (hashPin(pin) === localStorage.getItem(KEY_PIN)){
+    pinUnlocked = true;
+    pinGate.classList.add("hidden");
+    settingsBody.classList.remove("hidden");
+    renderStaffList();
+  }else{
+    pinError.textContent = "PINが違います。";
+  }
+}
+
+function normalizeSort(){
+  state.staffs.sort((a,b)=> (a.sort||0)-(b.sort||0)).forEach((s,idx)=> s.sort = idx+1);
+}
+
+function renderStaffList(){
+  staffList.innerHTML = "";
+  const staffs = [...state.staffs].sort((a,b)=> (a.sort||0)-(b.sort||0));
+
+  for (const s of staffs){
+    const item = document.createElement("div");
+    item.className = "staffItem";
+
+    const left = document.createElement("div");
+    left.className = "left";
+
+    const nameInput = document.createElement("input");
+    nameInput.value = s.name;
+    nameInput.style.maxWidth = "220px";
+    nameInput.addEventListener("change", ()=>{
+      s.name = nameInput.value.trim() || s.name;
+      saveState(); render();
+    });
+
+    const status = document.createElement("div");
+    status.className = s.active === false ? "tagOff" : "";
+    status.textContent = s.active === false ? "無効" : "";
+
+    left.appendChild(nameInput);
+    left.appendChild(status);
+
+    const right = document.createElement("div");
+    right.style.display="flex";
+    right.style.gap="6px";
+
+    const up = document.createElement("button");
+    up.className="smallBtn";
+    up.textContent="↑";
+    up.addEventListener("click", ()=>{
+      s.sort = (s.sort||0) - 1;
+      normalizeSort();
+      saveState(); renderStaffList(); render();
+    });
+
+    const down = document.createElement("button");
+    down.className="smallBtn";
+    down.textContent="↓";
+    down.addEventListener("click", ()=>{
+      s.sort = (s.sort||0) + 1;
+      normalizeSort();
+      saveState(); renderStaffList(); render();
+    });
+
+    const toggle = document.createElement("button");
+    toggle.className="smallBtn";
+    toggle.textContent = (s.active === false) ? "有効化" : "無効化";
+    toggle.addEventListener("click", ()=>{
+      s.active = (s.active === false) ? true : false;
+      saveState(); renderStaffList(); render();
+    });
+
+    right.appendChild(up);
+    right.appendChild(down);
+    right.appendChild(toggle);
+
+    item.appendChild(left);
+    item.appendChild(right);
+    staffList.appendChild(item);
+  }
+}
+
+function addStaff(){
+  const name = (newStaffName.value || "").trim();
+  if (!name) return;
+  const maxSort = Math.max(0, ...state.staffs.map(s=>s.sort||0));
+  state.staffs.push({ id: crypto.randomUUID(), name, sort: maxSort+1, active: true });
+  newStaffName.value = "";
+  saveState();
+  renderStaffList();
+  render();
+}
+
+function changePin(){
+  pinOk.textContent = "";
+  const p = (newPin.value || "").trim();
+  if (p.length < 4){
+    pinError.textContent = "PINは4桁以上をおすすめします。";
+    return;
+  }
+  localStorage.setItem(KEY_PIN, hashPin(p));
+  newPin.value = "";
+  pinOk.textContent = "PINを変更しました。";
+  pinError.textContent = "";
+}
+
+// ========= CSV Export =========
+function exportCsv(){
+  const staffs = [...state.staffs].sort((a,b)=> (a.sort||0)-(b.sort||0));
+  const header = ["date","weekday","closed","memo", ...staffs.map(s=>`${s.name}_count`), ...staffs.map(s=>`${s.name}_memo`)];
+  const rows = [header];
+
+  const y = viewDate.getFullYear();
+  const m = viewDate.getMonth();
+  const last = endOfMonth(y,m).getDate();
+
+  for (let day=1; day<=last; day++){
+    const d = new Date(y,m,day);
+    const key = toDateKey(d);
+    const dd = state.daily[key] || { memo:"", staff:{} };
+    const closed = isClosedDay(d) ? "1" : "0";
+    const base = [key, WEEKDAYS[d.getDay()], closed, (dd.memo||"").replaceAll("\n"," ")];
+
+    const counts = staffs.map(s => String(dd.staff?.[s.id]?.count ?? 0));
+    const memos  = staffs.map(s => (dd.staff?.[s.id]?.memo ?? "").replaceAll("\n"," "));
+    rows.push([...base, ...counts, ...memos]);
+  }
+
+  const csv = rows.map(r => r.map(v => `"${String(v).replaceAll('"','""')}"`).join(",")).join("\n");
+  const blob = new Blob([csv], {type:"text/csv;charset=utf-8"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `booking_${viewDate.getFullYear()}_${pad2(viewDate.getMonth()+1)}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+// ========= Events =========
+prevBtn.addEventListener("click", ()=> { viewDate = addMonths(viewDate,-1); render(); });
+nextBtn.addEventListener("click", ()=> { viewDate = addMonths(viewDate, 1); render(); });
+
+dayCloseBtn.addEventListener("click", closeDay);
+dayModal.addEventListener("click", (e)=> { if (e.target === dayModal) closeDay(); });
+saveDayBtn.addEventListener("click", saveDay);
+
+settingsBtn.addEventListener("click", openSettings);
+settingsCloseBtn.addEventListener("click", closeSettings);
+settingsModal.addEventListener("click", (e)=> { if (e.target === settingsModal) closeSettings(); });
+
+pinEnterBtn.addEventListener("click", enterPin);
+pinInput.addEventListener("keydown", (e)=> { if (e.key==="Enter") enterPin(); });
+
+addStaffBtn.addEventListener("click", addStaff);
+newStaffName.addEventListener("keydown", (e)=> { if (e.key==="Enter") addStaff(); });
+
+changePinBtn.addEventListener("click", changePin);
+
+exportCsvBtn.addEventListener("click", exportCsv);
+
+// ========= Init =========
 render();
