@@ -188,16 +188,16 @@ function render(){
     cell.appendChild(top);
 
     let sum = 0;
-    const lines = document.createElement("div");
-    for (const s of activeStaffs){
-      const v = (dayData.staff && dayData.staff[s.id]) ? dayData.staff[s.id].count : 0;
-      sum += Number(v||0);
+for (const s of activeStaffs){
+  const v = (dayData.staff && dayData.staff[s.id]) ? dayData.staff[s.id].count : 0;
+  sum += Number(v||0);
+}
 
-      const l = document.createElement("div");
-      l.className = "staffMini";
-      l.textContent = `${s.name}: ${v || 0}`;
-      lines.appendChild(l);
-    }
+const sumEl = document.createElement("div");
+sumEl.className = "sum";
+sumEl.textContent = sum;   // ← 合計だけ大きく表示
+cell.appendChild(sumEl);
+
 
     const sumEl = document.createElement("div");
     sumEl.className = "sum";
