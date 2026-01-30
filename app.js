@@ -1,6 +1,6 @@
 // ========= Storage Keys =========
 const KEY = "salonBooking_v1";
-const KEY_PIN = "salonBooking_pin"; // localStorage
+const KEY_PIN = "salonBooking_pin";
 
 // ========= Defaults =========
 const DEFAULT_PIN = "4043";
@@ -15,15 +15,11 @@ const WEEKDAYS = ["日","月","火","水","木","金","土"];
 // ========= Utils =========
 function pad2(n){ return String(n).padStart(2,"0"); }
 function toDateKey(d){ return `${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())}`; }
-function fromDateKey(s){
-  const [y,m,d]=s.split("-").map(Number);
-  return new Date(y, m-1, d);
-}
+function fromDateKey(s){ const [y,m,d]=s.split("-").map(Number); return new Date(y, m-1, d); }
 function endOfMonth(y,m){ return new Date(y, m+1, 0); }
 function addMonths(d, delta){ return new Date(d.getFullYear(), d.getMonth()+delta, 1); }
 
 function hashPin(pin){
-  // local-only obfuscation
   let h = 0;
   for (let i=0;i<pin.length;i++) h = (h*31 + pin.charCodeAt(i)) >>> 0;
   return String(h);
@@ -32,19 +28,16 @@ function hashPin(pin){
 // ========= Closing Days =========
 // Closed: every Monday + 1st/3rd Tuesday
 function isClosedDay(date){
-  const day = date.getDay(); // 0 Sun ... 1 Mon ... 2 Tue
+  const day = date.getDay();
   if (day === 1) return true;
-
   if (day === 2) {
-    const year = date.getFullYear();
-    const month = date.getMonth();
-    const d = date.getDate();
-    let tuesdayCount = 0;
-    for (let i = 1; i <= d; i++) {
-      const tmp = new Date(year, month, i);
-      if (tmp.getDay() === 2) tuesdayCount++;
+    const y = date.getFullYear(), m = date.getMonth(), d = date.getDate();
+    let c = 0;
+    for (let i=1;i<=d;i++){
+      const t = new Date(y,m,i);
+      if (t.getDay() === 2) c++;
     }
-    if (tuesdayCount === 1 || tuesdayCount === 3) return true;
+    return c === 1 || c === 3;
   }
   return false;
 }
@@ -157,54 +150,22 @@ function render(){
     cell.className = "cell clickable" + (closed ? " closed" : "");
     cell.addEventListener("click", ()=> openDay(key));
 
-    const top = document.createElement("div");
-    top.className = "top";
-
     const dateEl = document.createElement("div");
     dateEl.className = "date";
     dateEl.textContent = String(day);
-
-    const badges = document.createElement("div");
-    badges.className = "badges";
-    if (closed){
-      const b = document.createElement("div");
-      b.className = "badge";
-      b.textContent = "定休";
-      badges.appendChild(b);
-    }
+    cell.appendChild(dateEl);
 
     const dayData = state.daily[key] || {};
-    const hasMemo = (dayData.memo && dayData.memo.trim().length>0) ||
-      Object.values(dayData.staff || {}).some(v => (v.memo||"").trim().length>0);
-    if (hasMemo){
-      const icon = document.createElement("div");
-      icon.className = "noteIcon";
-      icon.textContent = "📝";
-      badges.appendChild(icon);
-    }
-
-    top.appendChild(dateEl);
-    top.appendChild(badges);
-    cell.appendChild(top);
-
     let sum = 0;
-for (const s of activeStaffs){
-  const v = (dayData.staff && dayData.staff[s.id]) ? dayData.staff[s.id].count : 0;
-  sum += Number(v||0);
-}
-
-const sumEl = document.createElement("div");
-sumEl.className = "sum";
-sumEl.textContent = sum;   // ← 合計だけ大きく表示
-cell.appendChild(sumEl);
-
+    for (const s of activeStaffs){
+      const v = dayData.staff?.[s.id]?.count ?? 0;
+      sum += Number(v || 0);
+    }
 
     const sumEl = document.createElement("div");
     sumEl.className = "sum";
-    sumEl.textContent = `合計: ${sum}`;
-
+    sumEl.textContent = String(sum); // ← 合計のみ大きく表示
     cell.appendChild(sumEl);
-    cell.appendChild(lines);
 
     calendarEl.appendChild(cell);
   }
@@ -291,7 +252,7 @@ function saveDay(){
   render();
 }
 
-// ========= Settings (PIN gate) =========
+// ========= Settings =========
 function openSettings(){
   pinError.textContent = "";
   pinOk.textContent = "";
@@ -307,10 +268,7 @@ function openSettings(){
   }
   settingsModal.setAttribute("aria-hidden","false");
 }
-
-function closeSettings(){
-  settingsModal.setAttribute("aria-hidden","true");
-}
+function closeSettings(){ settingsModal.setAttribute("aria-hidden","true"); }
 
 function enterPin(){
   pinError.textContent = "";
@@ -419,7 +377,7 @@ function changePin(){
   pinError.textContent = "";
 }
 
-// ========= CSV Export =========
+// ========= CSV =========
 function exportCsv(){
   const staffs = [...state.staffs].sort((a,b)=> (a.sort||0)-(b.sort||0));
   const header = ["date","weekday","closed","memo", ...staffs.map(s=>`${s.name}_count`), ...staffs.map(s=>`${s.name}_memo`)];
