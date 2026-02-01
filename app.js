@@ -624,21 +624,16 @@ window.addEventListener("focus", ()=>{
   // 連打防止の軽い遅延
   setTimeout(()=>{ initCloud(); }, 150);
 });
-// ===== 設定モーダルを閉じる（確実版）=====
-document.getElementById("settingsCloseBtn")?.addEventListener("click", closeSettings);
-
-function closeSettings(){
-  const modal = document.getElementById("settingsModal"); // ←ここが重要
-  if (modal) {
-    modal.classList.add("hidden");
-    modal.setAttribute("aria-hidden", "true");
-  }
+const closeBtn = document.getElementById("settingsCloseBtn");
+if (closeBtn) {
+  closeBtn.addEventListener("click", () => {
+    const modal = document.getElementById("settingsModal");
+    if (modal) {
+      modal.classList.add("hidden");
+      modal.style.display = "none"; // ← 最終手段
+    }
+  });
 }
-
-// Escでも閉じる（PC用）
-window.addEventListener("keydown", (e)=>{
-  if(e.key === "Escape") closeSettings();
-});
 
 
 // ===== 起動 =====
