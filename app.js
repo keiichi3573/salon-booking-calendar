@@ -624,7 +624,16 @@ window.addEventListener("focus", ()=>{
   // 連打防止の軽い遅延
   setTimeout(()=>{ initCloud(); }, 150);
 });
+// ===== 設定画面を閉じる処理（追加）=====
+document.getElementById("settingsCloseBtn")?.addEventListener("click", closeSettings);
 
-/* ======== 起動 ======== */
+function closeSettings(){
+  const body = document.getElementById("settingsBody");
+  if (body) body.classList.add("hidden");
+}
+
+// ===== 起動 =====
 initCloud();
+
+
 
