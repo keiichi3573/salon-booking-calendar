@@ -10,8 +10,9 @@
 ========================= */
 
 /* ======== Supabase設定（ここだけあなたの値に変更） ======== */
-const SUPABASE_URL = https://ujfgmuhwmaauioeueyep.supabase.co";       // 例: https://xxxxx.supabase.co
-const SUPABASE_ANON_KEY = sb_publishable_8xbjrHfOxAzaidTzX7S6fA_mxEE0pFD;     // 例: sb_publishable_...
+const SUPABASE_URL = "https://ujfgmuhwmaauioeueyep.supabase.co";
+const SUPABASE_ANON_KEY = "sb_publishable_8xbjrHfOxAzaidTzX7S6fA_mxEE0pFD";
+
 /* ============================================================ */
 
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
