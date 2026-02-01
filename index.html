@@ -9,13 +9,13 @@
 <body>
   <header class="topbar">
     <div class="left">
-      <button id="prevBtn">◀</button>
+      <button id="prevBtn" class="navBtn" type="button">◀</button>
       <h1 id="monthTitle"></h1>
-      <button id="nextBtn">▶</button>
+      <button id="nextBtn" class="navBtn" type="button">▶</button>
     </div>
     <div class="right">
-      <button id="exportCsvBtn">CSV出力</button>
-      <button id="settingsBtn">設定</button>
+      <button id="exportCsvBtn" class="btn" type="button">CSV出力</button>
+      <button id="settingsBtn" class="btn" type="button">設定</button>
     </div>
   </header>
 
@@ -28,78 +28,90 @@
     <div class="calendar" id="calendar"></div>
   </main>
 
-  <!-- Day Editor Modal -->
-  <div class="modal" id="dayModal" aria-hidden="true">
-    <div class="modalCard">
+  <!-- 日付入力モーダル -->
+  <div class="modal hidden" id="dayModal" aria-hidden="true">
+    <div class="modalBackdrop" data-close="dayModal"></div>
+    <div class="modalCard" role="dialog" aria-modal="true">
       <div class="modalHeader">
         <div>
-          <div class="modalTitle" id="dayTitle"></div>
-          <div class="modalSub" id="daySub"></div>
+          <div class="modalTitle" id="dayModalTitle">日付</div>
+          <div class="modalSubTitle">合計予約数（0〜20）</div>
         </div>
-        <button class="x" id="dayCloseBtn">✕</button>
+        <button class="x" id="dayCloseBtn" type="button">✕</button>
       </div>
 
-      <div class="section">
-        <label class="label">当日全体メモ</label>
-        <textarea id="dayMemo" rows="2" placeholder="例：午前混雑、雪でキャンセル多い など"></textarea>
-      </div>
-
-      <div class="section">
-        <div class="labelRow">
-          <div class="label">スタッフ別 予約数（0〜20） / メモ</div>
+      <div class="modalBody">
+        <div class="bigInputBox">
+          <div class="label">合計予約数</div>
+          <select id="totalCountSelect" class="bigSelect"></select>
         </div>
-        <div id="staffRows"></div>
+
+        <div class="memoBox">
+          <div class="label">メモ（小さめ）</div>
+          <textarea id="dayMemo" class="memoArea" rows="3" placeholder="例：午前混み／カラー多め など"></textarea>
+        </div>
       </div>
 
       <div class="modalFooter">
-        <button class="btn" id="saveDayBtn">保存</button>
+        <button id="daySaveBtn" class="btn primary" type="button">保存</button>
       </div>
     </div>
   </div>
 
-  <!-- Settings Modal -->
-  <div class="modal" id="settingsModal" aria-hidden="true">
-    <div class="modalCard">
+  <!-- 設定（スタッフ管理）モーダル -->
+  <div class="modal hidden" id="settingsModal" aria-hidden="true">
+    <div class="modalBackdrop" data-close="settingsModal"></div>
+    <div class="modalCard" role="dialog" aria-modal="true">
       <div class="modalHeader">
-        <div class="modalTitle">設定（スタッフ管理）</div>
+        <div>
+          <div class="modalTitle">設定（スタッフ管理）</div>
+          <div class="modalSubTitle">PINで編集できます</div>
+        </div>
         <button class="x" id="settingsCloseBtn" type="button">✕</button>
-
       </div>
 
-      <div id="pinGate" class="section">
-        <label class="label">管理者PIN</label>
-        <div class="row">
-          <input id="pinInput" type="password" inputmode="numeric" placeholder="PINを入力" />
-          <button class="btn" id="pinEnterBtn">入る</button>
+      <div class="modalBody">
+        <div>
+          <div class="label">管理者PIN</div>
+          <div class="row">
+            <input id="pinInput" class="input" inputmode="numeric" placeholder="PINを入力" />
+            <button id="pinEnterBtn" class="btn" type="button">入る</button>
+          </div>
+          <div class="hint">※ 初期PINは 4043（あとで変更できます）</div>
         </div>
-        <div class="hint">※ 初期PINは 4043（あとで変更できます）</div>
-        <div class="error" id="pinError"></div>
+
+        <div id="settingsArea" class="hidden">
+          <div>
+            <div class="label">スタッフ追加</div>
+            <div class="row">
+              <input id="staffNameInput" class="input" placeholder="スタッフ名を入力" />
+              <button id="staffAddBtn" class="btn" type="button">追加</button>
+            </div>
+          </div>
+
+          <div>
+            <div class="label">スタッフ一覧（↑↓で並び替え / 退職者は無効）</div>
+            <div id="staffList" class="staffList"></div>
+          </div>
+
+          <div>
+            <div class="label">管理者PIN変更</div>
+            <div class="row">
+              <input id="newPinInput" class="input" inputmode="numeric" placeholder="新しいPIN（4桁以上推奨）" />
+              <button id="pinChangeBtn" class="btn" type="button">変更</button>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <div id="settingsBody" class="section hidden">
-        <div class="block">
-          <div class="label">スタッフ</div>
-          <div id="staffList"></div>
-          <div class="row">
-            <input id="newStaffName" placeholder="スタッフ名を追加" />
-            <button class="btn" id="addStaffBtn">追加</button>
-          </div>
-          <div class="hint">並び替え：↑↓ / 退職者は「無効」に（削除しない）</div>
-        </div>
-
-        <div class="block">
-          <div class="label">管理者PIN変更</div>
-          <div class="row">
-            <input id="newPin" type="password" inputmode="numeric" placeholder="新しいPIN（4桁以上推奨）" />
-            <button class="btn" id="changePinBtn">変更</button>
-          </div>
-          <div class="hint">推測されやすい番号は避けるのがおすすめです。</div>
-          <div class="ok" id="pinOk"></div>
-        </div>
+      <div class="modalFooter">
+        <button class="btn" id="settingsCloseBtn2" type="button">閉じる</button>
       </div>
     </div>
   </div>
-　<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <!-- Supabase JS -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="app.js"></script>
 </body>
 </html>
