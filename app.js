@@ -432,14 +432,28 @@ newStaffName.addEventListener("keydown", (e)=> { if (e.key==="Enter") addStaff()
 changePinBtn.addEventListener("click", changePin);
 
 exportCsvBtn.addEventListener("click", exportCsv);
-// ======== クラウド版：初期読み込み ========
-async function initCloud(){
-  const ym = ymKeyFromDate(viewDate);
-  const monthData = await cloudLoadMonth(ym);
 
-  state.daily = monthData || {};
-  render();
+// ======== クラウド版：初期読み込み（失敗しても表示はする） ========
+async function initCloud(){
+  try {
+    const ym = ymKeyFromDate(viewDate);
+    const monthData = await cloudLoadMonth(ym);
+    state.daily = monthData || {};
+  } catch (e) {
+    console.warn("initCloud error", e);
+    // ここが重要：クラウドで失敗してもカレンダー表示は継続
+    state.daily = state.daily || {};
+  }
+
+  // 必ず描画する
+  try {
+    render();
+  } catch (e) {
+    console.error("render error", e);
+    alert("表示エラーが発生しました。もう一度ページを更新してください。");
+  }
 }
+
 
 // ======== クラウド版：保存処理（上書き） ========
 async function saveDay(){
