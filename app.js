@@ -43,14 +43,14 @@ function isClosedDay(date){
 }
 
 // ========= State =========
-function loadState(){
-  const raw = localStorage.getItem(KEY);
-  if (!raw){
-    const init = { staffs: DEFAULT_STAFFS, daily: {} };
-    localStorage.setItem(KEY, JSON.stringify(init));
-    if (!localStorage.getItem(KEY_PIN)) localStorage.setItem(KEY_PIN, hashPin(DEFAULT_PIN));
-    return init;
-  }
+//function loadState(){
+//  const raw = localStorage.getItem(KEY);
+//  if (!raw){
+//    const init = { staffs: DEFAULT_STAFFS, daily: {} };
+//    localStorage.setItem(KEY, JSON.stringify(init));
+//    if (!localStorage.getItem(KEY_PIN)) localStorage.setItem(KEY_PIN, hashPin(DEFAULT_PIN));
+//    return init;
+//  }
   try{
     const obj = JSON.parse(raw);
     if (!obj.staffs) obj.staffs = DEFAULT_STAFFS;
@@ -64,7 +64,9 @@ function loadState(){
     return init;
   }
 }
-function saveState(){ localStorage.setItem(KEY, JSON.stringify(state)); }
+//function saveState(){ 
+//localStorage.setItem(KEY, JSON.stringify(state)); 
+//}
 
 let state = loadState();
 let viewDate = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
@@ -430,6 +432,39 @@ newStaffName.addEventListener("keydown", (e)=> { if (e.key==="Enter") addStaff()
 changePinBtn.addEventListener("click", changePin);
 
 exportCsvBtn.addEventListener("click", exportCsv);
+// ======== クラウド版：初期読み込み ========
+async function initCloud(){
+  const ym = ymKeyFromDate(viewDate);
+  const monthData = await cloudLoadMonth(ym);
+
+  state.daily = monthData || {};
+  render();
+}
+
+// ======== クラウド版：保存処理（上書き） ========
+async function saveDay(){
+  if (!selectedDateKey) return;
+
+  const d = fromDateKey(selectedDateKey);
+  const dayData = state.daily[selectedDateKey] || { memo:"", staff:{} };
+  dayData.memo = dayMemo.value || "";
+
+  const rows = [...staffRows.querySelectorAll(".staffRow")];
+  for (const r of rows){
+    const staffId = r.dataset.staffId;
+    const select = r.querySelector("select");
+    const memo = r.querySelector("textarea");
+    dayData.staff[staffId] = {
+      count: Number(select.value),
+      memo: memo.value || ""
+    };
+  }
+
+  await cloudSetDay(d, dayData);
+  closeDay();
+  await initCloud();
+}
 
 // ========= Init =========
-render();
+initCloud();
+
