@@ -7,8 +7,13 @@
    - Supabase: staffs / bookings
 ========================= */
 
-const SUPABASE_URL = "https://ujfgmuhwmaauioeueyep.supabase.co"; // ←あなたのURL
-const SUPABASE_ANON_KEY = "sb_publishable_8xbjrHfOxAzaidTzX7S6fA_mxEE0pFD"; // ←必ず "" で囲む
+// ここはあなたの値に置き換え済みでOK
+const SUPABASE_URL = "https://ujfgmuhwmaauioeueyep.supabase.co";
+const SUPABASE_ANON_KEY = "sb_publishable_8xbjrHfOxAzaidTzX7S6fA_mxEE0pFD";
+
+// ★ supabase という名前を使わない（重要）
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
 
 // ===== 設定 =====
 const MAX_COUNT = 20;
@@ -124,7 +129,7 @@ async function savePin(newPin){
 }
 
 async function loadStaffs(){
-  const { data, error } = await supabase.from("staffs")
+  const { data, error } = await sb.from("staffs")
     .select("*")
     .order("sort", { ascending:true });
 
@@ -137,16 +142,16 @@ async function loadStaffs(){
 }
 
 async function upsertStaff(row){
-  const { error } = await supabase.from("staffs").upsert(row);
+  const { error } = await sb.from("staffs").upsert(row);
   if(error) throw error;
 }
 async function updateStaff(id, patch){
-  const { error } = await supabase.from("staffs").update(patch).eq("id", id);
+  const { error } = await sb.from("staffs").update(patch).eq("id", id);
   if(error) throw error;
 }
 
 async function loadMonthData(monthKey){
-  const { data, error } = await supabase.from("bookings")
+  const { data, error } = await sb.from("bookings")
     .select("month_key, data")
     .eq("month_key", monthKey)
     .maybeSingle();
@@ -160,7 +165,7 @@ async function loadMonthData(monthKey){
 
 async function saveMonthData(monthKey, dataObj){
   const payload = { month_key: monthKey, data: dataObj, updated_at: new Date().toISOString() };
-  const { error } = await supabase.from("bookings").upsert(payload);
+  const { error } = await sb.from("bookings").upsert(payload);
   if(error) throw error;
 }
 
