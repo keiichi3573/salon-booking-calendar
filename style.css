@@ -168,8 +168,12 @@ button:active{ transform: translateY(1px); }
   border:1px solid var(--border);
   border-radius:18px;
   box-shadow: var(--shadow);
-  overflow:hidden;
+
+  /* ★追加＆変更：画面内に収めてスクロールさせる */
+  max-height: 80vh;
+  overflow: auto;     /* hidden → auto に変更 */
 }
+
 .modalHeader{
   display:flex;
   align-items:center;
