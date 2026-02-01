@@ -1,484 +1,627 @@
-// ========= Storage Keys =========
-const KEY = "salonBooking_v1";
-const KEY_PIN = "salonBooking_pin";
+/* =========================
+   サロン予約カレンダー（クラウド同期版）
+   - 日付ごと「合計予約数」だけ表示（0〜20）
+   - 入力画面：合計予約数を大きく
+   - スタッフ別メモは小さく（数の入力は合計のみ）
+   - スタッフ管理（追加/編集/並び替え/有効無効）
+   - 設定画面はPIN（デフォルト 4043）
+   - 定休日：毎週月曜 + 第1火曜 + 第3火曜
+   - Supabase: bookings(date=YYYY-MM, data=月データJSON), staffs
+========================= */
 
-// ========= Defaults =========
+/* ======== Supabase設定（ここだけあなたの値に変更） ======== */
+const SUPABASE_URL = "YOUR_PROJECT_URL";       // 例: https://xxxxx.supabase.co
+const SUPABASE_ANON_KEY = "YOUR_ANON_KEY";     // 例: sb_publishable_...
+/* ============================================================ */
+
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+/* ======== アプリ基本設定 ======== */
+const MAX_COUNT = 20;
 const DEFAULT_PIN = "4043";
-const DEFAULT_STAFFS = [
-  { id: crypto.randomUUID(), name: "けい", sort: 1, active: true },
-  { id: crypto.randomUUID(), name: "スタッフA", sort: 2, active: true },
-  { id: crypto.randomUUID(), name: "スタッフB", sort: 3, active: true },
-];
 
+const KEY_PIN_HASH = "salonBooking_pin_hash_v1";
+const KEY_LOCAL_FALLBACK = "salonBooking_local_fallback_v1"; // 万一の退避用（普段は使わない）
 const WEEKDAYS = ["日","月","火","水","木","金","土"];
 
-// ========= Utils =========
-function pad2(n){ return String(n).padStart(2,"0"); }
-function toDateKey(d){ return `${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())}`; }
-function fromDateKey(s){ const [y,m,d]=s.split("-").map(Number); return new Date(y, m-1, d); }
-function endOfMonth(y,m){ return new Date(y, m+1, 0); }
-function addMonths(d, delta){ return new Date(d.getFullYear(), d.getMonth()+delta, 1); }
+/* ======== DOM取得（index.htmlにこれらIDがある前提） ======== */
+const elCalendar = document.getElementById("calendar");
+const elMonthTitle = document.getElementById("monthTitle");
+const btnPrev = document.getElementById("prevBtn");
+const btnNext = document.getElementById("nextBtn");
+const btnExport = document.getElementById("exportCsvBtn");
+const btnSettings = document.getElementById("settingsBtn");
 
-function hashPin(pin){
-  let h = 0;
-  for (let i=0;i<pin.length;i++) h = (h*31 + pin.charCodeAt(i)) >>> 0;
-  return String(h);
+/* ======== 状態 ======== */
+let viewDate = new Date(); // 表示中の月
+viewDate.setDate(1);
+
+let state = {
+  // 月データ：{ "YYYY-MM-DD": { count:number, memo:string, staffMemo:{staffId:string} } }
+  daily: {},
+  staffs: [],        // [{id,name,sort,active}]
+  pinOk: false
+};
+
+let selectedDateKey = null;
+
+/* ======== ユーティリティ ======== */
+function pad2(n){ return String(n).padStart(2,"0"); }
+function ymKeyFromDate(d){ return `${d.getFullYear()}-${pad2(d.getMonth()+1)}`; }
+function dateKeyFromDate(d){ return `${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())}`; }
+
+function fromDateKey(s){
+  const [y,m,d] = s.split("-").map(Number);
+  return new Date(y, m-1, d);
 }
 
-// ========= Closing Days =========
-// Closed: every Monday + 1st/3rd Tuesday
-function isClosedDay(date){
-  const day = date.getDay();
-  if (day === 1) return true;
-  if (day === 2) {
-    const y = date.getFullYear(), m = date.getMonth(), d = date.getDate();
-    let c = 0;
-    for (let i=1;i<=d;i++){
-      const t = new Date(y,m,i);
-      if (t.getDay() === 2) c++;
-    }
-    return c === 1 || c === 3;
-  }
+function startOfMonth(d){ return new Date(d.getFullYear(), d.getMonth(), 1); }
+function endOfMonth(d){ return new Date(d.getFullYear(), d.getMonth()+1, 0); }
+function addMonths(d, delta){ return new Date(d.getFullYear(), d.getMonth()+delta, 1); }
+
+/* 第1火曜・第3火曜判定 */
+function isNthWeekdayOfMonth(dateObj, weekday /*0-6*/, nth /*1..*/){
+  const y = dateObj.getFullYear();
+  const m = dateObj.getMonth();
+  const first = new Date(y, m, 1);
+  const offset = (weekday - first.getDay() + 7) % 7;
+  const day = 1 + offset + (nth-1)*7;
+  return dateObj.getDate() === day;
+}
+
+/* 定休日：毎週月曜 + 第1火曜 + 第3火曜 */
+function isClosedDay(dateObj){
+  const dow = dateObj.getDay();
+  if (dow === 1) return true;              // 月曜
+  if (dow === 2 && isNthWeekdayOfMonth(dateObj, 2, 1)) return true; // 第1火曜
+  if (dow === 2 && isNthWeekdayOfMonth(dateObj, 2, 3)) return true; // 第3火曜
   return false;
 }
 
-// ========= State =========
-//function loadState(){
-//  const raw = localStorage.getItem(KEY);
-//  if (!raw){
-//    const init = { staffs: DEFAULT_STAFFS, daily: {} };
-//    localStorage.setItem(KEY, JSON.stringify(init));
-//    if (!localStorage.getItem(KEY_PIN)) localStorage.setItem(KEY_PIN, hashPin(DEFAULT_PIN));
-//    return init;
-//  }
-  try{
-    const obj = JSON.parse(raw);
-    if (!obj.staffs) obj.staffs = DEFAULT_STAFFS;
-    if (!obj.daily) obj.daily = {};
-    if (!localStorage.getItem(KEY_PIN)) localStorage.setItem(KEY_PIN, hashPin(DEFAULT_PIN));
-    return obj;
-  }catch{
-    const init = { staffs: DEFAULT_STAFFS, daily: {} };
-    localStorage.setItem(KEY, JSON.stringify(init));
-    localStorage.setItem(KEY_PIN, hashPin(DEFAULT_PIN));
-    return init;
-  }
+/* 簡易PINハッシュ（ローカル用途） */
+async function sha256(str){
+  const buf = new TextEncoder().encode(str);
+  const digest = await crypto.subtle.digest("SHA-256", buf);
+  return [...new Uint8Array(digest)].map(b=>b.toString(16).padStart(2,"0")).join("");
 }
-//function saveState(){ 
-//localStorage.setItem(KEY, JSON.stringify(state)); 
-//}
-
-let state = loadState();
-let viewDate = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
-let selectedDateKey = null;
-let pinUnlocked = false;
-
-// ========= DOM =========
-const monthTitle = document.getElementById("monthTitle");
-const prevBtn = document.getElementById("prevBtn");
-const nextBtn = document.getElementById("nextBtn");
-const calendarEl = document.getElementById("calendar");
-
-const dayModal = document.getElementById("dayModal");
-const dayTitle = document.getElementById("dayTitle");
-const daySub = document.getElementById("daySub");
-const dayCloseBtn = document.getElementById("dayCloseBtn");
-const staffRows = document.getElementById("staffRows");
-const dayMemo = document.getElementById("dayMemo");
-const saveDayBtn = document.getElementById("saveDayBtn");
-
-const settingsBtn = document.getElementById("settingsBtn");
-const settingsModal = document.getElementById("settingsModal");
-const settingsCloseBtn = document.getElementById("settingsCloseBtn");
-
-const pinGate = document.getElementById("pinGate");
-const pinInput = document.getElementById("pinInput");
-const pinEnterBtn = document.getElementById("pinEnterBtn");
-const pinError = document.getElementById("pinError");
-
-const settingsBody = document.getElementById("settingsBody");
-const staffList = document.getElementById("staffList");
-const newStaffName = document.getElementById("newStaffName");
-const addStaffBtn = document.getElementById("addStaffBtn");
-const newPin = document.getElementById("newPin");
-const changePinBtn = document.getElementById("changePinBtn");
-const pinOk = document.getElementById("pinOk");
-
-const exportCsvBtn = document.getElementById("exportCsvBtn");
-
-// ========= Helpers =========
-function getActiveStaffs(){
-  return [...state.staffs]
-    .filter(s => s.active !== false)
-    .sort((a,b)=> (a.sort||0)-(b.sort||0));
+async function ensurePinHash(){
+  const existing = localStorage.getItem(KEY_PIN_HASH);
+  if (existing) return existing;
+  const h = await sha256(DEFAULT_PIN);
+  localStorage.setItem(KEY_PIN_HASH, h);
+  return h;
+}
+async function checkPin(pin){
+  const saved = await ensurePinHash();
+  const h = await sha256(pin);
+  return h === saved;
 }
 
-// ========= Render Calendar =========
+/* ======== Supabase（クラウド）I/O ======== */
+async function cloudLoadMonth(ym){
+  const { data, error } = await sb
+    .from("bookings")
+    .select("data")
+    .eq("date", ym)
+    .maybeSingle();
+
+  if (error) throw error;
+  return data ? (data.data || {}) : {};
+}
+
+async function cloudSaveMonth(ym, monthObj){
+  const { error } = await sb
+    .from("bookings")
+    .upsert({ date: ym, data: monthObj, updated_at: new Date().toISOString() }, { onConflict: "date" });
+
+  if (error) throw error;
+}
+
+async function cloudGetDay(dateObj){
+  const ym = ymKeyFromDate(dateObj);
+  const dk = dateKeyFromDate(dateObj);
+  const month = await cloudLoadMonth(ym);
+  return { ym, dk, month, dayData: month[dk] || null };
+}
+
+async function cloudSetDay(dateObj, dayData){
+  const { ym, dk, month } = await cloudGetDay(dateObj);
+  month[dk] = dayData;
+  await cloudSaveMonth(ym, month);
+}
+
+/* staffs テーブル */
+async function cloudLoadStaffs(){
+  const { data, error } = await sb
+    .from("staffs")
+    .select("id,name,sort,active")
+    .order("sort", { ascending: true });
+
+  if (error) throw error;
+  return data || [];
+}
+
+async function cloudUpsertStaff(staff){
+  const { error } = await sb
+    .from("staffs")
+    .upsert(staff, { onConflict: "id" });
+  if (error) throw error;
+}
+
+/* ======== 画面描画 ======== */
+function formatMonthTitle(d){
+  return `${d.getFullYear()}年 ${d.getMonth()+1}月`;
+}
+
+function getDayCount(dk){
+  const dd = state.daily[dk];
+  return dd ? Number(dd.count || 0) : 0;
+}
+
 function render(){
-  const y = viewDate.getFullYear();
-  const m = viewDate.getMonth();
-  monthTitle.textContent = `${y}年 ${m+1}月`;
+  // タイトル
+  elMonthTitle.textContent = formatMonthTitle(viewDate);
 
-  calendarEl.innerHTML = "";
+  // クリア
+  elCalendar.innerHTML = "";
 
-  // DOW header
+  // カレンダー：日曜始まり
+  const first = startOfMonth(viewDate);
+  const last = endOfMonth(viewDate);
+
+  const start = new Date(first);
+  start.setDate(first.getDate() - first.getDay()); // その週の日曜へ
+
+  const end = new Date(last);
+  end.setDate(last.getDate() + (6 - last.getDay())); // その週の土曜へ
+
+  // 曜日ヘッダ
+  const headerRow = document.createElement("div");
+  headerRow.className = "weekHeader";
   for (let i=0;i<7;i++){
-    const dow = document.createElement("div");
-    dow.className = "dow";
-    dow.textContent = WEEKDAYS[i];
-    calendarEl.appendChild(dow);
+    const h = document.createElement("div");
+    h.className = "weekDay";
+    h.textContent = WEEKDAYS[i];
+    headerRow.appendChild(h);
   }
+  elCalendar.appendChild(headerRow);
 
-  const first = new Date(y,m,1);
-  const last = endOfMonth(y,m);
-  const startWeekday = first.getDay();
-  const totalDays = last.getDate();
+  // 日付セル
+  let cur = new Date(start);
+  while (cur <= end){
+    const row = document.createElement("div");
+    row.className = "weekRow";
 
-  for (let i=0;i<startWeekday;i++){
-    const empty = document.createElement("div");
-    empty.className = "cell";
-    empty.style.visibility = "hidden";
-    calendarEl.appendChild(empty);
-  }
+    for (let i=0;i<7;i++){
+      const cellDate = new Date(cur);
+      const inMonth = cellDate.getMonth() === viewDate.getMonth();
+      const dk = dateKeyFromDate(cellDate);
 
-  const activeStaffs = getActiveStaffs();
+      const cell = document.createElement("button");
+      cell.type = "button";
+      cell.className = "dayCell";
+      if (!inMonth) cell.classList.add("outMonth");
+      if (isClosedDay(cellDate)) cell.classList.add("closed");
 
-  for (let day=1; day<=totalDays; day++){
-    const d = new Date(y,m,day);
-    const key = toDateKey(d);
-    const closed = isClosedDay(d);
+      const dayNum = document.createElement("div");
+      dayNum.className = "dayNum";
+      dayNum.textContent = cellDate.getDate();
 
-    const cell = document.createElement("div");
-    cell.className = "cell clickable" + (closed ? " closed" : "");
-    cell.addEventListener("click", ()=> openDay(key));
+      const count = document.createElement("div");
+      count.className = "dayCount";
+      const v = getDayCount(dk);
+      count.textContent = v > 0 ? `予約 ${v}` : "";
 
-    const dateEl = document.createElement("div");
-    dateEl.className = "date";
-    dateEl.textContent = String(day);
-    cell.appendChild(dateEl);
+      cell.appendChild(dayNum);
+      cell.appendChild(count);
 
-    const dayData = state.daily[key] || {};
-    let sum = 0;
-    for (const s of activeStaffs){
-      const v = dayData.staff?.[s.id]?.count ?? 0;
-      sum += Number(v || 0);
+      cell.addEventListener("click", ()=> openDayModal(dk));
+
+      row.appendChild(cell);
+      cur.setDate(cur.getDate()+1);
     }
 
-    const sumEl = document.createElement("div");
-    sumEl.className = "sum";
-    sumEl.textContent = String(sum); // ← 合計のみ大きく表示
-    cell.appendChild(sumEl);
-
-    calendarEl.appendChild(cell);
+    elCalendar.appendChild(row);
   }
 }
 
-// ========= Day Modal =========
-function openDay(dateKey){
-  selectedDateKey = dateKey;
-  const d = fromDateKey(dateKey);
+/* ======== モーダル（入力） ======== */
+function ensureModal(){
+  // 既にあれば使う
+  let modal = document.getElementById("dayModal");
+  if (modal) return modal;
 
-  dayTitle.textContent = `${d.getFullYear()}年${d.getMonth()+1}月${d.getDate()}日（${WEEKDAYS[d.getDay()]}）`;
-  daySub.textContent = isClosedDay(d) ? "定休日（必要なら入力可）" : "";
+  // なければJSで生成（index.htmlが簡素でも動くように）
+  modal = document.createElement("div");
+  modal.id = "dayModal";
+  modal.className = "modal hidden";
+  modal.innerHTML = `
+    <div class="modalBackdrop"></div>
+    <div class="modalCard">
+      <div class="modalHeader">
+        <div>
+          <div id="modalDateTitle" class="modalTitle"></div>
+          <div id="modalSubTitle" class="modalSubTitle"></div>
+        </div>
+        <button id="modalCloseBtn" class="btn">×</button>
+      </div>
 
-  const dayData = state.daily[dateKey] || { memo:"", staff:{} };
-  dayMemo.value = dayData.memo || "";
+      <div class="modalBody">
+        <div class="bigInputBox">
+          <label class="label">合計予約数（0〜${MAX_COUNT}）</label>
+          <select id="totalSelect" class="bigSelect"></select>
+        </div>
 
-  staffRows.innerHTML = "";
-  const staffs = getActiveStaffs();
+        <div class="memoBox">
+          <label class="label">メモ（任意）</label>
+          <textarea id="dayMemo" rows="2" class="memoArea" placeholder="共有メモ"></textarea>
+        </div>
 
-  for (const s of staffs){
-    const row = document.createElement("div");
-    row.className = "staffRow";
-    row.dataset.staffId = s.id;
+        <div class="staffMemoBox">
+          <div class="label">スタッフ別メモ（小さめ）</div>
+          <div id="staffMemoList" class="staffMemoList"></div>
+        </div>
+      </div>
 
-    const top = document.createElement("div");
-    top.className = "staffRowTop";
+      <div class="modalFooter">
+        <button id="saveDayBtn" class="btn primary">保存</button>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(modal);
+
+  modal.querySelector(".modalBackdrop").addEventListener("click", closeDayModal);
+  document.getElementById("modalCloseBtn").addEventListener("click", closeDayModal);
+
+  document.getElementById("saveDayBtn").addEventListener("click", saveDay);
+
+  // select options
+  const sel = document.getElementById("totalSelect");
+  sel.innerHTML = "";
+  for (let i=0;i<=MAX_COUNT;i++){
+    const opt = document.createElement("option");
+    opt.value = String(i);
+    opt.textContent = String(i);
+    sel.appendChild(opt);
+  }
+
+  return modal;
+}
+
+function openDayModal(dk){
+  selectedDateKey = dk;
+  const d = fromDateKey(dk);
+  const modal = ensureModal();
+
+  document.getElementById("modalDateTitle").textContent = `${dk}（${WEEKDAYS[d.getDay()]}）`;
+  document.getElementById("modalSubTitle").textContent = isClosedDay(d) ? "定休日" : "";
+
+  const dayData = state.daily[dk] || { count: 0, memo: "", staffMemo: {} };
+
+  // 合計（大きく）
+  document.getElementById("totalSelect").value = String(dayData.count || 0);
+
+  // 共通メモ
+  document.getElementById("dayMemo").value = dayData.memo || "";
+
+  // スタッフ別メモ（小さめ）
+  const list = document.getElementById("staffMemoList");
+  list.innerHTML = "";
+  const active = state.staffs.filter(s=>s.active !== false).sort((a,b)=>(a.sort||0)-(b.sort||0));
+  for (const s of active){
+    const wrap = document.createElement("div");
+    wrap.className = "staffMemoRow";
+    wrap.dataset.staffId = s.id;
 
     const name = document.createElement("div");
-    name.className = "staffName";
+    name.className = "staffMemoName";
     name.textContent = s.name;
 
-    const select = document.createElement("select");
-    for (let i=0;i<=20;i++){
-      const opt = document.createElement("option");
-      opt.value = String(i);
-      opt.textContent = String(i);
-      select.appendChild(opt);
-    }
-    const current = dayData.staff?.[s.id]?.count ?? 0;
-    select.value = String(current);
+    const ta = document.createElement("textarea");
+    ta.className = "staffMemoArea";
+    ta.rows = 1;
+    ta.placeholder = "メモ";
+    ta.value = (dayData.staffMemo && dayData.staffMemo[s.id]) ? dayData.staffMemo[s.id] : "";
 
-    top.appendChild(name);
-    top.appendChild(select);
-
-    const memo = document.createElement("textarea");
-    memo.rows = 2;
-    memo.placeholder = "スタッフ別メモ（任意）";
-    memo.value = dayData.staff?.[s.id]?.memo || "";
-
-    row.appendChild(top);
-    row.appendChild(memo);
-    staffRows.appendChild(row);
+    wrap.appendChild(name);
+    wrap.appendChild(ta);
+    list.appendChild(wrap);
   }
 
-  dayModal.setAttribute("aria-hidden","false");
+  modal.classList.remove("hidden");
 }
 
-function closeDay(){
-  dayModal.setAttribute("aria-hidden","true");
+function closeDayModal(){
+  const modal = document.getElementById("dayModal");
+  if (modal) modal.classList.add("hidden");
   selectedDateKey = null;
 }
 
-function saveDay(){
-  if (!selectedDateKey) return;
-
-  const dayData = state.daily[selectedDateKey] || { memo:"", staff:{} };
-  dayData.memo = dayMemo.value || "";
-  if (!dayData.staff) dayData.staff = {};
-
-  const rows = [...staffRows.querySelectorAll(".staffRow")];
-  for (const r of rows){
-    const staffId = r.dataset.staffId;
-    const select = r.querySelector("select");
-    const memo = r.querySelector("textarea");
-    dayData.staff[staffId] = {
-      count: Number(select.value),
-      memo: memo.value || ""
-    };
-  }
-
-  state.daily[selectedDateKey] = dayData;
-  saveState();
-  closeDay();
-  render();
-}
-
-// ========= Settings =========
-function openSettings(){
-  pinError.textContent = "";
-  pinOk.textContent = "";
-  pinInput.value = "";
-
-  if (pinUnlocked){
-    pinGate.classList.add("hidden");
-    settingsBody.classList.remove("hidden");
-    renderStaffList();
-  }else{
-    pinGate.classList.remove("hidden");
-    settingsBody.classList.add("hidden");
-  }
-  settingsModal.setAttribute("aria-hidden","false");
-}
-function closeSettings(){ settingsModal.setAttribute("aria-hidden","true"); }
-
-function enterPin(){
-  pinError.textContent = "";
-  const pin = (pinInput.value || "").trim();
-  if (hashPin(pin) === localStorage.getItem(KEY_PIN)){
-    pinUnlocked = true;
-    pinGate.classList.add("hidden");
-    settingsBody.classList.remove("hidden");
-    renderStaffList();
-  }else{
-    pinError.textContent = "PINが違います。";
-  }
-}
-
-function normalizeSort(){
-  state.staffs.sort((a,b)=> (a.sort||0)-(b.sort||0)).forEach((s,idx)=> s.sort = idx+1);
-}
-
-function renderStaffList(){
-  staffList.innerHTML = "";
-  const staffs = [...state.staffs].sort((a,b)=> (a.sort||0)-(b.sort||0));
-
-  for (const s of staffs){
-    const item = document.createElement("div");
-    item.className = "staffItem";
-
-    const left = document.createElement("div");
-    left.className = "left";
-
-    const nameInput = document.createElement("input");
-    nameInput.value = s.name;
-    nameInput.style.maxWidth = "220px";
-    nameInput.addEventListener("change", ()=>{
-      s.name = nameInput.value.trim() || s.name;
-      saveState(); render();
-    });
-
-    const status = document.createElement("div");
-    status.className = s.active === false ? "tagOff" : "";
-    status.textContent = s.active === false ? "無効" : "";
-
-    left.appendChild(nameInput);
-    left.appendChild(status);
-
-    const right = document.createElement("div");
-    right.style.display="flex";
-    right.style.gap="6px";
-
-    const up = document.createElement("button");
-    up.className="smallBtn";
-    up.textContent="↑";
-    up.addEventListener("click", ()=>{
-      s.sort = (s.sort||0) - 1;
-      normalizeSort();
-      saveState(); renderStaffList(); render();
-    });
-
-    const down = document.createElement("button");
-    down.className="smallBtn";
-    down.textContent="↓";
-    down.addEventListener("click", ()=>{
-      s.sort = (s.sort||0) + 1;
-      normalizeSort();
-      saveState(); renderStaffList(); render();
-    });
-
-    const toggle = document.createElement("button");
-    toggle.className="smallBtn";
-    toggle.textContent = (s.active === false) ? "有効化" : "無効化";
-    toggle.addEventListener("click", ()=>{
-      s.active = (s.active === false) ? true : false;
-      saveState(); renderStaffList(); render();
-    });
-
-    right.appendChild(up);
-    right.appendChild(down);
-    right.appendChild(toggle);
-
-    item.appendChild(left);
-    item.appendChild(right);
-    staffList.appendChild(item);
-  }
-}
-
-function addStaff(){
-  const name = (newStaffName.value || "").trim();
-  if (!name) return;
-  const maxSort = Math.max(0, ...state.staffs.map(s=>s.sort||0));
-  state.staffs.push({ id: crypto.randomUUID(), name, sort: maxSort+1, active: true });
-  newStaffName.value = "";
-  saveState();
-  renderStaffList();
-  render();
-}
-
-function changePin(){
-  pinOk.textContent = "";
-  const p = (newPin.value || "").trim();
-  if (p.length < 4){
-    pinError.textContent = "PINは4桁以上をおすすめします。";
-    return;
-  }
-  localStorage.setItem(KEY_PIN, hashPin(p));
-  newPin.value = "";
-  pinOk.textContent = "PINを変更しました。";
-  pinError.textContent = "";
-}
-
-// ========= CSV =========
-function exportCsv(){
-  const staffs = [...state.staffs].sort((a,b)=> (a.sort||0)-(b.sort||0));
-  const header = ["date","weekday","closed","memo", ...staffs.map(s=>`${s.name}_count`), ...staffs.map(s=>`${s.name}_memo`)];
-  const rows = [header];
-
-  const y = viewDate.getFullYear();
-  const m = viewDate.getMonth();
-  const last = endOfMonth(y,m).getDate();
-
-  for (let day=1; day<=last; day++){
-    const d = new Date(y,m,day);
-    const key = toDateKey(d);
-    const dd = state.daily[key] || { memo:"", staff:{} };
-    const closed = isClosedDay(d) ? "1" : "0";
-    const base = [key, WEEKDAYS[d.getDay()], closed, (dd.memo||"").replaceAll("\n"," ")];
-
-    const counts = staffs.map(s => String(dd.staff?.[s.id]?.count ?? 0));
-    const memos  = staffs.map(s => (dd.staff?.[s.id]?.memo ?? "").replaceAll("\n"," "));
-    rows.push([...base, ...counts, ...memos]);
-  }
-
-  const csv = rows.map(r => r.map(v => `"${String(v).replaceAll('"','""')}"`).join(",")).join("\n");
-  const blob = new Blob([csv], {type:"text/csv;charset=utf-8"});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = `booking_${viewDate.getFullYear()}_${pad2(viewDate.getMonth()+1)}.csv`;
-  a.click();
-  URL.revokeObjectURL(url);
-}
-
-// ========= Events =========
-prevBtn.addEventListener("click", ()=> { viewDate = addMonths(viewDate,-1); render(); });
-nextBtn.addEventListener("click", ()=> { viewDate = addMonths(viewDate, 1); render(); });
-
-dayCloseBtn.addEventListener("click", closeDay);
-dayModal.addEventListener("click", (e)=> { if (e.target === dayModal) closeDay(); });
-saveDayBtn.addEventListener("click", saveDay);
-
-settingsBtn.addEventListener("click", openSettings);
-settingsCloseBtn.addEventListener("click", closeSettings);
-settingsModal.addEventListener("click", (e)=> { if (e.target === settingsModal) closeSettings(); });
-
-pinEnterBtn.addEventListener("click", enterPin);
-pinInput.addEventListener("keydown", (e)=> { if (e.key==="Enter") enterPin(); });
-
-addStaffBtn.addEventListener("click", addStaff);
-newStaffName.addEventListener("keydown", (e)=> { if (e.key==="Enter") addStaff(); });
-
-changePinBtn.addEventListener("click", changePin);
-
-exportCsvBtn.addEventListener("click", exportCsv);
-
-// ======== クラウド版：初期読み込み（失敗しても表示はする） ========
-async function initCloud(){
-  try {
-    const ym = ymKeyFromDate(viewDate);
-    const monthData = await cloudLoadMonth(ym);
-    state.daily = monthData || {};
-  } catch (e) {
-    console.warn("initCloud error", e);
-    // ここが重要：クラウドで失敗してもカレンダー表示は継続
-    state.daily = state.daily || {};
-  }
-
-  // 必ず描画する
-  try {
-    render();
-  } catch (e) {
-    console.error("render error", e);
-    alert("表示エラーが発生しました。もう一度ページを更新してください。");
-  }
-}
-
-
-// ======== クラウド版：保存処理（上書き） ========
+/* ======== 保存（クラウド） ======== */
 async function saveDay(){
   if (!selectedDateKey) return;
 
-  const d = fromDateKey(selectedDateKey);
-  const dayData = state.daily[selectedDateKey] || { memo:"", staff:{} };
-  dayData.memo = dayMemo.value || "";
+  const dk = selectedDateKey;
+  const d = fromDateKey(dk);
 
-  const rows = [...staffRows.querySelectorAll(".staffRow")];
+  // 既存
+  const dayData = state.daily[dk] || { count: 0, memo: "", staffMemo: {} };
+
+  // 合計
+  const total = Number(document.getElementById("totalSelect").value || 0);
+  dayData.count = total;
+
+  // 共通メモ
+  dayData.memo = document.getElementById("dayMemo").value || "";
+
+  // スタッフ別メモ
+  const staffMemo = {};
+  const rows = [...document.querySelectorAll("#staffMemoList .staffMemoRow")];
   for (const r of rows){
     const staffId = r.dataset.staffId;
-    const select = r.querySelector("select");
-    const memo = r.querySelector("textarea");
-    dayData.staff[staffId] = {
-      count: Number(select.value),
-      memo: memo.value || ""
-    };
+    const ta = r.querySelector("textarea");
+    staffMemo[staffId] = ta.value || "";
   }
+  dayData.staffMemo = staffMemo;
 
-  await cloudSetDay(d, dayData);
-  closeDay();
-  await initCloud();
+  // 保存（クラウド）
+  try {
+    await cloudSetDay(d, dayData);
+    // 表示中の月のデータを再読込（ズレ防止）
+    await initCloud();
+    closeDayModal();
+  } catch (e) {
+    console.error(e);
+    alert("保存に失敗しました。通信状況を確認して、もう一度お試しください。");
+  }
 }
 
-// ========= Init =========
-initCloud();
+/* ======== 初期読み込み（クラウド） ======== */
+async function initCloud(){
+  try {
+    // スタッフ
+    state.staffs = await cloudLoadStaffs();
 
+    // 月データ
+    const ym = ymKeyFromDate(viewDate);
+    state.daily = await cloudLoadMonth(ym);
+
+  } catch (e) {
+    console.warn("initCloud error", e);
+
+    // 最低限表示だけはする（クラウド失敗時の保険）
+    try {
+      const raw = localStorage.getItem(KEY_LOCAL_FALLBACK);
+      state.daily = raw ? JSON.parse(raw) : {};
+    } catch {
+      state.daily = {};
+    }
+  }
+
+  // 退避（万一用）
+  try { localStorage.setItem(KEY_LOCAL_FALLBACK, JSON.stringify(state.daily || {})); } catch {}
+
+  render();
+}
+
+/* ======== CSV出力 ======== */
+function exportCsv(){
+  // その月の全日分（表示月のみ）
+  const ym = ymKeyFromDate(viewDate);
+  const first = startOfMonth(viewDate);
+  const last = endOfMonth(viewDate);
+
+  const lines = [];
+  // ヘッダ
+  lines.push(["date","weekday","count","memo"].join(","));
+
+  let cur = new Date(first);
+  while (cur <= last){
+    const dk = dateKeyFromDate(cur);
+    const dd = state.daily[dk] || {};
+    const row = [
+      dk,
+      WEEKDAYS[cur.getDay()],
+      Number(dd.count || 0),
+      csvEscape(dd.memo || "")
+    ];
+    lines.push(row.join(","));
+    cur.setDate(cur.getDate()+1);
+  }
+
+  const csv = lines.join("\n");
+  const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+  const url = URL.createObjectURL(blob);
+
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `salon_booking_${ym}.csv`;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+}
+
+function csvEscape(s){
+  // 改行/カンマ/ダブルクォートがあればクォート
+  const needs = /[",\n]/.test(s);
+  if (!needs) return s;
+  return `"${String(s).replaceAll('"','""')}"`;
+}
+
+/* ======== 設定（スタッフ管理 & PIN） ======== */
+function ensureSettingsModal(){
+  let modal = document.getElementById("settingsModal");
+  if (modal) return modal;
+
+  modal = document.createElement("div");
+  modal.id = "settingsModal";
+  modal.className = "modal hidden";
+  modal.innerHTML = `
+    <div class="modalBackdrop"></div>
+    <div class="modalCard">
+      <div class="modalHeader">
+        <div class="modalTitle">設定</div>
+        <button id="settingsCloseBtn" class="btn">×</button>
+      </div>
+      <div class="modalBody">
+        <div class="pinBox">
+          <div class="label">管理者PIN（スタッフ編集用）</div>
+          <div class="pinRow">
+            <input id="pinInput" class="pinInput" type="password" placeholder="PINを入力" />
+            <button id="pinOkBtn" class="btn">OK</button>
+          </div>
+          <div id="pinStatus" class="pinStatus"></div>
+        </div>
+
+        <hr/>
+
+        <div class="label">スタッフ管理</div>
+        <div class="smallNote">※ 編集はPINがOKのときだけ可能</div>
+        <div id="staffAdminList" class="staffAdminList"></div>
+        <button id="addStaffBtn" class="btn">＋スタッフ追加</button>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(modal);
+
+  modal.querySelector(".modalBackdrop").addEventListener("click", closeSettings);
+  document.getElementById("settingsCloseBtn").addEventListener("click", closeSettings);
+
+  document.getElementById("pinOkBtn").addEventListener("click", async ()=>{
+    const pin = document.getElementById("pinInput").value || "";
+    const ok = await checkPin(pin);
+    state.pinOk = ok;
+    document.getElementById("pinStatus").textContent = ok ? "PIN OK（編集可能）" : "PINが違います";
+    renderStaffAdmin();
+  });
+
+  document.getElementById("addStaffBtn").addEventListener("click", async ()=>{
+    if (!state.pinOk){
+      alert("スタッフ追加にはPINが必要です。");
+      return;
+    }
+    const name = prompt("スタッフ名を入力してください");
+    if (!name) return;
+
+    const id = crypto.randomUUID();
+    const sort = (state.staffs.reduce((m,s)=>Math.max(m, s.sort||0), 0) || 0) + 1;
+    const staff = { id, name, sort, active: true };
+
+    try {
+      await cloudUpsertStaff(staff);
+      state.staffs = await cloudLoadStaffs();
+      renderStaffAdmin();
+      alert("追加しました。");
+    } catch (e) {
+      console.error(e);
+      alert("追加に失敗しました。");
+    }
+  });
+
+  return modal;
+}
+
+function openSettings(){
+  const modal = ensureSettingsModal();
+  document.getElementById("pinStatus").textContent = state.pinOk ? "PIN OK（編集可能）" : "PIN未確認";
+  renderStaffAdmin();
+  modal.classList.remove("hidden");
+}
+
+function closeSettings(){
+  const modal = document.getElementById("settingsModal");
+  if (modal) modal.classList.add("hidden");
+}
+
+function renderStaffAdmin(){
+  const box = document.getElementById("staffAdminList");
+  if (!box) return;
+
+  box.innerHTML = "";
+
+  const staffs = [...state.staffs].sort((a,b)=>(a.sort||0)-(b.sort||0));
+  for (const s of staffs){
+    const row = document.createElement("div");
+    row.className = "staffAdminRow";
+
+    const name = document.createElement("input");
+    name.className = "staffNameInput";
+    name.value = s.name;
+
+    const sort = document.createElement("input");
+    sort.className = "staffSortInput";
+    sort.type = "number";
+    sort.value = String(s.sort || 0);
+
+    const active = document.createElement("input");
+    active.type = "checkbox";
+    active.checked = s.active !== false;
+
+    const btnSave = document.createElement("button");
+    btnSave.className = "btn small";
+    btnSave.textContent = "保存";
+
+    const labelActive = document.createElement("label");
+    labelActive.className = "staffActiveLabel";
+    labelActive.appendChild(active);
+    labelActive.appendChild(document.createTextNode("有効"));
+
+    row.appendChild(name);
+    row.appendChild(sort);
+    row.appendChild(labelActive);
+    row.appendChild(btnSave);
+
+    // 編集不可
+    if (!state.pinOk){
+      name.disabled = true;
+      sort.disabled = true;
+      active.disabled = true;
+      btnSave.disabled = true;
+    }
+
+    btnSave.addEventListener("click", async ()=>{
+      if (!state.pinOk) return;
+
+      const updated = {
+        id: s.id,
+        name: name.value.trim() || s.name,
+        sort: Number(sort.value || s.sort || 0),
+        active: active.checked
+      };
+
+      try {
+        await cloudUpsertStaff(updated);
+        state.staffs = await cloudLoadStaffs();
+        alert("保存しました。");
+        renderStaffAdmin();
+      } catch (e) {
+        console.error(e);
+        alert("保存に失敗しました。");
+      }
+    });
+
+    box.appendChild(row);
+  }
+}
+
+/* ======== イベント ======== */
+btnPrev?.addEventListener("click", async ()=>{
+  viewDate = addMonths(viewDate, -1);
+  await initCloud();
+});
+btnNext?.addEventListener("click", async ()=>{
+  viewDate = addMonths(viewDate, +1);
+  await initCloud();
+});
+btnExport?.addEventListener("click", exportCsv);
+btnSettings?.addEventListener("click", openSettings);
+
+// タブに戻ったら再読み込み（PC確認用）
+window.addEventListener("focus", ()=>{
+  // 連打防止の軽い遅延
+  setTimeout(()=>{ initCloud(); }, 150);
+});
+
+/* ======== 起動 ======== */
+initCloud();
