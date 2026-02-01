@@ -12,6 +12,7 @@
 /* ======== Supabase設定（ここだけあなたの値に変更） ======== */
 const SUPABASE_URL = "https://ujfgmuhwmaauioeueyep.supabase.co";
 const SUPABASE_ANON_KEY = "sb_publishable_8xbjrHfOxAzaidTzX7S6fA_mxEE0pFD";
+console.log("SUPABASE_URL=", SUPABASE_URL);
 
 /* ============================================================ */
 
