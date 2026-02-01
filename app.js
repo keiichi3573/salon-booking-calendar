@@ -619,21 +619,30 @@ btnNext?.addEventListener("click", async ()=>{
 btnExport?.addEventListener("click", exportCsv);
 btnSettings?.addEventListener("click", openSettings);
 
-// タブに戻ったら再読み込み（PC確認用）
-window.addEventListener("focus", ()=>{
-  // 連打防止の軽い遅延
-  setTimeout(()=>{ initCloud(); }, 150);
-});
-const closeBtn = document.getElementById("settingsCloseBtn");
-if (closeBtn) {
-  closeBtn.addEventListener("click", () => {
-    const modal = document.getElementById("settingsModal");
-    if (modal) {
-      modal.classList.add("hidden");
-      modal.style.display = "none"; // ← 最終手段
-    }
-  });
+// ===== 設定を閉じる（settingsModal / settingsBody 両対応）=====
+function closeSettings(){
+  // 新：モーダル
+  document.getElementById("settingsModal")?.classList.add("hidden");
+  document.getElementById("settingsModal")?.setAttribute("aria-hidden", "true");
+
+  // 旧：セクション式（残っている方）
+  document.getElementById("settingsBody")?.classList.add("hidden");
+
+  // もしオーバーレイがある場合も消す
+  document.getElementById("settingsOverlay")?.classList.add("hidden");
 }
+
+// ×ボタン
+document.getElementById("settingsCloseBtn")?.addEventListener("click", (e) => {
+  e.preventDefault();
+  e.stopPropagation();
+  closeSettings();
+});
+
+// Escでも閉じる（PC）
+window.addEventListener("keydown", (e)=>{
+  if(e.key === "Escape") closeSettings();
+});
 
 
 // ===== 起動 =====
