@@ -265,6 +265,13 @@ button:active{ transform: translateY(1px); }
   color:#fff;
   border-color:transparent;
 }
+/* 設定モーダルが画面内に収まるように */
+#settingsModal .card,
+#settingsModal .modalCard,
+#settingsModal .modalContent {
+  max-height: 80vh;
+  overflow: auto;
+}
 
 /* ===== 設定画面（スタッフ管理） ===== */
 .pinRow{
