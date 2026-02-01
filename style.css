@@ -314,3 +314,6 @@ button:active{ transform: translateY(1px); }
   .dayCell{ min-height:78px; padding:8px; }
   .staffAdminRow{ grid-template-columns: 1fr 70px 90px 60px; }
 }
+.hidden {
+  display: none !important;
+}
