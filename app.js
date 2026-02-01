@@ -625,3 +625,4 @@ window.addEventListener("focus", ()=>{
 
 /* ======== 起動 ======== */
 initCloud();
+
