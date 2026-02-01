@@ -624,13 +624,22 @@ window.addEventListener("focus", ()=>{
   // 連打防止の軽い遅延
   setTimeout(()=>{ initCloud(); }, 150);
 });
-// ===== 設定画面を閉じる処理（追加）=====
+// ===== 設定モーダルを閉じる（確実版）=====
 document.getElementById("settingsCloseBtn")?.addEventListener("click", closeSettings);
 
 function closeSettings(){
-  const body = document.getElementById("settingsBody");
-  if (body) body.classList.add("hidden");
+  const modal = document.getElementById("settingsModal"); // ←ここが重要
+  if (modal) {
+    modal.classList.add("hidden");
+    modal.setAttribute("aria-hidden", "true");
+  }
 }
+
+// Escでも閉じる（PC用）
+window.addEventListener("keydown", (e)=>{
+  if(e.key === "Escape") closeSettings();
+});
+
 
 // ===== 起動 =====
 initCloud();
