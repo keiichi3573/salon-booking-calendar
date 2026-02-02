@@ -490,10 +490,40 @@ function exportCsv(){
 // ===== init =====
 async function loadAndRender(){
   fillSelect();
-  currentMonthKey = toMonthKey(viewDate);
-  monthData = await loadMonthData(currentMonthKey);
+
+  // 表示中の月
+  const y = viewDate.getFullYear();
+  const m = viewDate.getMonth(); // 0-11
+
+  const start = new Date(y, m, 1);
+  const end   = new Date(y, m + 1, 0);
+
+  const startKey = toDateKey(start);
+  const endKey   = toDateKey(end);
+
+  // ★ Supabase から日別合計を取得
+  const { data: dailyRows, error } = await sb
+    .from("bookings_daily")
+    .select("day,total,memo")
+    .gte("day", startKey)
+    .lte("day", endKey);
+
+  if (error) {
+    console.error(error);
+    monthData = {};
+  } else {
+    monthData = {};
+    for (const r of (dailyRows || [])) {
+      monthData[r.day] = {
+        count: Number(r.total || 0),
+        memo: r.memo || ""
+      };
+    }
+  }
+
   renderMonth();
 }
+
 
 btnPrev?.addEventListener("click", async ()=>{
   viewDate = addMonths(viewDate, -1);
