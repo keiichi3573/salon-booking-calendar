@@ -491,7 +491,6 @@ function exportCsv(){
 async function loadAndRender(){
   fillSelect();
 
-  // 表示中の月
   const y = viewDate.getFullYear();
   const m = viewDate.getMonth(); // 0-11
 
@@ -501,28 +500,29 @@ async function loadAndRender(){
   const startKey = toDateKey(start);
   const endKey   = toDateKey(end);
 
-  // ★ Supabase から日別合計を取得
-  const { data: dailyRows, error } = await sb
+  // いったん空で初期化
+  monthData = {};
+
+  const res = await sb
     .from("bookings_daily")
-    .select("day,total,memo")
+    .select("day,total")   // ← memo は一旦やめる（まず表示を直す）
     .gte("day", startKey)
     .lte("day", endKey);
 
-  if (error) {
-    console.error(error);
-    monthData = {};
+  if (res.error) {
+    // ここがエラーなら、今まで通り「0のまま」になる
+    alert("bookings_daily の取得でエラー: " + res.error.message);
+    console.error(res.error);
   } else {
-    monthData = {};
-    for (const r of (dailyRows || [])) {
-      monthData[r.day] = {
-        count: Number(r.total || 0),
-        memo: r.memo || ""
-      };
+    console.log("bookings_daily rows:", res.data); // 念のため確認
+    for (const r of (res.data || [])) {
+      monthData[r.day] = { count: Number(r.total || 0), memo: "" };
     }
   }
 
   renderMonth();
 }
+
 
 
 btnPrev?.addEventListener("click", async ()=>{
