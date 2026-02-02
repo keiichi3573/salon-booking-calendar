@@ -11,8 +11,11 @@
 const SUPABASE_URL = "https://ujfgmuhwmaauioeueyep.supabase.co";
 const SUPABASE_ANON_KEY = "sb_publishable_8xbjrHfOxAzaidTzX7S6fA_mxEE0pFD";
 
-// ★ supabase という名前を使わない（重要）
-const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+// ★ supabaseという名前は使わない
+const sb = window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_ANON_KEY
+);
 
 
 // ===== 設定 =====
@@ -23,15 +26,6 @@ const DEFAULT_STAFFS = [
   { id: crypto.randomUUID(), name: "スタッフA", sort: 1, active: true },
   { id: crypto.randomUUID(), name: "スタッフB", sort: 2, active: true },
 ];
-
-// ===== Supabase初期化 =====
-let supabase = null;
-try{
-  supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-}catch(e){
-  alert("SupabaseのURL/KEYが正しくありません。URLとKEYは必ずダブルクォートで囲んでください。");
-  console.error(e);
-}
 
 // ===== DOM =====
 const elMonthTitle = document.getElementById("monthTitle");
