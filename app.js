@@ -290,15 +290,34 @@ async function openDayEditor(date){
 
 async function saveDay(){
   if(!editingDateKey) return;
-  const count = Number(totalSelect.value||0);
-  const memo  = (dayMemo.value||"").trim();
 
-  monthData[editingDateKey] = { count, memo };
+  const inputs = document.querySelectorAll("#staffInputs input");
+  let total = 0;
 
-  await saveMonthData(currentMonthKey, monthData);
+  const rows = Array.from(inputs).map(i => {
+    const c = Number(i.value || 0);
+    total += c;
+    return {
+      day: editingDateKey,
+      staff_id: i.dataset.staff,
+      count: c
+    };
+  });
+
+  // スタッフ別保存
+  await sb
+    .from("bookings_staff_daily")
+    .upsert(rows, { onConflict: "day,staff_id" });
+
+  // 合計保存
+  await sb
+    .from("bookings_daily")
+    .upsert([{ day: editingDateKey, total }], { onConflict: "day" });
+
   closeModal(dayModal);
-  renderMonth();
+  await loadAndRender();
 }
+
 
 // ===== settings =====
 async function openSettings(){
