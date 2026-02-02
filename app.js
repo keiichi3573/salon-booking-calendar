@@ -251,25 +251,36 @@ async function openDayEditor(date){
   dayTitle.textContent =
     `${date.getFullYear()}年${date.getMonth()+1}月${date.getDate()}日（${WEEK[date.getDay()]}）`;
 
-  const { data: staffs } = await sb
+  // 1) スタッフ一覧（active=true）
+  const { data: staffs, error: eStaff } = await sb
     .from("staffs")
     .select("id,name,sort_order")
     .eq("active", true)
     .order("sort_order");
+  if(eStaff){ alert("staffs取得エラー: " + eStaff.message); return; }
 
-  const { data: rows } = await sb
+  // 2) その日のスタッフ別
+  const { data: rows, error: eRows } = await sb
     .from("bookings_staff_daily")
     .select("staff_id,count")
     .eq("day", editingDateKey);
+  if(eRows){ alert("staff別取得エラー: " + eRows.message); return; }
 
-  const map = new Map(rows.map(r => [r.staff_id, r.count || 0]));
+  const map = new Map((rows||[]).map(r => [r.staff_id, r.count || 0]));
+
+  // 3) その日のメモ（bookings_daily.note）
+  const { data: daily, error: eDaily } = await sb
+    .from("bookings_daily")
+    .select("total,note")
+    .eq("day", editingDateKey)
+    .maybeSingle();
+  if(eDaily){ alert("daily取得エラー: " + eDaily.message); return; }
 
   const box = document.getElementById("staffInputs");
   box.innerHTML = "";
 
   let total = 0;
-
-  staffs.forEach(s => {
+  (staffs||[]).forEach(s => {
     const v = map.get(s.id) || 0;
     total += v;
 
@@ -281,11 +292,15 @@ async function openDayEditor(date){
     box.appendChild(row);
   });
 
-  totalCountSelect.value = String(total);
-  dayMemo.value = "";
+  // 合計（ロックされてる想定）
+  totalCountSelect.value = String(Number(daily?.total ?? total));
+
+  // ★メモを反映（ここが今回の目的）
+  dayMemo.value = daily?.note || "";
 
   openModal(dayModal);
 }
+
 
 
 async function saveDay(){
