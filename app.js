@@ -527,26 +527,26 @@ async function loadAndRender(){
 
   const res = await sb
     .from("bookings_daily")
-    .select("day,total,note")   // ← memo は一旦やめる（まず表示を直す）
+    .select("day,total,note")
     .gte("day", startKey)
     .lte("day", endKey);
 
   if (res.error) {
-    // ここがエラーなら、今まで通り「0のまま」になる
     alert("bookings_daily の取得でエラー: " + res.error.message);
     console.error(res.error);
   } else {
-    console.log("bookings_daily rows:", res.data); // 念のため確認
+    console.log("bookings_daily rows:", res.data);
     for (const r of (res.data || [])) {
-  monthData[r.day] = {
-    count: Number(r.total || 0),
-    memo: (r.note || "")
-  };
-}
-
+      monthData[r.day] = {
+        count: Number(r.total || 0),
+        memo: (r.note || "")
+      };
+    }
+  }
 
   renderMonth();
 }
+
 
 
 
