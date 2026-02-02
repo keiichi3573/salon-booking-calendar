@@ -289,46 +289,57 @@ async function openDayEditor(date){
 
 
 async function saveDay(){
-  if(!editingDateKey) return;
+  try{
+    if(!editingDateKey){
+      alert("保存できません：日付が選択されていません");
+      return;
+    }
 
-  // メモ
-  const memo = (dayMemo.value || "").trim();
+    daySaveBtn.disabled = true;
+    daySaveBtn.textContent = "保存中...";
 
-  // スタッフ別入力 → rows作成（day, staff_id, count）
-  const inputs = document.querySelectorAll("#staffInputs input");
-  let total = 0;
+    const memo = (dayMemo.value || "").trim();
 
-  const rows = Array.from(inputs).map(i => {
-    const c = Number(i.value || 0);
-    total += c;
-    return {
-      day: editingDateKey,
-      staff_id: i.dataset.staff,
-      count: c
-    };
-  });
+    // スタッフ別入力
+    const inputs = document.querySelectorAll("#staffInputs input");
+    let total = 0;
 
-  // ① スタッフ別保存（upsert）
-  await sb
-    .from("bookings_staff_daily")
-    .upsert(rows, { onConflict: "day,staff_id" });
+    const rows = Array.from(inputs).map(i => {
+      const c = Number(i.value || 0);
+      total += c;
+      return {
+        day: editingDateKey,
+        staff_id: i.dataset.staff,
+        count: c
+      };
+    });
 
-  // ② 合計＋メモを保存（bookings_daily）
-  await sb
-    .from("bookings_daily")
-    .upsert([{ day: editingDateKey, total, memo }], { onConflict: "day" });
+    // ① スタッフ別保存
+    const r1 = await sb
+      .from("bookings_staff_daily")
+      .upsert(rows, { onConflict: "day,staff_id" });
+    if(r1.error) throw new Error("スタッフ別保存失敗: " + r1.error.message);
 
-  // ③ カレンダー表示用 monthData も更新（ここが重要！）
-  monthData[editingDateKey] = { count: total, memo };
+    // ② 合計＋メモ保存
+    const r2 = await sb
+      .from("bookings_daily")
+      .upsert([{ day: editingDateKey, total, memo }], { onConflict: "day" });
+    if(r2.error) throw new Error("合計保存失敗: " + r2.error.message);
 
-  // 月データとして保存（あなたの既存仕様に合わせる）
-  await saveMonthData(currentMonthKey, monthData);
+    // ③ 画面更新
+    closeModal(dayModal);
+    await loadAndRender();
 
-  // UI更新
-  closeModal(dayModal);
-await loadAndRender();
-
+    alert("保存しました");
+  }catch(e){
+    console.error(e);
+    alert("保存で止まりました: " + (e?.message || e));
+  }finally{
+    daySaveBtn.disabled = false;
+    daySaveBtn.textContent = "保存";
+  }
 }
+
 
 
 
