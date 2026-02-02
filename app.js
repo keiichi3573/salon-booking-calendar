@@ -293,7 +293,8 @@ async function openDayEditor(date){
   });
 
   // 合計（ロックされてる想定）
-  totalCountSelect.value = String(Number(daily?.total ?? total));
+  totalSelect.value = String(Number(daily?.total ?? total));
+
 
   // ★メモを反映（ここが今回の目的）
   dayMemo.value = daily?.note || "";
