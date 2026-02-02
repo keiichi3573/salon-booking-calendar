@@ -291,6 +291,10 @@ async function openDayEditor(date){
 async function saveDay(){
   if(!editingDateKey) return;
 
+  // メモ
+  const memo = (dayMemo.value || "").trim();
+
+  // スタッフ別入力 → rows作成（day, staff_id, count）
   const inputs = document.querySelectorAll("#staffInputs input");
   let total = 0;
 
@@ -304,19 +308,27 @@ async function saveDay(){
     };
   });
 
-  // スタッフ別保存
+  // ① スタッフ別保存（upsert）
   await sb
     .from("bookings_staff_daily")
     .upsert(rows, { onConflict: "day,staff_id" });
 
-  // 合計保存
+  // ② 合計＋メモを保存（bookings_daily）
   await sb
     .from("bookings_daily")
-    .upsert([{ day: editingDateKey, total }], { onConflict: "day" });
+    .upsert([{ day: editingDateKey, total, memo }], { onConflict: "day" });
 
+  // ③ カレンダー表示用 monthData も更新（ここが重要！）
+  monthData[editingDateKey] = { count: total, memo };
+
+  // 月データとして保存（あなたの既存仕様に合わせる）
+  await saveMonthData(currentMonthKey, monthData);
+
+  // UI更新
   closeModal(dayModal);
-  await loadAndRender();
+  renderMonth();
 }
+
 
 
 // ===== settings =====
