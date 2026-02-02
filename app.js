@@ -298,9 +298,8 @@ async function saveDay(){
     daySaveBtn.disabled = true;
     daySaveBtn.textContent = "保存中...";
 
-    const memo = (dayMemo.value || "").trim();
+    const note = (dayMemo.value || "").trim();
 
-    // スタッフ別入力
     const inputs = document.querySelectorAll("#staffInputs input");
     let total = 0;
 
@@ -314,19 +313,16 @@ async function saveDay(){
       };
     });
 
-    // ① スタッフ別保存
     const r1 = await sb
       .from("bookings_staff_daily")
       .upsert(rows, { onConflict: "day,staff_id" });
     if(r1.error) throw new Error("スタッフ別保存失敗: " + r1.error.message);
 
-    // ② 合計＋メモ保存
     const r2 = await sb
       .from("bookings_daily")
-      .upsert([{ day: editingDateKey, total, memo }], { onConflict: "day" });
+      .upsert([{ day: editingDateKey, total, note }], { onConflict: "day" });
     if(r2.error) throw new Error("合計保存失敗: " + r2.error.message);
 
-    // ③ 画面更新
     closeModal(dayModal);
     await loadAndRender();
 
