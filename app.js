@@ -245,16 +245,48 @@ function fillSelect(){
 // ===== day editor =====
 let editingDateKey = null;
 
-function openDayEditor(date){
+async function openDayEditor(date){
   editingDateKey = toDateKey(date);
-  const info = monthData[editingDateKey] || { count:0, memo:"" };
 
-  dayTitle.textContent = `${date.getFullYear()}年${date.getMonth()+1}月${date.getDate()}日（${WEEK[date.getDay()]}）`;
-  totalSelect.value = String(Number(info.count||0));
-  dayMemo.value = info.memo || "";
+  dayTitle.textContent =
+    `${date.getFullYear()}年${date.getMonth()+1}月${date.getDate()}日（${WEEK[date.getDay()]}）`;
+
+  const { data: staffs } = await sb
+    .from("staffs")
+    .select("id,name,sort_order")
+    .eq("active", true)
+    .order("sort_order");
+
+  const { data: rows } = await sb
+    .from("bookings_staff_daily")
+    .select("staff_id,count")
+    .eq("day", editingDateKey);
+
+  const map = new Map(rows.map(r => [r.staff_id, r.count || 0]));
+
+  const box = document.getElementById("staffInputs");
+  box.innerHTML = "";
+
+  let total = 0;
+
+  staffs.forEach(s => {
+    const v = map.get(s.id) || 0;
+    total += v;
+
+    const row = document.createElement("div");
+    row.innerHTML = `
+      <label>${s.name}</label>
+      <input type="number" min="0" value="${v}" data-staff="${s.id}">
+    `;
+    box.appendChild(row);
+  });
+
+  totalCountSelect.value = String(total);
+  dayMemo.value = "";
 
   openModal(dayModal);
 }
+
 
 async function saveDay(){
   if(!editingDateKey) return;
