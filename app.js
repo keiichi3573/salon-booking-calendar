@@ -527,7 +527,7 @@ async function loadAndRender(){
 
   const res = await sb
     .from("bookings_daily")
-    .select("day,total")   // ← memo は一旦やめる（まず表示を直す）
+    .select("day,total,note")   // ← memo は一旦やめる（まず表示を直す）
     .gte("day", startKey)
     .lte("day", endKey);
 
@@ -538,9 +538,12 @@ async function loadAndRender(){
   } else {
     console.log("bookings_daily rows:", res.data); // 念のため確認
     for (const r of (res.data || [])) {
-      monthData[r.day] = { count: Number(r.total || 0), memo: "" };
-    }
-  }
+  monthData[r.day] = {
+    count: Number(r.total || 0),
+    memo: (r.note || "")
+  };
+}
+
 
   renderMonth();
 }
