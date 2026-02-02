@@ -326,7 +326,8 @@ async function saveDay(){
 
   // UI更新
   closeModal(dayModal);
-  renderMonth();
+await loadAndRender();
+
 }
 
 
