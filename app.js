@@ -1,3 +1,39 @@
+// ===== Modal focus fix (minimal) =====
+let __lastFocusedEl = null;
+
+function openModal(modalId) {
+  const modal = document.getElementById(modalId);
+  if (!modal) return;
+
+  const card = modal.querySelector('.modalCard');
+  __lastFocusedEl = document.activeElement;
+
+  modal.classList.remove('hidden');
+  if (card) card.setAttribute('aria-hidden', 'false');
+
+  const focusTarget = modal.querySelector(
+    '[autofocus], input, select, textarea, button, [href], [tabindex]:not([tabindex="-1"])'
+  );
+  (focusTarget || card || modal).focus?.();
+}
+
+function closeModal(modalId) {
+  const modal = document.getElementById(modalId);
+  if (!modal) return;
+
+  const card = modal.querySelector('.modalCard');
+
+  // ★ここが aria-hidden 警告を止める核心
+  if (__lastFocusedEl && typeof __lastFocusedEl.focus === 'function') {
+    __lastFocusedEl.focus();
+  } else {
+    document.body.focus?.();
+  }
+
+  if (card) card.setAttribute('aria-hidden', 'true');
+  modal.classList.add('hidden');
+}
+
 /* =========================
    サロン予約カレンダー（クラウド同期・リセット版）
    - 月カレンダー：日付ごと「合計予約数」だけ表示（0〜20）
