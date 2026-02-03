@@ -1,35 +1,40 @@
 // ===== Modal focus fix (minimal) =====
 let __lastFocusedEl = null;
 
-function openModal(modalId) {
-  const modal = document.getElementById(modalId);
+function openModal(modalEl) {
+  const modal = modalEl; // DOM要素が渡ってくる前提
   if (!modal) return;
 
   const card = modal.querySelector('.modalCard');
   __lastFocusedEl = document.activeElement;
 
+  // 表示
   modal.classList.remove('hidden');
+
+  // aria-hidden は card 側で管理（あなたのHTMLに合わせる）
   if (card) card.setAttribute('aria-hidden', 'false');
 
+  // モーダル内へフォーカス移動（最初の入力/ボタンへ）
   const focusTarget = modal.querySelector(
     '[autofocus], input, select, textarea, button, [href], [tabindex]:not([tabindex="-1"])'
   );
   (focusTarget || card || modal).focus?.();
 }
 
-function closeModal(modalId) {
-  const modal = document.getElementById(modalId);
+function closeModal(modalEl) {
+  const modal = modalEl; // DOM要素が渡ってくる前提
   if (!modal) return;
 
   const card = modal.querySelector('.modalCard');
 
-  // ★ここが aria-hidden 警告を止める核心
+  // ★ここが aria-hidden 警告を止める核心：先にフォーカスを外へ戻す
   if (__lastFocusedEl && typeof __lastFocusedEl.focus === 'function') {
     __lastFocusedEl.focus();
   } else {
     document.body.focus?.();
   }
 
+  // その後に aria-hidden / 非表示
   if (card) card.setAttribute('aria-hidden', 'true');
   modal.classList.add('hidden');
 }
@@ -91,6 +96,34 @@ const staffAddBtn   = document.getElementById("staffAddBtn");
 const staffList     = document.getElementById("staffList");
 const newPinInput   = document.getElementById("newPinInput");
 const pinChangeBtn  = document.getElementById("pinChangeBtn");
+// ===== Modal open / close events =====
+
+// 設定モーダルを開く
+btnSettings?.addEventListener('click', () => {
+  openModal(settingsModal);
+});
+
+// 日付モーダルを閉じる（×）
+dayCloseBtn?.addEventListener('click', () => {
+  closeModal(dayModal);
+});
+
+// 設定モーダルを閉じる（× / 下の閉じる）
+settingsCloseBtn?.addEventListener('click', () => {
+  closeModal(settingsModal);
+});
+settingsCloseBtn2?.addEventListener('click', () => {
+  closeModal(settingsModal);
+});
+
+// 背景クリックで閉じる
+document.querySelectorAll('.modalBackdrop[data-close]').forEach(el => {
+  el.addEventListener('click', (e) => {
+    const id = e.currentTarget.getAttribute('data-close');
+    if (id === 'dayModal') closeModal(dayModal);
+    if (id === 'settingsModal') closeModal(settingsModal);
+  });
+});
 
 // ===== state =====
 let viewDate = new Date();
