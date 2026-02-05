@@ -632,6 +632,217 @@ btnExport?.addEventListener("click", exportCsv);
 window.addEventListener("focus", ()=>{
   setTimeout(()=>{ loadAndRender(); }, 150);
 });
+// ===== Store Board (memo tasks + shared photo) =====
+(function initStoreBoard(){
+  const memoDateSelect = document.getElementById("memoDateSelect");
+  const memoText = document.getElementById("memoText");
+  const memoAddBtn = document.getElementById("memoAddBtn");
+  const memoClearInputBtn = document.getElementById("memoClearInputBtn");
+  const taskList = document.getElementById("taskList");
+
+  const photoFile = document.getElementById("photoFile");
+  const photoUploadBtn = document.getElementById("photoUploadBtn");
+  const photoPreview = document.getElementById("photoPreview");
+
+  // 店舗ボードが無いページでも落ちないように
+  if (!memoDateSelect || !memoText || !memoAddBtn || !memoClearInputBtn || !taskList) return;
+
+  const LS_TASKS_KEY = "storeBoard_tasks_v1";     // 日付ごとのタスク
+  const LS_PHOTO_KEY = "storeBoard_photo_v1";     // 共有写真（1枚）
+
+  // --- utils ---
+  const pad2 = (n)=> String(n).padStart(2, "0");
+  const toDateKey = (d)=> `${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())}`;
+  const weekdayJP = ["日","月","火","水","木","金","土"];
+  const formatJP = (d)=> `${d.getMonth()+1}月${d.getDate()}日（${weekdayJP[d.getDay()]}）`;
+
+  function loadTasksAll(){
+    try { return JSON.parse(localStorage.getItem(LS_TASKS_KEY) || "{}"); }
+    catch { return {}; }
+  }
+  function saveTasksAll(obj){
+    localStorage.setItem(LS_TASKS_KEY, JSON.stringify(obj));
+  }
+
+  function getSelectedDateKey(){
+    return memoDateSelect.value;
+  }
+
+  function getTasksForSelected(){
+    const all = loadTasksAll();
+    const key = getSelectedDateKey();
+    return Array.isArray(all[key]) ? all[key] : [];
+  }
+
+  function setTasksForSelected(tasks){
+    const all = loadTasksAll();
+    const key = getSelectedDateKey();
+    all[key] = tasks;
+    saveTasksAll(all);
+  }
+
+  function escapeHtml(s){
+    return String(s)
+      .replaceAll("&","&amp;")
+      .replaceAll("<","&lt;")
+      .replaceAll(">","&gt;")
+      .replaceAll('"',"&quot;")
+      .replaceAll("'","&#39;");
+  }
+
+  // --- date dropdown fill: 今日〜90日先（必要なら増やせます） ---
+  function fillMemoDates(){
+    const today = new Date();
+    memoDateSelect.innerHTML = "";
+    for (let i=0; i<90; i++){
+      const d = new Date(today);
+      d.setDate(today.getDate() + i);
+      const opt = document.createElement("option");
+      opt.value = toDateKey(d);
+      opt.textContent = `${formatJP(d)}（${opt.value}）`;
+      memoDateSelect.appendChild(opt);
+    }
+  }
+
+  // --- render tasks ---
+  function renderTasks(){
+    const tasks = getTasksForSelected();
+    if (!tasks.length){
+      taskList.innerHTML = `<div class="hint">メモはまだありません</div>`;
+      return;
+    }
+
+    taskList.innerHTML = tasks.map(t=>{
+      const doneClass = t.done ? "done" : "";
+      return `
+        <div class="taskItem ${doneClass}" data-id="${escapeHtml(t.id)}">
+          <input class="taskChk" type="checkbox" ${t.done ? "checked" : ""} />
+          <div class="taskText">${escapeHtml(t.text)}</div>
+          <button class="btn taskDelBtn" type="button">削除</button>
+        </div>
+      `;
+    }).join("");
+  }
+
+  // --- add task ---
+  function addTask(){
+    const text = memoText.value.trim();
+    if (!text) return;
+
+    const tasks = getTasksForSelected();
+    tasks.unshift({
+      id: String(Date.now()) + "_" + Math.random().toString(16).slice(2),
+      text,
+      done: false,
+      createdAt: Date.now()
+    });
+    setTasksForSelected(tasks);
+    memoText.value = "";
+    renderTasks();
+  }
+
+  // --- clear input ---
+  function clearInput(){
+    memoText.value = "";
+    memoText.focus();
+  }
+
+  // --- list events (toggle done / delete) ---
+  taskList.addEventListener("click", (e)=>{
+    const item = e.target.closest(".taskItem");
+    if (!item) return;
+    const id = item.getAttribute("data-id");
+    let tasks = getTasksForSelected();
+
+    // delete
+    if (e.target.closest(".taskDelBtn")){
+      tasks = tasks.filter(t => t.id !== id);
+      setTasksForSelected(tasks);
+      renderTasks();
+      return;
+    }
+
+    // checkbox toggle (click on checkbox itself)
+    if (e.target.classList.contains("taskChk")){
+      tasks = tasks.map(t => t.id === id ? { ...t, done: e.target.checked } : t);
+      setTasksForSelected(tasks);
+      renderTasks();
+    }
+  });
+
+  // クリック以外でチェックが変わった場合（キーボード操作も拾う）
+  taskList.addEventListener("change", (e)=>{
+    if (!e.target.classList.contains("taskChk")) return;
+    const item = e.target.closest(".taskItem");
+    if (!item) return;
+    const id = item.getAttribute("data-id");
+    let tasks = getTasksForSelected();
+    tasks = tasks.map(t => t.id === id ? { ...t, done: e.target.checked } : t);
+    setTasksForSelected(tasks);
+    renderTasks();
+  });
+
+  // --- photo preview (shared) ---
+  function renderSavedPhoto(){
+    if (!photoPreview) return;
+    const dataUrl = localStorage.getItem(LS_PHOTO_KEY);
+    if (dataUrl){
+      photoPreview.innerHTML = `<img src="${dataUrl}" alt="写真プレビュー" />`;
+    } else {
+      photoPreview.innerHTML = `<div class="hint">プレビュー</div>`;
+    }
+  }
+
+  function readFileAsDataURL(file){
+    return new Promise((resolve, reject)=>{
+      const fr = new FileReader();
+      fr.onload = ()=> resolve(String(fr.result || ""));
+      fr.onerror = reject;
+      fr.readAsDataURL(file);
+    });
+  }
+
+  async function handlePhotoUpload(){
+    if (!photoFile || !photoPreview) return;
+    const file = photoFile.files?.[0];
+    if (!file) return;
+
+    // 注意：localStorageは容量が小さいので、大きい写真だと入らないことがあります
+    // 最小・安全のため、まずはプレビュー＋保存を試みる（失敗したらプレビューだけ）
+    try{
+      const dataUrl = await readFileAsDataURL(file);
+      photoPreview.innerHTML = `<img src="${dataUrl}" alt="写真プレビュー" />`;
+      try{
+        localStorage.setItem(LS_PHOTO_KEY, dataUrl);
+      } catch {
+        // 保存できなくても表示だけはできる
+        console.warn("写真が大きくて保存できませんでした（表示はOK）");
+      }
+    } catch (err){
+      console.error(err);
+      alert("画像の読み込みに失敗しました");
+    }
+  }
+
+  // --- wire up ---
+  fillMemoDates();
+  memoAddBtn.addEventListener("click", addTask);
+  memoClearInputBtn.addEventListener("click", clearInput);
+  memoDateSelect.addEventListener("change", renderTasks);
+
+  // Enterで追加（Ctrl+Enter / Cmd+Enter）
+  memoText.addEventListener("keydown", (e)=>{
+    if ((e.ctrlKey || e.metaKey) && e.key === "Enter"){
+      e.preventDefault();
+      addTask();
+    }
+  });
+
+  if (photoUploadBtn) photoUploadBtn.addEventListener("click", handlePhotoUpload);
+
+  renderTasks();
+  renderSavedPhoto();
+})();
 
 // 起動
 loadAndRender();
