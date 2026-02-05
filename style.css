@@ -297,3 +297,142 @@ body{
   .dayCell{ min-height:80px; padding:10px; border-radius:16px; }
   .bigSelect{ font-size:24px; }
 }
+/* ===== 店舗ボード（タスク型） ===== */
+.storeBoard{
+  margin-top: 16px;
+}
+
+.boardHeader{
+  display:flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 8px 0 12px;
+}
+
+.boardTitle{
+  font-weight: 700;
+  font-size: 16px;
+}
+
+.boardSub{
+  font-size: 12px;
+  opacity: .7;
+}
+
+.boardGrid{
+  display:grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.boardCard{
+  background: #fff;
+  border-radius: 14px;
+  padding: 12px;
+  box-shadow: 0 6px 18px rgba(0,0,0,.06);
+}
+
+.cardTitle{
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.row{
+  display:flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+
+.label{
+  font-size: 12px;
+  opacity: .8;
+}
+
+.memoBig{
+  width: 100%;
+  resize: vertical;
+  min-height: 180px; /* もう少し大きく */
+  border-radius: 12px;
+  padding: 10px 12px;
+  border: 1px solid rgba(0,0,0,.12);
+  outline: none;
+}
+
+.cardRow{
+  display:flex;
+  gap: 8px;
+  align-items: center;
+  margin-top: 6px;
+}
+
+.taskList{
+  margin-top: 12px;
+  display:flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* 1タスク行（JSで作る想定：完了で薄く） */
+.taskItem{
+  display:flex;
+  gap: 10px;
+  align-items: flex-start;
+  padding: 10px 10px;
+  border-radius: 12px;
+  border: 1px solid rgba(0,0,0,.08);
+}
+
+.taskItem.done{
+  opacity: .45;
+}
+
+.taskItem.done .taskText{
+  text-decoration: line-through;
+}
+
+.taskText{
+  white-space: pre-wrap;
+  word-break: break-word;
+  flex: 1;
+}
+
+/* 写真：アップロード左、プレビュー右 */
+.photoRowInline{
+  display:flex;
+  gap: 12px;
+  align-items: stretch;
+}
+
+.photoControls{
+  display:flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 220px;
+}
+
+.photoPreviewSide{
+  flex: 1;
+  min-height: 140px;
+  border-radius: 12px;
+  border: 1px dashed rgba(0,0,0,.18);
+  display:flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: rgba(0,0,0,.02);
+}
+
+.photoPreviewSide img{
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* 画面が狭い時は縦並び */
+@media (max-width: 900px){
+  .boardGrid{ grid-template-columns: 1fr; }
+  .photoRowInline{ flex-direction: column; }
+  .photoControls{ min-width: auto; }
+}
