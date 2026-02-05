@@ -632,7 +632,7 @@ btnExport?.addEventListener("click", exportCsv);
 window.addEventListener("focus", ()=>{
   setTimeout(()=>{ loadAndRender(); }, 150);
 });
-// ===== Store Board (memo tasks + shared photo) =====
+// ===== Store Board (Supabase sync: memo tasks + shared photo) =====
 (function initStoreBoard(){
   const memoDateSelect = document.getElementById("memoDateSelect");
   const memoText = document.getElementById("memoText");
@@ -642,46 +642,31 @@ window.addEventListener("focus", ()=>{
 
   const photoFile = document.getElementById("photoFile");
   const photoUploadBtn = document.getElementById("photoUploadBtn");
-  const photoPreview = document.getElementById("photoPreview");
   const photoDeleteBtn = document.getElementById("photoDeleteBtn");
-
+  const photoPreview = document.getElementById("photoPreview");
 
   // 店舗ボードが無いページでも落ちないように
   if (!memoDateSelect || !memoText || !memoAddBtn || !memoClearInputBtn || !taskList) return;
 
-  const LS_TASKS_KEY = "storeBoard_tasks_v1";     // 日付ごとのタスク
-  const LS_PHOTO_KEY = "storeBoard_photo_v1";     // 共有写真（1枚）
+  // Supabase client は既存の sb を使う前提（あなたの予約カレンダーと同じ）
+  if (typeof sb === "undefined") {
+    console.error("Supabase client (sb) が見つかりません");
+    return;
+  }
+
+  // 店舗単位（あなたの運用なら固定でOK）
+  const STORE_ID = "default"; // ←必要なら "comfort" などに変更してOK
+  const TASK_TABLE = "store_tasks";
+
+  // Storage
+  const BUCKET = "storeboard";
+  const PHOTO_PATH = `${STORE_ID}/shared.jpg`;
 
   // --- utils ---
   const pad2 = (n)=> String(n).padStart(2, "0");
   const toDateKey = (d)=> `${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())}`;
   const weekdayJP = ["日","月","火","水","木","金","土"];
   const formatJP = (d)=> `${d.getMonth()+1}月${d.getDate()}日（${weekdayJP[d.getDay()]}）`;
-
-  function loadTasksAll(){
-    try { return JSON.parse(localStorage.getItem(LS_TASKS_KEY) || "{}"); }
-    catch { return {}; }
-  }
-  function saveTasksAll(obj){
-    localStorage.setItem(LS_TASKS_KEY, JSON.stringify(obj));
-  }
-
-  function getSelectedDateKey(){
-    return memoDateSelect.value;
-  }
-
-  function getTasksForSelected(){
-    const all = loadTasksAll();
-    const key = getSelectedDateKey();
-    return Array.isArray(all[key]) ? all[key] : [];
-  }
-
-  function setTasksForSelected(tasks){
-    const all = loadTasksAll();
-    const key = getSelectedDateKey();
-    all[key] = tasks;
-    saveTasksAll(all);
-  }
 
   function escapeHtml(s){
     return String(s)
@@ -692,7 +677,11 @@ window.addEventListener("focus", ()=>{
       .replaceAll("'","&#39;");
   }
 
-  // --- date dropdown fill: 今日〜90日先（必要なら増やせます） ---
+  function getSelectedDateKey(){
+    return memoDateSelect.value; // "YYYY-MM-DD"
+  }
+
+  // --- date dropdown fill: 今日〜90日先 ---
   function fillMemoDates(){
     const today = new Date();
     memoDateSelect.innerHTML = "";
@@ -706,9 +695,26 @@ window.addEventListener("focus", ()=>{
     }
   }
 
-  // --- render tasks ---
-  function renderTasks(){
-    const tasks = getTasksForSelected();
+  // ===== Tasks: Supabase CRUD =====
+  async function fetchTasks(){
+    const day = getSelectedDateKey();
+    const res = await sb
+      .from(TASK_TABLE)
+      .select("id, text, done, created_at")
+      .eq("store_id", STORE_ID)
+      .eq("day", day)
+      .order("created_at", { ascending: false });
+
+    if (res.error) {
+      console.error(res.error);
+      taskList.innerHTML = `<div class="hint">メモの取得でエラー：${escapeHtml(res.error.message)}</div>`;
+      return [];
+    }
+    return res.data || [];
+  }
+
+  async function renderTasks(){
+    const tasks = await fetchTasks();
     if (!tasks.length){
       taskList.innerHTML = `<div class="hint">メモはまだありません</div>`;
       return;
@@ -726,82 +732,106 @@ window.addEventListener("focus", ()=>{
     }).join("");
   }
 
-  // --- add task ---
-  function addTask(){
+  async function addTask(){
     const text = memoText.value.trim();
     if (!text) return;
 
-    const tasks = getTasksForSelected();
-    tasks.unshift({
-      id: String(Date.now()) + "_" + Math.random().toString(16).slice(2),
+    const day = getSelectedDateKey();
+    const res = await sb.from(TASK_TABLE).insert([{
+      store_id: STORE_ID,
+      day,
       text,
-      done: false,
-      createdAt: Date.now()
-    });
-    setTasksForSelected(tasks);
+      done: false
+    }]);
+
+    if (res.error) {
+      alert("メモの追加でエラー: " + res.error.message);
+      console.error(res.error);
+      return;
+    }
     memoText.value = "";
-    renderTasks();
+    await renderTasks();
   }
 
-  // --- clear input ---
-  function clearInput(){
-    memoText.value = "";
-    memoText.focus();
+  async function setDone(id, done){
+    const res = await sb
+      .from(TASK_TABLE)
+      .update({ done })
+      .eq("id", id)
+      .eq("store_id", STORE_ID);
+
+    if (res.error) {
+      alert("更新でエラー: " + res.error.message);
+      console.error(res.error);
+      return;
+    }
+    await renderTasks();
   }
 
-  // --- list events (toggle done / delete) ---
-  taskList.addEventListener("click", (e)=>{
+  async function deleteTask(id){
+    const res = await sb
+      .from(TASK_TABLE)
+      .delete()
+      .eq("id", id)
+      .eq("store_id", STORE_ID);
+
+    if (res.error) {
+      alert("削除でエラー: " + res.error.message);
+      console.error(res.error);
+      return;
+    }
+    await renderTasks();
+  }
+
+  // list events (toggle done / delete)
+  taskList.addEventListener("click", async (e)=>{
     const item = e.target.closest(".taskItem");
     if (!item) return;
     const id = item.getAttribute("data-id");
-    let tasks = getTasksForSelected();
 
-    // delete
     if (e.target.closest(".taskDelBtn")){
-      tasks = tasks.filter(t => t.id !== id);
-      setTasksForSelected(tasks);
-      renderTasks();
+      await deleteTask(id);
       return;
     }
 
-    // checkbox toggle (click on checkbox itself)
     if (e.target.classList.contains("taskChk")){
-      tasks = tasks.map(t => t.id === id ? { ...t, done: e.target.checked } : t);
-      setTasksForSelected(tasks);
-      renderTasks();
+      await setDone(id, e.target.checked);
     }
   });
 
-  // クリック以外でチェックが変わった場合（キーボード操作も拾う）
-  taskList.addEventListener("change", (e)=>{
+  taskList.addEventListener("change", async (e)=>{
     if (!e.target.classList.contains("taskChk")) return;
     const item = e.target.closest(".taskItem");
     if (!item) return;
     const id = item.getAttribute("data-id");
-    let tasks = getTasksForSelected();
-    tasks = tasks.map(t => t.id === id ? { ...t, done: e.target.checked } : t);
-    setTasksForSelected(tasks);
-    renderTasks();
+    await setDone(id, e.target.checked);
   });
 
-  // --- photo preview (shared) ---
-  function renderSavedPhoto(){
-    if (!photoPreview) return;
-    const dataUrl = localStorage.getItem(LS_PHOTO_KEY);
-    if (dataUrl){
-      photoPreview.innerHTML = `<img src="${dataUrl}" alt="写真プレビュー" />`;
-    } else {
-      photoPreview.innerHTML = `<div class="hint">プレビュー</div>`;
-    }
+  // ===== Photo: Supabase Storage =====
+  function setPhotoPlaceholder(){
+    if (photoPreview) photoPreview.innerHTML = `<div class="hint">プレビュー</div>`;
   }
 
-  function readFileAsDataURL(file){
-    return new Promise((resolve, reject)=>{
-      const fr = new FileReader();
-      fr.onload = ()=> resolve(String(fr.result || ""));
-      fr.onerror = reject;
-      fr.readAsDataURL(file);
-    });
+  function bust(url){
+    const sep = url.includes("?") ? "&" : "?";
+    return url + sep + "t=" + Date.now();
+  }
+
+  async function loadPhoto(){
+    if (!photoPreview) return;
+
+    const { data } = sb.storage.from(BUCKET).getPublicUrl(PHOTO_PATH);
+    const publicUrl = data?.publicUrl;
+
+    if (!publicUrl){
+      setPhotoPlaceholder();
+      return;
+    }
+
+    // 画像が存在しない場合もあるので、まず表示だけ試す（onerrorでプレースホルダに戻す）
+    photoPreview.innerHTML = `<img src="${bust(publicUrl)}" alt="写真プレビュー" />`;
+    const img = photoPreview.querySelector("img");
+    img.onerror = () => setPhotoPlaceholder();
   }
 
   async function handlePhotoUpload(){
@@ -809,42 +839,64 @@ window.addEventListener("focus", ()=>{
     const file = photoFile.files?.[0];
     if (!file) return;
 
-    // 注意：localStorageは容量が小さいので、大きい写真だと入らないことがあります
-    // 最小・安全のため、まずはプレビュー＋保存を試みる（失敗したらプレビューだけ）
+    // jpg固定で保存（上書き）
+    const res = await sb.storage.from(BUCKET).upload(PHOTO_PATH, file, {
+      upsert: true,
+      cacheControl: "3600",
+      contentType: file.type || "image/jpeg"
+    });
+
+    if (res.error) {
+      alert("写真アップロードでエラー: " + res.error.message);
+      console.error(res.error);
+      return;
+    }
+
+    photoFile.value = "";
+    await loadPhoto();
+  }
+
+  async function handlePhotoDelete(){
+    if (!confirm("写真を削除しますか？")) return;
+
+    const res = await sb.storage.from(BUCKET).remove([PHOTO_PATH]);
+    if (res.error) {
+      alert("写真削除でエラー: " + res.error.message);
+      console.error(res.error);
+      return;
+    }
+    if (photoFile) photoFile.value = "";
+    setPhotoPlaceholder();
+  }
+
+  // ===== realtime (同時に見ていても更新反映) =====
+  function setupRealtime(){
     try{
-      const dataUrl = await readFileAsDataURL(file);
-      photoPreview.innerHTML = `<img src="${dataUrl}" alt="写真プレビュー" />`;
-      try{
-        localStorage.setItem(LS_PHOTO_KEY, dataUrl);
-      } catch {
-        // 保存できなくても表示だけはできる
-        console.warn("写真が大きくて保存できませんでした（表示はOK）");
-      }
-    } catch (err){
-      console.error(err);
-      alert("画像の読み込みに失敗しました");
+      const channel = sb.channel("store_tasks_changes");
+      channel
+        .on("postgres_changes",
+          { event: "*", schema: "public", table: TASK_TABLE, filter: `store_id=eq.${STORE_ID}` },
+          async (payload) => {
+            // 選択中の日付だけ再描画
+            const selected = getSelectedDateKey();
+            const changedDay = payload.new?.day || payload.old?.day;
+            if (String(changedDay) === String(selected)) {
+              await renderTasks();
+            }
+          }
+        )
+        .subscribe();
+    } catch (e){
+      console.warn("Realtime購読が開始できませんでした（致命ではありません）", e);
     }
   }
-function handlePhotoDelete(){
-  if (!confirm("写真を削除しますか？")) return;
 
-  localStorage.removeItem(LS_PHOTO_KEY);
-
-  if (photoPreview){
-    photoPreview.innerHTML = `<div class="hint">プレビュー</div>`;
-  }
-
-  if (photoFile){
-    photoFile.value = "";
-  }
-}
   // --- wire up ---
   fillMemoDates();
   memoAddBtn.addEventListener("click", addTask);
-  memoClearInputBtn.addEventListener("click", clearInput);
+  memoClearInputBtn.addEventListener("click", ()=>{ memoText.value = ""; memoText.focus(); });
   memoDateSelect.addEventListener("change", renderTasks);
 
-  // Enterで追加（Ctrl+Enter / Cmd+Enter）
   memoText.addEventListener("keydown", (e)=>{
     if ((e.ctrlKey || e.metaKey) && e.key === "Enter"){
       e.preventDefault();
@@ -855,9 +907,15 @@ function handlePhotoDelete(){
   if (photoUploadBtn) photoUploadBtn.addEventListener("click", handlePhotoUpload);
   if (photoDeleteBtn) photoDeleteBtn.addEventListener("click", handlePhotoDelete);
 
-
+  // 初回表示
   renderTasks();
-  renderSavedPhoto();
+  loadPhoto();
+  setupRealtime();
+
+  // タブに戻ったら写真も更新（キャッシュ対策）
+  window.addEventListener("focus", ()=>{
+    loadPhoto();
+  });
 })();
 
 // 起動
