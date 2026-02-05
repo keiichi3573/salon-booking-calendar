@@ -26,6 +26,65 @@
     </div>
 
     <div class="calendar" id="calendar"></div>
+    <!-- 店舗ボード（カレンダー下） -->
+<section class="storeBoard" id="storeBoard" aria-label="店舗ボード">
+  <div class="boardHeader">
+    <div class="boardTitle">店舗ボード</div>
+    <div class="boardSub" id="boardDateLabel">日付を選択してください</div>
+  </div>
+
+  <div class="boardGrid">
+    <!-- 左：大メモ（日付ごと） -->
+    <div class="boardCard">
+      <div class="cardTitle">大メモ（日付ごと）</div>
+      <textarea id="boardMemo" class="boardMemo" rows="6" placeholder="例：来客多い／スタッフ配置／注意事項など"></textarea>
+      <div class="cardRow">
+        <button id="boardSaveBtn" class="btn primary" type="button" disabled>保存</button>
+        <button id="boardClearBtn" class="btn" type="button" disabled>クリア</button>
+      </div>
+      <div class="hint" id="boardHint">※ 日付を選ぶと編集できます</div>
+    </div>
+
+    <!-- 右上：チェック（日付ごと） -->
+    <div class="boardCard">
+      <div class="cardTitle">チェック（日付ごと）</div>
+
+      <label class="checkRow">
+        <input type="checkbox" id="chkOpen" disabled />
+        <span>開店前の準備OK</span>
+      </label>
+
+      <label class="checkRow">
+        <input type="checkbox" id="chkStock" disabled />
+        <span>備品チェックOK</span>
+      </label>
+
+      <label class="checkRow">
+        <input type="checkbox" id="chkClose" disabled />
+        <span>閉店後の片付けOK</span>
+      </label>
+
+      <div class="hint">※ チェック項目は後で増やせます</div>
+    </div>
+
+    <!-- 右下：写真（共有/日付に紐づけない） -->
+    <div class="boardCard">
+      <div class="cardTitle">写真（共有）</div>
+
+      <div class="photoRow">
+        <input id="photoFile" type="file" accept="image/*" />
+        <button id="photoUploadBtn" class="btn" type="button">アップロード</button>
+      </div>
+
+      <div class="photoPreview" id="photoPreview">
+        <div class="hint">ここにプレビューを表示</div>
+      </div>
+
+      <div class="hint">※ 写真は「日付共通」でOK（例：今日の店内・掲示物など）</div>
+    </div>
+  </div>
+</section>
+
   </main>
 
   <!-- 日付入力モーダル -->
