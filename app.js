@@ -160,24 +160,6 @@ function isClosedDay(date){
   return false;
 }
 
-function openModal(modal){
-  modal.classList.remove("hidden");
-  modal.setAttribute("aria-hidden","false");
-}
-function closeModal(modal){
-  modal.classList.add("hidden");
-  modal.setAttribute("aria-hidden","true");
-}
-
-// backdropクリックで閉じる
-document.querySelectorAll("[data-close]").forEach(el=>{
-  el.addEventListener("click", ()=>{
-    const id = el.getAttribute("data-close");
-    const m = document.getElementById(id);
-    if(m) closeModal(m);
-  });
-});
-
 // ===== Supabase helpers =====
 async function ensureTablesExistHint(){
   // テーブルが無いと以降が失敗するので、エラーを見やすくする
