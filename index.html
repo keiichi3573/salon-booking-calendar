@@ -34,40 +34,49 @@
   </div>
 
   <div class="boardGrid">
-    <!-- 左：大メモ（日付ごと） -->
+<!-- 店舗ボード（カレンダー下／タスク型） -->
+<section class="storeBoard" id="storeBoard" aria-label="店舗ボード">
+  <div class="boardHeader">
+    <div class="boardTitle">店舗ボード（メモ／タスク）</div>
+    <div class="boardSub">日付を選んで、やることを追加 → 完了チェック</div>
+  </div>
+
+  <div class="boardGrid">
+    <!-- 左：タスク入力＆一覧（選択日ごと） -->
     <div class="boardCard">
-      <div class="cardTitle">大メモ（日付ごと）</div>
-      <textarea id="boardMemo" class="boardMemo" rows="6" placeholder="例：写真（画像）を送って。／POP配置／看板変更／その他など"></textarea>
-      <div class="cardRow">
-        <button id="boardSaveBtn" class="btn primary" type="button" disabled>保存</button>
-        <button id="boardClearBtn" class="btn" type="button" disabled>クリア</button>
+      <div class="cardTitle">メモ（タスク）</div>
+
+      <div class="row">
+        <label class="label" for="memoDateSelect">日付</label>
+        <select id="memoDateSelect" class="input"></select>
       </div>
-      <div class="hint" id="boardHint">※ 日付を選ぶと編集できます</div>
+
+      <div class="row">
+        <label class="label" for="memoTypeSelect">種類</label>
+        <select id="memoTypeSelect" class="input">
+          <option value="todo">やるべき事</option>
+          <option value="instruction">指示</option>
+          <option value="image">画像依頼</option>
+          <option value="other">その他</option>
+        </select>
+      </div>
+
+      <div class="row">
+        <label class="label" for="memoText">内容</label>
+        <textarea id="memoText" class="boardMemo" rows="4" placeholder="例：○○の準備／LINE画像を作る／予約表確認 など"></textarea>
+      </div>
+
+      <div class="cardRow">
+        <button id="memoAddBtn" class="btn primary" type="button">追加</button>
+        <button id="memoClearInputBtn" class="btn" type="button">入力クリア</button>
+      </div>
+
+      <div class="hint" id="memoHint">※ 完了したらチェック。完了は薄い表示にします。</div>
+
+      <div class="taskList" id="taskList"></div>
     </div>
 
-    <!-- 右上：チェック（日付ごと） -->
-    <div class="boardCard">
-      <div class="cardTitle">チェック（日付ごと）</div>
-
-      <label class="checkRow">
-        <input type="checkbox" id="chkOpen" disabled />
-        <span>開店前の準備OK</span>
-      </label>
-
-      <label class="checkRow">
-        <input type="checkbox" id="chkStock" disabled />
-        <span>備品チェックOK</span>
-      </label>
-
-      <label class="checkRow">
-        <input type="checkbox" id="chkClose" disabled />
-        <span>閉店後の片付けOK</span>
-      </label>
-
-      <div class="hint">※ チェック項目は後で増やせます</div>
-    </div>
-
-    <!-- 右下：写真（共有/日付に紐づけない） -->
+    <!-- 右：写真（共有／日付に紐づけない） -->
     <div class="boardCard">
       <div class="cardTitle">写真（共有）</div>
 
@@ -80,10 +89,11 @@
         <div class="hint">ここにプレビューを表示</div>
       </div>
 
-      <div class="hint">※ 写真は「日付共通」でOK（例：今日の店内・掲示物など）</div>
+      <div class="hint">※ 写真は日付と無関係でOK（共有）</div>
     </div>
   </div>
 </section>
+
 
   </main>
 
