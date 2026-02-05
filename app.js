@@ -643,6 +643,8 @@ window.addEventListener("focus", ()=>{
   const photoFile = document.getElementById("photoFile");
   const photoUploadBtn = document.getElementById("photoUploadBtn");
   const photoPreview = document.getElementById("photoPreview");
+  const photoDeleteBtn = document.getElementById("photoDeleteBtn");
+
 
   // 店舗ボードが無いページでも落ちないように
   if (!memoDateSelect || !memoText || !memoAddBtn || !memoClearInputBtn || !taskList) return;
@@ -823,7 +825,19 @@ window.addEventListener("focus", ()=>{
       alert("画像の読み込みに失敗しました");
     }
   }
+function handlePhotoDelete(){
+  if (!confirm("写真を削除しますか？")) return;
 
+  localStorage.removeItem(LS_PHOTO_KEY);
+
+  if (photoPreview){
+    photoPreview.innerHTML = `<div class="hint">プレビュー</div>`;
+  }
+
+  if (photoFile){
+    photoFile.value = "";
+  }
+}
   // --- wire up ---
   fillMemoDates();
   memoAddBtn.addEventListener("click", addTask);
@@ -839,6 +853,8 @@ window.addEventListener("focus", ()=>{
   });
 
   if (photoUploadBtn) photoUploadBtn.addEventListener("click", handlePhotoUpload);
+  if (photoDeleteBtn) photoDeleteBtn.addEventListener("click", handlePhotoDelete);
+
 
   renderTasks();
   renderSavedPhoto();
