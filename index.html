@@ -26,25 +26,17 @@
     </div>
 
     <div class="calendar" id="calendar"></div>
-    <!-- 店舗ボード（カレンダー下） -->
+<!-- 店舗ボード（カレンダー下／タスク型：日付＋メモ＋完了＋写真） -->
 <section class="storeBoard" id="storeBoard" aria-label="店舗ボード">
   <div class="boardHeader">
-    <div class="boardTitle">店舗ボード</div>
-    <div class="boardSub" id="boardDateLabel">日付を選択してください</div>
+    <div class="boardTitle">店舗ボード（メモ）</div>
+    <div class="boardSub">日付を選んでメモ追加 → 完了チェック</div>
   </div>
 
   <div class="boardGrid">
-<!-- 店舗ボード（カレンダー下／タスク型） -->
-<section class="storeBoard" id="storeBoard" aria-label="店舗ボード">
-  <div class="boardHeader">
-    <div class="boardTitle">店舗ボード（メモ／タスク）</div>
-    <div class="boardSub">日付を選んで、やることを追加 → 完了チェック</div>
-  </div>
-
-  <div class="boardGrid">
-    <!-- 左：タスク入力＆一覧（選択日ごと） -->
+    <!-- 左：メモ（選択日ごと） -->
     <div class="boardCard">
-      <div class="cardTitle">メモ（タスク）</div>
+      <div class="cardTitle">メモ</div>
 
       <div class="row">
         <label class="label" for="memoDateSelect">日付</label>
@@ -52,18 +44,8 @@
       </div>
 
       <div class="row">
-        <label class="label" for="memoTypeSelect">種類</label>
-        <select id="memoTypeSelect" class="input">
-          <option value="todo">やるべき事</option>
-          <option value="instruction">指示</option>
-          <option value="image">画像依頼</option>
-          <option value="other">その他</option>
-        </select>
-      </div>
-
-      <div class="row">
         <label class="label" for="memoText">内容</label>
-        <textarea id="memoText" class="boardMemo" rows="4" placeholder="例：○○の準備／LINE画像を作る／予約表確認 など"></textarea>
+        <textarea id="memoText" class="memoBig" rows="8" placeholder="例：やるべき事／指示／画像依頼 などまとめてOK"></textarea>
       </div>
 
       <div class="cardRow">
@@ -71,28 +53,30 @@
         <button id="memoClearInputBtn" class="btn" type="button">入力クリア</button>
       </div>
 
-      <div class="hint" id="memoHint">※ 完了したらチェック。完了は薄い表示にします。</div>
+      <div class="hint" id="memoHint">※ 完了したメモはチェックで薄く表示します</div>
 
       <div class="taskList" id="taskList"></div>
     </div>
 
-    <!-- 右：写真（共有／日付に紐づけない） -->
+    <!-- 右：写真（共有／日付に紐づけない、プレビューは右側） -->
     <div class="boardCard">
       <div class="cardTitle">写真（共有）</div>
 
-      <div class="photoRow">
-        <input id="photoFile" type="file" accept="image/*" />
-        <button id="photoUploadBtn" class="btn" type="button">アップロード</button>
-      </div>
+      <div class="photoRowInline">
+        <div class="photoControls">
+          <input id="photoFile" type="file" accept="image/*" />
+          <button id="photoUploadBtn" class="btn" type="button">アップロード</button>
+          <div class="hint">※ 日付と無関係でOK</div>
+        </div>
 
-      <div class="photoPreview" id="photoPreview">
-        <div class="hint">ここにプレビューを表示</div>
+        <div class="photoPreviewSide" id="photoPreview">
+          <div class="hint">プレビュー</div>
+        </div>
       </div>
-
-      <div class="hint">※ 写真は日付と無関係でOK（共有）</div>
     </div>
   </div>
 </section>
+
 
 
   </main>
