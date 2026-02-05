@@ -116,14 +116,18 @@ settingsCloseBtn2?.addEventListener('click', () => {
   closeModal(settingsModal);
 });
 
-// 背景クリックで閉じる
-document.querySelectorAll('.modalBackdrop[data-close]').forEach(el => {
-  el.addEventListener('click', (e) => {
+// 背景クリックで閉じる（安全・汎用）
+document.querySelectorAll('.modalBackdrop[data-close]').forEach(backdrop => {
+  backdrop.addEventListener('click', (e) => {
+    // 背景そのものをクリックしたときだけ閉じる
+    if (e.target !== e.currentTarget) return;
+
     const id = e.currentTarget.getAttribute('data-close');
-    if (id === 'dayModal') closeModal(dayModal);
-    if (id === 'settingsModal') closeModal(settingsModal);
+    const modal = document.getElementById(id);
+    if (modal) closeModal(modal);
   });
 });
+
 
 // ===== state =====
 let viewDate = new Date();
