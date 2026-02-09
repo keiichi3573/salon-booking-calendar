@@ -937,3 +937,52 @@ window.addEventListener("focus", ()=>{
 
 // 起動
 loadAndRender();
+// ===== Mobile view-only mode (today〜今月だけ閲覧) =====
+(function enableMobileViewOnly(){
+  const isMobile = window.matchMedia("(max-width: 520px)").matches;
+  if (!isMobile) return;
+
+  // 1) 今月に固定（念のため）
+  const now = new Date();
+  viewDate = new Date(now.getFullYear(), now.getMonth(), 1);
+
+  // 2) 月移動を無効化
+  btnPrev?.setAttribute("disabled", "disabled");
+  btnNext?.setAttribute("disabled", "disabled");
+
+  // 3) 設定/CSVなど “編集系” ボタン無効化（表示も薄く）
+  [btnSettings, btnExport, daySaveBtn, pinEnterBtn, staffAddBtn, pinChangeBtn].forEach(el=>{
+    if(!el) return;
+    el.setAttribute("disabled","disabled");
+    el.style.opacity = "0.45";
+    el.style.pointerEvents = "none";
+  });
+
+  // 4) 店舗ボードを“見るだけ”に（入力欄を無効化）
+  document.querySelectorAll(".storeBoard input, .storeBoard textarea, .storeBoard select, .storeBoard button")
+    .forEach(el=>{
+      // ただし「ファイル選択」は完全無効に（誤アップ防止）
+      el.setAttribute("disabled","disabled");
+      el.style.opacity = "0.55";
+      el.style.pointerEvents = "none";
+    });
+
+  // 5) カレンダー日付クリックで編集モーダルを開かないようにする
+  //    （既存の click を消すのは難しいので、上に透明ガードをかぶせる方式）
+  const cal = document.getElementById("calendar");
+  if (cal) {
+    const guard = document.createElement("div");
+    guard.style.position = "absolute";
+    guard.style.inset = "0";
+    guard.style.zIndex = "5";
+    guard.style.background = "transparent";
+    guard.style.pointerEvents = "auto";
+    guard.addEventListener("click", (e)=>{ e.preventDefault(); e.stopPropagation(); });
+    // calendarがposition:relativeじゃないと効かないので追加
+    cal.style.position = "relative";
+    cal.appendChild(guard);
+  }
+
+  // 再描画（今月固定）
+  loadAndRender();
+})();
