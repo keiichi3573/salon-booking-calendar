@@ -952,3 +952,34 @@ body{
     min-width: 96px;
   }
 }
+/* ===== Board headings visibility fix ===== */
+
+/* 店舗ボード全体の文字を濃く */
+.storeBoard,
+.storeBoard *{
+  color: #1f2937;
+}
+
+/* 見出し（メモ / 写真(共有) / ラベル）を強調 */
+.storeBoard h2,
+.storeBoard h3,
+.storeBoard .cardTitle,
+.storeBoard .label,
+.storeBoard .sectionTitle,
+.storeBoard .memoTitle,
+.storeBoard .photoTitle{
+  color: #111827 !important;
+  font-weight: 900;
+}
+
+/* 「メモ」「写真（共有）」がプレースホルダ扱いになっている場合にも効かせる */
+.storeBoard .muted,
+.storeBoard .hint{
+  color: rgba(17,24,39,.65) !important;
+}
+
+/* 入力欄のプレースホルダも見やすく */
+.storeBoard input::placeholder,
+.storeBoard textarea::placeholder{
+  color: rgba(17,24,39,.45);
+}
