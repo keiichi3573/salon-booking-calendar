@@ -335,17 +335,34 @@ async function openDayEditor(date){
   box.innerHTML = "";
 
   let total = 0;
-  (staffs||[]).forEach(s => {
-    const v = map.get(s.id) || 0;
-    total += v;
+ (staffs||[]).forEach(s => {
+  const v = map.get(s.id) || 0;
+  total += v;
 
-    const row = document.createElement("div");
-    row.innerHTML = `
-      <label>${s.name}</label>
-      <input type="number" min="0" value="${v}" data-staff="${s.id}">
-    `;
-    box.appendChild(row);
-  });
+  const row = document.createElement("div");
+  row.className = "staffRow";
+
+  const label = document.createElement("label");
+  label.className = "staffName";
+  label.textContent = s.name;
+
+  const select = document.createElement("select");
+  select.className = "staffCountSelect";
+  select.setAttribute("data-staff", String(s.id));
+
+  for (let i = 0; i <= MAX_COUNT; i++) {
+    const opt = document.createElement("option");
+    opt.value = String(i);
+    opt.textContent = String(i);
+    if (i === Number(v)) opt.selected = true;
+    select.appendChild(opt);
+  }
+
+  row.appendChild(label);
+  row.appendChild(select);
+  box.appendChild(row);
+});
+
 
   // 合計（ロックされてる想定）
   totalSelect.value = String(Number(daily?.total ?? total));
