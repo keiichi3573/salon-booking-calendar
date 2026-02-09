@@ -436,3 +436,257 @@ body{
   .photoRowInline{ flex-direction: column; }
   .photoControls{ min-width: auto; }
 }
+/* =========================
+   THEME: Salon Elegant (iPad縦 + PC)
+   追記専用（既存CSSの下に貼って上書き）
+========================= */
+
+/* ---- ベース ---- */
+:root{
+  --bg: #f7f3ee;          /* 温かいベージュ */
+  --panel: #ffffff;
+  --text: #1f2937;
+  --muted: #6b7280;
+  --border: rgba(17,24,39,.10);
+  --accent: #b08d57;      /* ゴールド系 */
+  --accent2:#2f2a22;      /* ダークブラウン */
+  --shadow: 0 18px 55px rgba(17,24,39,.10);
+  --shadow2: 0 10px 25px rgba(17,24,39,.08);
+  --radius: 18px;
+  --radius2: 14px;
+}
+
+body{
+  background: radial-gradient(1200px 700px at 15% 0%, rgba(176,141,87,.10), transparent 55%),
+              radial-gradient(900px 600px at 85% 10%, rgba(47,42,34,.06), transparent 55%),
+              var(--bg);
+  color: var(--text);
+}
+
+/* ---- トップバー ---- */
+.topbar{
+  background: rgba(255,255,255,.82);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--border);
+  box-shadow: 0 8px 22px rgba(17,24,39,.05);
+  padding: 12px 14px;
+}
+
+.topbar .left{
+  gap: 12px;
+}
+
+#monthTitle{
+  font-size: 18px;
+  font-weight: 800;
+  letter-spacing: .02em;
+  color: var(--accent2);
+}
+
+.navBtn{
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  background: #fff;
+  box-shadow: 0 6px 16px rgba(17,24,39,.06);
+  transition: transform .08s ease, box-shadow .2s ease;
+}
+.navBtn:active{ transform: translateY(1px); }
+
+.btn{
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  background: #fff;
+  box-shadow: 0 8px 18px rgba(17,24,39,.06);
+  padding: 12px 14px;
+  font-weight: 700;
+}
+.btn.primary{
+  background: linear-gradient(180deg, rgba(176,141,87,.95), rgba(150,115,67,.95));
+  color: #fff;
+  border: 1px solid rgba(176,141,87,.35);
+}
+.btn:active{ transform: translateY(1px); }
+
+/* ---- 全体レイアウト（iPad縦 + PC） ---- */
+.wrap{
+  max-width: 980px;      /* PCは中央寄せで上品に */
+  margin: 0 auto;
+  padding: 14px 14px 28px;
+}
+
+.legend{
+  display:flex;
+  gap: 10px;
+  align-items:center;
+  margin: 12px 0 12px;
+}
+.chip{
+  border-radius: 999px;
+  padding: 8px 12px;
+  font-weight: 800;
+  border: 1px solid var(--border);
+  background: rgba(255,255,255,.9);
+  box-shadow: 0 6px 14px rgba(17,24,39,.05);
+}
+.chip.closed{ background: rgba(176,141,87,.12); }
+.chip.note{ background: rgba(47,42,34,.06); }
+
+/* ---- カレンダー（主役） ---- */
+.calendar{
+  display:grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 10px;
+  padding: 10px;
+  border-radius: var(--radius);
+  background: rgba(255,255,255,.70);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+}
+
+/* 各日セル（あなたの既存class名に合わせて、できるだけ広く上書き） */
+.dayCell, .day, .cell, .calendar .item, .calendar > div{
+  border-radius: var(--radius2);
+}
+
+/* “日付カードっぽく”見せる：既存がdivで組まれていても効くように */
+.calendar > div{
+  background: #fff;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow2);
+  min-height: 92px;          /* iPad縦で押しやすい */
+  padding: 10px 10px 12px;
+  position: relative;
+  transition: transform .08s ease, box-shadow .2s ease;
+}
+.calendar > div:active{
+  transform: translateY(1px);
+  box-shadow: 0 8px 18px rgba(17,24,39,.08);
+}
+
+/* 日付文字が左上に来る想定（既存構造に依存するので“控えめ”に） */
+.calendar .date, .calendar .dayNum{
+  font-weight: 900;
+  color: var(--accent2);
+}
+
+/* 予約数バッジっぽい見せ方（既存のボタン/ラベルに効くように） */
+.badge, .countPill, .calendar .count, .calendar button, .calendar .pill{
+  border-radius: 999px;
+  border: 1px solid rgba(176,141,87,.35);
+  background: rgba(176,141,87,.10);
+  padding: 6px 10px;
+  font-weight: 900;
+}
+
+/* “定休日”の背景を上品に */
+.closedDay, .isClosed{
+  background: linear-gradient(180deg, rgba(176,141,87,.18), rgba(176,141,87,.08)) !important;
+}
+
+/* メモありのヒント（📝）がある場合は見えやすく */
+.noteMark, .memoIcon{
+  filter: drop-shadow(0 6px 10px rgba(17,24,39,.10));
+}
+
+/* ---- 店舗ボード（カレンダーの下） ---- */
+.storeBoard{
+  margin-top: 14px;
+}
+
+.boardHeader{
+  margin: 16px 2px 10px;
+}
+.boardTitle{
+  font-size: 16px;
+  font-weight: 900;
+  color: var(--accent2);
+}
+.boardSub{
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.boardGrid{
+  display:grid;
+  grid-template-columns: 1fr; /* iPad縦は1列が見やすい */
+  gap: 12px;
+}
+
+.boardCard{
+  background: rgba(255,255,255,.78);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+
+.cardTitle{
+  color: var(--accent2);
+  font-weight: 900;
+}
+
+/* 入力を“美容室っぽく” */
+.input, select, textarea{
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  background: rgba(255,255,255,.92);
+  padding: 12px 12px;
+  outline: none;
+}
+textarea.memoBig{
+  min-height: 220px; /* “内容ボックスを大きく” */
+  font-size: 15px;
+  line-height: 1.55;
+}
+
+/* タスク行（完了は薄く） */
+.taskItem{
+  background: rgba(255,255,255,.92);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  box-shadow: 0 10px 22px rgba(17,24,39,.06);
+}
+.taskItem.done{
+  opacity: .45;
+}
+.taskItem.done .taskText{
+  text-decoration: line-through;
+}
+
+/* 写真：右にプレビュー */
+.photoRowInline{
+  display:flex;
+  gap: 12px;
+  align-items: stretch;
+}
+.photoControls{
+  min-width: 260px;
+}
+.photoPreviewSide{
+  border-radius: 16px;
+  border: 1px dashed rgba(176,141,87,.45);
+  background: rgba(176,141,87,.06);
+}
+
+/* ---- モーダルも上品に ---- */
+.modalCard{
+  border-radius: 22px;
+  border: 1px solid var(--border);
+  box-shadow: 0 28px 80px rgba(17,24,39,.18);
+  background: rgba(255,255,255,.95);
+}
+.modalHeader .x{
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  background: #fff;
+}
+
+/* ---- PCでは横2列も使える（広い画面だけ） ---- */
+@media (min-width: 1024px){
+  .boardGrid{
+    grid-template-columns: 1fr 1fr;
+  }
+}
