@@ -10,7 +10,6 @@
   <header class="topbar">
     <div class="left">
       <button id="prevBtn" class="navBtn" type="button">◀</button>
-      <h1 id="monthTitle"></h1>
       <button id="nextBtn" class="navBtn" type="button">▶</button>
     </div>
     <div class="right">
@@ -21,9 +20,11 @@
 
   <main class="wrap">
     <div class="legend">
-      <span class="chip closed">定休日</span>
-      <span class="chip note">📝 メモあり</span>
-    </div>
+  <span class="chip closed">定休日</span>
+  <span class="chip note">📝 メモあり</span>
+  <span class="chip monthChip"><span id="monthTitle"></span></span>
+</div>
+
 
     <div class="calendar" id="calendar"></div>
 <!-- 店舗ボード（カレンダー下／タスク型：日付＋メモ＋完了＋写真） -->
