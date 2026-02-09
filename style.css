@@ -907,3 +907,48 @@ body{
     justify-content: flex-end;
   }
 }
+/* ===== Bigger booking count (CSS only) ===== */
+
+/* 予約数のピルっぽい要素をまとめて強化（既存構造が違っても効くように広めに指定） */
+.calendar .count,
+.calendar .pill,
+.calendar .countPill,
+.calendar button,
+.calendar .badge{
+  font-size: 18px;       /* 大きく */
+  font-weight: 900;
+  padding: 10px 14px;
+  border-radius: 999px;
+}
+
+/* ピルの位置を“見やすい”ように */
+.calendar > div{
+  position: relative;
+}
+
+/* 予約ピルがセル内にある場合、少し上寄りにして主役に（効きすぎたら外します） */
+.calendar > div .count,
+.calendar > div .pill,
+.calendar > div .countPill,
+.calendar > div .badge{
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 86px;
+}
+
+/* iPadでさらに押しやすく */
+@media (max-width: 900px){
+  .calendar > div{
+    min-height: 108px;
+  }
+  .calendar .count,
+  .calendar .pill,
+  .calendar .countPill,
+  .calendar button,
+  .calendar .badge{
+    font-size: 20px;
+    padding: 12px 16px;
+    min-width: 96px;
+  }
+}
