@@ -8,26 +8,33 @@
 </head>
 <body>
   <header class="topbar">
-    <div class="left">
-      <button id="prevBtn" class="navBtn" type="button">◀</button>
-      <button id="nextBtn" class="navBtn" type="button">▶</button>
-    </div>
-    <div class="brandCenter">
-  <img class="brandLogo" src="logo.png" alt="COMFORT" />
-</div>
+  <div class="left"></div>
 
-    <div class="right">
-      <button id="exportCsvBtn" class="btn" type="button">CSV出力</button>
-      <button id="settingsBtn" class="btn" type="button">設定</button>
-    </div>
-  </header>
+  <div class="brandCenter">
+    <img class="brandLogo" src="logo.png" alt="COMFORT" />
+  </div>
+
+  <div class="right">
+    <button id="exportCsvBtn" class="btn" type="button">CSV出力</button>
+    <button id="settingsBtn" class="btn" type="button">設定</button>
+  </div>
+</header>
+
 
   <main class="wrap">
     <div class="legend">
+
+  <div class="monthNav">
+    <button id="prevBtn" class="navBtn" type="button">◀</button>
+    <div id="monthTitle" class="monthTitle"></div>
+    <button id="nextBtn" class="navBtn" type="button">▶</button>
+  </div>
+
   <span class="chip closed">定休日</span>
   <span class="chip note">📝 メモあり</span>
-  <span class="chip monthChip"><span id="monthTitle"></span></span>
+
 </div>
+
 
 
     <div class="calendar" id="calendar"></div>
