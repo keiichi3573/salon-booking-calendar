@@ -863,3 +863,19 @@ body{
   height:48px;
   font-size:16px;
 }
+/* ===== Visibility fix (light background) ===== */
+body{
+  color: #1f2937; /* 全体の文字を濃く */
+}
+
+.legend, .chip, .monthTitle, #monthTitle{
+  color: #1f2937 !important;
+}
+
+.boardTitle, .boardSub, .label, .hint{
+  color: #1f2937 !important;
+}
+
+.boardSub, .hint{
+  opacity: .7;
+}
