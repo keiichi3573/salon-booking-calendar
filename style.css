@@ -983,3 +983,25 @@ body{
 .storeBoard textarea::placeholder{
   color: rgba(17,24,39,.45);
 }
+/* スタッフ別入力（プルダウン化） */
+#staffInputs .staffRow{
+  display:flex;
+  align-items:center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 0;
+}
+
+#staffInputs .staffName{
+  font-weight: 800;
+  font-size: 16px;
+}
+
+#staffInputs .staffCountSelect{
+  font-size: 18px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(0,0,0,.12);
+  min-width: 120px;
+  background: #fff;
+}
