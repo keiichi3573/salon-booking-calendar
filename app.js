@@ -388,7 +388,7 @@ async function saveDay(){
 
     const note = (dayMemo.value || "").trim();
 
-    const inputs = document.querySelectorAll("#staffInputs input");
+    const inputs = document.querySelectorAll("#staffInputs [data-staff]");
     let total = 0;
 
     const rows = Array.from(inputs).map(i => {
