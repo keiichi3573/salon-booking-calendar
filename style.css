@@ -834,3 +834,32 @@ body{
 .brandLogo{
   filter: drop-shadow(0 8px 16px rgba(0,0,0,.18));
 }
+/* ===== Month navigation center ===== */
+
+.monthNav{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin-right:10px;
+}
+
+.monthTitle{
+  font-size:18px;
+  font-weight:900;
+  min-width:140px;
+  text-align:center;
+}
+
+.legend{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  flex-wrap:wrap;
+}
+
+/* iPadで押しやすく */
+.navBtn{
+  width:48px;
+  height:48px;
+  font-size:16px;
+}
