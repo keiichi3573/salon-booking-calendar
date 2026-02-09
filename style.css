@@ -801,3 +801,36 @@ body{
 @media (max-width: 900px){
   .brandLogo{ height: 30px; }
 }
+/* ===== Salon background refinement ===== */
+
+body{
+  background:
+    radial-gradient(900px 600px at 20% -10%, rgba(176,141,87,.18), transparent 55%),
+    radial-gradient(800px 600px at 80% 10%, rgba(232,220,200,.25), transparent 60%),
+    linear-gradient(180deg, #f3eee6, #e9e2d6);
+  color: #1f2937;
+}
+
+/* カレンダー背景を柔らかく */
+.calendar{
+  background: rgba(255,255,255,.85);
+  border: 1px solid rgba(0,0,0,.08);
+  box-shadow: 0 20px 60px rgba(0,0,0,.08);
+}
+
+/* legendも軽くする */
+.legend{
+  background: rgba(255,255,255,.85);
+  border: 1px solid rgba(0,0,0,.08);
+}
+
+/* 店舗ボードカード */
+.boardCard{
+  background: rgba(255,255,255,.92);
+  border: 1px solid rgba(0,0,0,.08);
+}
+
+/* ロゴ周り */
+.brandLogo{
+  filter: drop-shadow(0 8px 16px rgba(0,0,0,.18));
+}
