@@ -879,3 +879,31 @@ body{
 .boardSub, .hint{
   opacity: .7;
 }
+/* ===== Legend layout: actions inside ===== */
+.legend{
+  display:flex;
+  align-items:center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.monthNav{
+  display:flex;
+  align-items:center;
+  gap: 10px;
+  padding-right: 6px;
+}
+
+.legendActions{
+  margin-left: auto;          /* 右寄せ */
+  display:flex;
+  gap: 10px;
+}
+
+/* iPad縦でボタンが落ちても整う */
+@media (max-width: 900px){
+  .legendActions{
+    width: 100%;
+    justify-content: flex-end;
+  }
+}
