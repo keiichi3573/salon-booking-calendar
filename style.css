@@ -690,3 +690,114 @@ textarea.memoBig{
     grid-template-columns: 1fr 1fr;
   }
 }
+/* ===== Luxe update (month in legend / logo center / unified closed color / premium bg) ===== */
+
+:root{
+  --luxe-bg1:#0f0f12;         /* 深い黒 */
+  --luxe-bg2:#17151a;         /* 黒紫 */
+  --luxe-gold1:#b08d57;       /* ゴールド */
+  --luxe-gold2:#8b6b3f;       /* 深めゴールド */
+  --closed-tint: rgba(176,141,87,.16); /* 定休日カラー統一 */
+}
+
+/* 背景：高級感（暗め＋金のハイライト） */
+body{
+  background:
+    radial-gradient(1100px 700px at 20% -10%, rgba(176,141,87,.22), transparent 55%),
+    radial-gradient(900px 600px at 85% 10%, rgba(255,255,255,.06), transparent 55%),
+    radial-gradient(900px 700px at 15% 110%, rgba(176,141,87,.10), transparent 60%),
+    linear-gradient(180deg, var(--luxe-bg1), var(--luxe-bg2));
+  color: #f3f4f6;
+}
+
+/* 文字色：暗背景に合わせる */
+#monthTitle, .boardTitle, .cardTitle{
+  color: #f3f4f6;
+}
+.boardSub, .hint, .label{
+  color: rgba(243,244,246,.70);
+}
+
+/* topbar：中央ロゴ配置 */
+.topbar{
+  display:flex;
+  align-items:center;
+  justify-content: space-between;
+}
+.brandCenter{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex: 1;
+}
+.topbar .left{ flex: 1; }
+.topbar .right{ flex: 1; justify-content:flex-end; }
+
+.brandLogo{
+  height: 34px;
+  width: auto;
+  object-fit: contain;
+  filter: drop-shadow(0 10px 18px rgba(0,0,0,.35));
+  opacity: .95;
+}
+
+/* legend：チップを上品に／月チップ追加 */
+.legend{
+  background: rgba(255,255,255,.06);
+  border: 1px solid rgba(255,255,255,.10);
+  border-radius: 16px;
+  padding: 10px;
+  box-shadow: 0 18px 55px rgba(0,0,0,.25);
+}
+.chip{
+  background: rgba(255,255,255,.08);
+  border: 1px solid rgba(255,255,255,.14);
+  color: rgba(243,244,246,.92);
+}
+.chip.closed{
+  background: var(--closed-tint);
+  border-color: rgba(176,141,87,.35);
+}
+.chip.note{
+  background: rgba(255,255,255,.08);
+}
+.chip.monthChip{
+  background: linear-gradient(180deg, rgba(176,141,87,.22), rgba(176,141,87,.10));
+  border-color: rgba(176,141,87,.38);
+  color: rgba(243,244,246,.95);
+}
+
+/* カレンダー：暗背景でも“高級ラウンジ感” */
+.calendar{
+  background: rgba(255,255,255,.06);
+  border: 1px solid rgba(255,255,255,.10);
+  box-shadow: 0 22px 70px rgba(0,0,0,.28);
+}
+
+/* 日セル：白カード→暗背景に映える“グレージュカード” */
+.calendar > div{
+  background: rgba(255,255,255,.92);
+  color: #1f2937;
+  border: 1px solid rgba(17,24,39,.10);
+}
+
+/* 定休日セル：チップと同じ色味に統一 */
+.closedDay, .isClosed, .calendar > div.closedDay, .calendar > div.isClosed{
+  background: linear-gradient(180deg, rgba(176,141,87,.18), rgba(176,141,87,.08)) !important;
+  border-color: rgba(176,141,87,.25) !important;
+}
+
+/* ボード側：暗背景でも読みやすく */
+.boardCard{
+  background: rgba(255,255,255,.08);
+  border: 1px solid rgba(255,255,255,.12);
+}
+.input, select, textarea{
+  background: rgba(255,255,255,.92);
+  color: #111827;
+}
+
+/* iPad縦でトップが詰まらないように */
+@media (max-width: 900px){
+  .brandLogo{ height: 30px; }
+}
