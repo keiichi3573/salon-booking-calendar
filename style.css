@@ -1005,3 +1005,56 @@ body{
   min-width: 120px;
   background: #fff;
 }
+/* ===== Mobile: View-only layout ===== */
+@media (max-width: 520px){
+
+  /* ヘッダー・凡例周りを詰める */
+  .wrap{ padding: 10px 10px 20px; }
+  .legend{ gap: 8px; padding: 10px; }
+
+  /* カレンダーを「7列」→「日別リスト」にする（崩れ防止） */
+  .calendar{
+    grid-template-columns: 1fr !important;
+    gap: 10px;
+  }
+
+  /* 曜日ヘッダー（「日 月 火…」の行）を隠す */
+  .weekHeader{ display: none !important; }
+
+  /* 先頭の空白セル（visibility:hiddenのdiv）が縦に残るのを防ぐ */
+  .calendar > div[style*="visibility: hidden"]{
+    display: none !important;
+  }
+
+  /* 日セルを横並び風に（見やすく） */
+  .dayCell{
+    min-height: 74px !important;
+    padding: 12px !important;
+  }
+
+  .dayTop{
+    display:flex !important;
+    align-items:center;
+    gap: 10px;
+  }
+
+  .dayNum{
+    font-size: 18px !important;
+    font-weight: 900 !important;
+    width: 34px;
+    text-align: center;
+  }
+
+  /* 予約ピルは小さめで1行に収める */
+  .badge{
+    font-size: 16px !important;
+    padding: 10px 12px !important;
+    min-width: auto !important;
+  }
+
+  /* 📝は右寄せっぽく */
+  .badge.note{ margin-left: auto; }
+
+  /* ボードは1列で */
+  .boardGrid{ grid-template-columns: 1fr !important; }
+}
