@@ -392,23 +392,29 @@ async function saveDay(){
     let total = 0;
 
     const rows = Array.from(inputs).map(i => {
-      const c = Number(i.value || 0);
-      total += c;
-      return {
-        day: editingDateKey,
-        staff_id: i.dataset.staff,
-        count: c
-      };
-    });
+  const c = Number(i.value || 0);
+  total += c;
+  return {
+    day: editingDateKey,
+    staff_id: Number(i.dataset.staff), // ←ついでに数値化（任意）
+    count: c,
+    updated_by: "ipad"                 // ←★これを追加
+  };
+});
 
-    const r1 = await sb
-      .from("bookings_staff_daily")
-      .upsert(rows, { onConflict: "day,staff_id" });
+const r1 = await sb
+  .from("bookings_staff_daily")
+  .upsert(rows, { onConflict: "day,staff_id" });
+
     if(r1.error) throw new Error("スタッフ別保存失敗: " + r1.error.message);
 
     const r2 = await sb
-      .from("bookings_daily")
-      .upsert([{ day: editingDateKey, total, note }], { onConflict: "day" });
+  .from("bookings_daily")
+  .upsert(
+    [{ day: editingDateKey, total, note, updated_by: "ipad" }],
+    { onConflict: "day" }
+  );
+
     if(r2.error) throw new Error("合計保存失敗: " + r2.error.message);
 
     closeModal(dayModal);
