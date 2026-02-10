@@ -756,16 +756,19 @@ window.addEventListener("focus", ()=>{
   }
 
   async function addTask(){
-    const text = memoText.value.trim();
-    if (!text) return;
+  const text = memoText.value.trim();
+  if (!text) return;
 
-    const day = getSelectedDateKey();
-    const res = await sb.from(TASK_TABLE).insert([{
-      store_id: STORE_ID,
-      day,
-      text,
-      done: false
-    }]);
+  const day = getSelectedDateKey();
+
+  const res = await sb.from(TASK_TABLE).insert([{
+    store_id: STORE_ID,
+    day,
+    text,
+    done: false,
+    updated_by: "ipad"   // ← これを追加
+  }]);
+
 
     if (res.error) {
       alert("メモの追加でエラー: " + res.error.message);
