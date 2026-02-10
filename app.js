@@ -388,21 +388,20 @@ async function saveDay(){
 
     const note = (dayMemo.value || "").trim();
 
-  const inputs = document.querySelectorAll("#staffInputs [data-staff]");
+ const inputs = document.querySelectorAll("#staffInputs [data-staff]");
 let total = 0;
 
 const rows = Array.from(inputs)
   .map(i => {
     const staff_id = i.dataset.staff;
-
-    if (!staff_id) return null; // ←安全対策
+    if (!staff_id) return null;
 
     const c = Number(i.value || 0);
     total += c;
 
     return {
       day: editingDateKey,
-      staff_id: Number(staff_id),
+      staff_id: staff_id,      // ★Number()しない（uuidだから）
       count: c,
       updated_by: "ipad"
     };
@@ -414,12 +413,10 @@ if (rows.length === 0) {
   return;
 }
 
-
 const r1 = await sb
   .from("bookings_staff_daily")
   .upsert(rows, { onConflict: "day,staff_id" });
-
-    if(r1.error) throw new Error("スタッフ別保存失敗: " + r1.error.message);
+if (r1.error) throw new Error("スタッフ別保存失敗: " + r1.error.message);
 
     const r2 = await sb
   .from("bookings_daily")
