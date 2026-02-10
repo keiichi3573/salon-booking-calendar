@@ -388,19 +388,32 @@ async function saveDay(){
 
     const note = (dayMemo.value || "").trim();
 
-    const inputs = document.querySelectorAll("#staffInputs [data-staff]");
-    let total = 0;
+  const inputs = document.querySelectorAll("#staffInputs [data-staff]");
+let total = 0;
 
-    const rows = Array.from(inputs).map(i => {
-  const c = Number(i.value || 0);
-  total += c;
-  return {
-    day: editingDateKey,
-    staff_id: Number(i.dataset.staff), // ←ついでに数値化（任意）
-    count: c,
-    updated_by: "ipad"                 // ←★これを追加
-  };
-});
+const rows = Array.from(inputs)
+  .map(i => {
+    const staff_id = i.dataset.staff;
+
+    if (!staff_id) return null; // ←安全対策
+
+    const c = Number(i.value || 0);
+    total += c;
+
+    return {
+      day: editingDateKey,
+      staff_id: Number(staff_id),
+      count: c,
+      updated_by: "ipad"
+    };
+  })
+  .filter(Boolean);
+
+if (rows.length === 0) {
+  alert("スタッフ情報を取得できません。再読み込みしてください。");
+  return;
+}
+
 
 const r1 = await sb
   .from("bookings_staff_daily")
