@@ -1058,3 +1058,8 @@ body{
   /* ボードは1列で */
   .boardGrid{ grid-template-columns: 1fr !important; }
 }
+.monthlyTotal {
+  text-align: center;
+  font-weight: bold;
+  margin: 8px 0 12px;
+}
