@@ -620,21 +620,37 @@ async function loadAndRender(){
     .gte("day", startKey)
     .lte("day", endKey);
 
-  if (res.error) {
+    if (res.error) {
     alert("bookings_daily の取得でエラー: " + res.error.message);
     console.error(res.error);
+
+    // エラーでも表示だけは0にしておく（任意）
+    const el = document.getElementById("monthlyTotalBookings");
+    if (el) el.textContent = "今月 合計予約数：0";
+
   } else {
     console.log("bookings_daily rows:", res.data);
+
+    let monthTotal = 0; // ★追加：月合計
+
     for (const r of (res.data || [])) {
+      const c = Number(r.total || 0);
+      monthTotal += c; // ★追加：加算
+
       monthData[r.day] = {
-        count: Number(r.total || 0),
+        count: c,
         memo: (r.note || "")
       };
     }
+
+    // ★追加：画面表示
+    const el = document.getElementById("monthlyTotalBookings");
+    if (el) el.textContent = `今月 合計予約数：${monthTotal}`;
   }
 
   renderMonth();
 }
+
 
 
 
