@@ -82,7 +82,7 @@ const dayCloseBtn   = document.getElementById("dayCloseBtn");
 const daySaveBtn    = document.getElementById("daySaveBtn");
 const dayTitle      = document.getElementById("dayModalTitle");
 const totalSelect   = document.getElementById("totalCountSelect");
-const dayMemo       = document.getElementById("dayMemo");
+
 
 // settings modal
 const settingsModal = document.getElementById("settingsModal");
@@ -369,7 +369,7 @@ async function openDayEditor(date){
 
 
   // ★メモを反映（ここが今回の目的）
-  dayMemo.value = daily?.note || "";
+  
 
   openModal(dayModal);
 }
@@ -386,7 +386,7 @@ async function saveDay(){
     daySaveBtn.disabled = true;
     daySaveBtn.textContent = "保存中...";
 
-    const note = (dayMemo.value || "").trim();
+    
 
  const inputs = document.querySelectorAll("#staffInputs [data-staff]");
 let total = 0;
@@ -418,12 +418,26 @@ const r1 = await sb
   .upsert(rows, { onConflict: "day,staff_id" });
 if (r1.error) throw new Error("スタッフ別保存失敗: " + r1.error.message);
 
-    const r2 = await sb
+    const techSales = Number(techSalesInput?.value || 0);
+const retailSales = Number(retailSalesInput?.value || 0);
+const newCus = Number(newCustomersSelect?.value || 0);
+const repeatCus = Number(repeatCustomersSelect?.value || 0);
+
+const r2 = await sb
   .from("bookings_daily")
   .upsert(
-    [{ day: editingDateKey, total, note, updated_by: "ipad" }],
+    [{
+      day: editingDateKey,
+      total,
+      tech_sales: techSales,
+      retail_sales: retailSales,
+      new_customers: newCus,
+      repeat_customers: repeatCus,
+      updated_by: "ipad"
+    }],
     { onConflict: "day" }
   );
+
 
     if(r2.error) throw new Error("合計保存失敗: " + r2.error.message);
 
