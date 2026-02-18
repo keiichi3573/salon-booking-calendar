@@ -1203,3 +1203,43 @@ body{
   .calHeader, .futureTop, .calBody, .rightBody{ grid-column:auto; grid-row:auto; }
   .rightBody{ height:auto; }
 }
+/* ===== Desktop layout: calendar left / sales right ===== */
+.topGrid{
+  display: grid;
+  grid-template-columns: 1fr 360px; /* 右カラム幅 */
+  gap: 16px;
+  align-items: start;
+  margin-top: 12px;
+}
+
+.calBody{
+  min-width: 0;
+}
+
+.rightSide{
+  min-width: 0;
+  display: grid;
+  grid-template-rows: auto auto 1fr;
+  gap: 12px;
+}
+
+.salesPanel{
+  background: rgba(255,255,255,.92);
+  border: 1px solid rgba(0,0,0,.08);
+  border-radius: 18px;
+  padding: 14px;
+}
+
+.futurePlaceholder{
+  border: 2px dashed rgba(0,0,0,.15);
+  border-radius: 18px;
+  padding: 18px;
+  text-align: center;
+  background: rgba(255,255,255,.55);
+  color: rgba(0,0,0,.55);
+}
+
+.futureTop .futurePlaceholder,
+.futureBottom .futurePlaceholder{
+  min-height: 56px;
+}
