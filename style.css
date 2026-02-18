@@ -381,3 +381,16 @@ body{
   font-weight: 900;
   white-space: nowrap;
 }
+/* カレンダー内：予約表示（予〇）を枠なし＆色変更 */
+.reserveBadge{
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+
+  padding: 0 !important;
+  border-radius: 0 !important;
+
+  font-weight: 800;
+  color: #2563eb;      /* ←ここをお好みの色へ */
+  white-space: nowrap;
+}
