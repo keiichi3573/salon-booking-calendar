@@ -217,6 +217,16 @@ async function saveMonthData(monthKey, dataObj){
   const { error } = await sb.from("bookings").upsert(payload);
   if(error) throw error;
 }
+function fillSelect(){
+  if(!totalSelect) return;
+  totalSelect.innerHTML = "";
+  for(let i=0;i<=MAX_COUNT;i++){
+    const opt = document.createElement("option");
+    opt.value = String(i);
+    opt.textContent = String(i);
+    totalSelect.appendChild(opt);
+  }
+}
 
 // ===== render =====
 function renderMonth(){
