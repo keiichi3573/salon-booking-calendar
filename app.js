@@ -731,16 +731,49 @@ if (sameMonth){
   onTrack = (sumSales >= expectedByNowSales) && (sumCustomers >= expectedByNowCustomers);
 }
 
-// DOM反映
-document.getElementById("mSales")?.textContent = fmtYen(sumSales);
-document.getElementById("mCustomers")?.textContent = fmtNum(sumCustomers) + "名";
-document.getElementById("mUnitPrice")?.textContent = unitPrice ? fmtYen(unitPrice) : "—";
+// DOM反映（安全形：optional chaining を代入の左側に使わない）
+const elMSales = document.getElementById("mSales");
+if (elMSales) elMSales.textContent = fmtYen(sumSales);
 
-document.getElementById("lackSales")?.textContent = fmtYen(lackSales);
-document.getElementById("lackCustomers")?.textContent = fmtNum(lackCustomers) + "名";
+const elMCus = document.getElementById("mCustomers");
+if (elMCus) elMCus.textContent = fmtNum(sumCustomers) + "名";
 
-document.getElementById("needSales")?.textContent = remDays ? (fmtYen(needSalesPerDay) + "/日") : "—";
-document.getElementById("needCustomers")?.textContent = remDays ? (fmtNum(needCustomersPerDay) + "名/日") : "—";
+const elMUnit = document.getElementById("mUnitPrice");
+if (elMUnit) elMUnit.textContent = unitPrice ? fmtYen(unitPrice) : "—";
+
+// DOM反映（安全形）
+const elMSales = document.getElementById("mSales");
+if (elMSales) elMSales.textContent = fmtYen(sumSales);
+
+const elMCus = document.getElementById("mCustomers");
+if (elMCus) elMCus.textContent = fmtNum(sumCustomers) + "名";
+
+const elMUnit = document.getElementById("mUnitPrice");
+if (elMUnit) elMUnit.textContent = unitPrice ? fmtYen(unitPrice) : "—";
+
+const elLackSales = document.getElementById("lackSales");
+if (elLackSales) elLackSales.textContent = fmtYen(lackSales);
+
+const elLackCus = document.getElementById("lackCustomers");
+if (elLackCus) elLackCus.textContent = fmtNum(lackCustomers) + "名";
+
+const elNeedSales = document.getElementById("needSales");
+if (elNeedSales) elNeedSales.textContent = remDays ? (fmtYen(needSalesPerDay) + "/日") : "—";
+
+const elNeedCus = document.getElementById("needCustomers");
+if (elNeedCus) elNeedCus.textContent = remDays ? (fmtNum(needCustomersPerDay) + "名/日") : "—";
+
+const hint = document.getElementById("statusHint");
+if (hint){
+  if (!sameMonth){
+    hint.textContent = "※今月以外はペース判定しません";
+    hint.classList.remove("ok","ng");
+  } else {
+    hint.textContent = onTrack ? "黒字ペース（目標達成できそう）" : "赤字ペース（このままだと未達）";
+    hint.classList.toggle("ok", onTrack);
+    hint.classList.toggle("ng", !onTrack);
+  }
+}
 
 const hint = document.getElementById("statusHint");
 if (hint){
