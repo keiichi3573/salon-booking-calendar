@@ -154,9 +154,31 @@
         </div>
 
         <div class="memoBox">
-          <div class="label">メモ（小さめ）</div>
-          <textarea id="dayMemo" class="memoArea" rows="3" placeholder="例：午前混み／カラー多め など"></textarea>
-        </div>
+  <div class="label">売上入力（税抜）</div>
+
+  <div class="salesInputs">
+    <div class="fieldRow">
+      <label class="fieldLabel">技術売上</label>
+      <input id="techSalesInput" class="fieldInput" type="number" inputmode="numeric" min="0" step="1" placeholder="例：35000" />
+    </div>
+
+    <div class="fieldRow">
+      <label class="fieldLabel">店販売上</label>
+      <input id="retailSalesInput" class="fieldInput" type="number" inputmode="numeric" min="0" step="1" placeholder="例：8000" />
+    </div>
+
+    <div class="fieldRow">
+      <label class="fieldLabel">客数（新規）</label>
+      <select id="newCustomersSelect" class="fieldSelect"></select>
+    </div>
+
+    <div class="fieldRow">
+      <label class="fieldLabel">客数（既存）</label>
+      <select id="repeatCustomersSelect" class="fieldSelect"></select>
+    </div>
+  </div>
+</div>
+
       </div>
 
       <div class="modalFooter">
