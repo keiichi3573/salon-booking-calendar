@@ -428,4 +428,8 @@ body{
   border-color: var(--closed-border);
   background: color-mix(in srgb, var(--closed-bg) 60%, #ffffff);
 }
+/* 売上欄の上下「今後のアップデート」枠を非表示 */
+.futureBox{
+  display: none !important;
+}
 
