@@ -625,8 +625,9 @@ async function loadAndRender(){
     console.error(res.error);
 
     // エラーでも表示だけは0にしておく（任意）
-    const el = document.getElementById("monthlyTotalBookings");
-    if (el) el.textContent = "今月 合計予約数：0";
+    const el = document.getElementById("totalMonthCount");
+if (el) el.textContent = "今月 合計予約数：0";
+
 
   } else {
     console.log("bookings_daily rows:", res.data);
@@ -644,8 +645,9 @@ async function loadAndRender(){
     }
 
     // ★追加：画面表示
-    const el = document.getElementById("monthlyTotalBookings");
-    if (el) el.textContent = `今月 合計予約数：${monthTotal}`;
+    const el = document.getElementById("totalMonthCount");
+if (el) el.textContent = `今月 合計予約数：${monthTotal}`;
+
   }
 
   renderMonth();
