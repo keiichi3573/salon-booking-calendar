@@ -432,4 +432,19 @@ body{
 .futureBox{
   display: none !important;
 }
+/* 右：売上枠を左：カレンダーと上辺揃えにする */
+.mainGrid{
+  align-items: start;
+}
+
+.salesWrap{
+  margin-top: 0 !important;
+  align-self: start;
+}
+
+.calWrap,
+.salesWrap{
+  align-self: start;
+  margin-top: 0;
+}
 
