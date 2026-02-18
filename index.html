@@ -61,17 +61,24 @@
           <div class="futureBox">（今後のアップデート用）</div>
         </div>
 
-        <aside class="salesPanel" aria-label="売上サマリー">
-          <div class="cardTitle">売上（準備中）</div>
-          <div class="salesRow"><span>月 売上合計</span><b>—</b></div>
-          <div class="salesRow"><span>月 客数合計</span><b>—</b></div>
-          <div class="salesRow"><span>月 客単価</span><b>—</b></div>
-          <hr class="salesHr" />
-          <div class="salesRow"><span>目標まで不足（売上）</span><b>—</b></div>
-          <div class="salesRow"><span>目標まで不足（客数）</span><b>—</b></div>
-          <div class="salesRow"><span>目標まで不足（客単価）</span><b>—</b></div>
-          <div class="hint" style="margin-top:10px;">※ ここは後で数値入力・自動計算を実装します</div>
-        </aside>
+      <aside class="salesPanel" aria-label="売上サマリー">
+  <div class="cardTitle">売上</div>
+
+  <div class="salesRow"><span>月 売上合計（税抜）</span><b id="mSales">—</b></div>
+  <div class="salesRow"><span>月 客数合計</span><b id="mCustomers">—</b></div>
+  <div class="salesRow"><span>月 客単価</span><b id="mUnitPrice">—</b></div>
+
+  <hr class="salesHr" />
+
+  <div class="salesRow"><span>目標まで不足（売上）</span><b id="lackSales">—</b></div>
+  <div class="salesRow"><span>目標まで不足（客数）</span><b id="lackCustomers">—</b></div>
+
+  <div class="salesRow"><span>残り日数あたり必要（売上）</span><b id="needSales">—</b></div>
+  <div class="salesRow"><span>残り日数あたり必要（客数）</span><b id="needCustomers">—</b></div>
+
+  <div class="hint" id="statusHint" style="margin-top:10px;">—</div>
+</aside>
+
 
         <div class="futureBottom">
           <div class="futureBox">（空白：今後用）</div>
