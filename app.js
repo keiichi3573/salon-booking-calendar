@@ -688,20 +688,26 @@ async function loadAndRender(){
     sumCustomers = 0;
 
   } else {
-    for (const r of (res.data || [])) {
-      const c = Number(r.total || 0);
-      monthTotal += c;
+for (const r of (res.data || [])) {
+  const c = Number(r.total || 0);
+  monthTotal += c;
 
-      const tech = Number(r.tech_sales || 0);
-      const retail = Number(r.retail_sales || 0);
-      const cus = Number(r.new_customers || 0) + Number(r.repeat_customers || 0);
+  const tech = Number(r.tech_sales || 0);
+  const retail = Number(r.retail_sales || 0);
 
-      sumSales += (tech + retail);
-      sumCustomers += cus;
+  // ★追加：売上が入ってる日だけログに出す
+  if ((tech + retail) > 0) {
+    console.log("売上あり日:", r.day, "tech:", tech, "retail:", retail);
+  }
 
-      // カレンダー用
-      monthData[r.day] = { count: c, memo: "" };
-    }
+  const cus = Number(r.new_customers || 0) + Number(r.repeat_customers || 0);
+
+  sumSales += (tech + retail);
+  sumCustomers += cus;
+
+  monthData[r.day] = { count: c, memo: "" };
+}
+
 
     const el = document.getElementById("totalMonthCount");
     if (el) el.textContent = `今月 合計予約数：${monthTotal}`;
