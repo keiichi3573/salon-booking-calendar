@@ -1,1245 +1,336 @@
 :root{
-  --bg:#f6f7fb;
-  --panel:#ffffff;
-  --text:#0f172a;
-  --muted:#64748b;
-  --border:#e2e8f0;
-  --accent:#2563eb;
-  --shadow: 0 20px 50px rgba(2,6,23,.10);
-  --closed:#fee2e2;
-  --note:#e0f2fe;
+  --bg: #efe9df;
+  --card: rgba(255,255,255,.92);
+  --line: rgba(0,0,0,.10);
+  --text: rgba(0,0,0,.86);
+  --muted: rgba(0,0,0,.55);
+  --accent: #b38a4b;
 }
 
-*{ box-sizing:border-box; }
+*{ box-sizing: border-box; }
 body{
   margin:0;
-  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-  background: var(--bg);
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans JP", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
   color: var(--text);
+  background: radial-gradient(1200px 500px at 50% 20%, #fff 0%, var(--bg) 55%, #e8e1d6 100%);
 }
 
+/* ===== header ===== */
 .topbar{
-  position:sticky;
+  position: sticky;
   top:0;
   z-index:10;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:12px;
-  padding:14px 16px;
-  background: rgba(246,247,251,.85);
-  backdrop-filter: blur(8px);
-  border-bottom:1px solid var(--border);
-}
-
-.left{ display:flex; align-items:center; gap:10px; }
-.right{ display:flex; align-items:center; gap:10px; }
-
-#monthTitle{ margin:0; font-size:20px; font-weight:900; }
-
-.navBtn{
-  width:44px; height:44px;
-  border-radius:14px;
-  border:1px solid var(--border);
-  background:#fff;
-  cursor:pointer;
-  font-size:18px;
-}
-
-.btn{
-  padding:10px 12px;
-  border-radius:12px;
-  border:1px solid var(--border);
-  background:#fff;
-  cursor:pointer;
-  font-weight:700;
-}
-.btn.primary{
-  background:var(--accent);
-  color:#fff;
-  border-color:transparent;
-}
-
-.wrap{
-  max-width:1000px;
-  margin:18px auto;
-  padding:0 16px 40px;
-}
-
-.legend{
-  display:flex;
-  gap:10px;
-  align-items:center;
-  margin:10px 0 14px;
-}
-.chip{
-  display:inline-flex;
-  align-items:center;
-  gap:8px;
-  padding:8px 10px;
-  border-radius:999px;
-  border:1px solid var(--border);
-  background:#fff;
-  font-weight:800;
-  font-size:12px;
-}
-.chip.closed{ background:var(--closed); }
-.chip.note{ background:var(--note); }
-
-.calendar{
-  display:grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap:12px;
-}
-
-.dayCell{
-  background:#fff;
-  border:1px solid var(--border);
-  border-radius:18px;
-  padding:12px;
-  min-height:92px;
-  cursor:pointer;
-  box-shadow: 0 8px 20px rgba(2,6,23,.05);
-}
-
-.dayCell.closed{
-  background: var(--closed);
-}
-
-.dayTop{
-  display:flex;
-  align-items:flex-start;
-  justify-content:space-between;
-  gap:8px;
-}
-.dayNum{
-  font-size:14px;
-  font-weight:900;
-}
-.badge{
-  font-size:12px;
-  font-weight:900;
-  color:#0f172a;
-  background:#f1f5f9;
-  border:1px solid var(--border);
-  border-radius:999px;
-  padding:4px 8px;
-}
-.badge.note{
-  background:var(--note);
-}
-
-.weekHeader{
-  font-size:12px;
-  color:var(--muted);
-  font-weight:900;
-  text-align:center;
-  margin-bottom:6px;
-}
-
-/* ===== モーダル ===== */
-.hidden{ display:none !important; }
-
-.modal{
-  position:fixed;
-  inset:0;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  z-index:999;
-}
-
-.modalBackdrop{
-  position:absolute;
-  inset:0;
-  background:rgba(15,23,42,.35);
-}
-
-.modalCard{
-  position:relative;
-  width:min(720px, 92vw);
-  background:var(--panel);
-  border:1px solid var(--border);
-  border-radius:18px;
-  box-shadow: var(--shadow);
-
-  max-height: 80vh;
-  overflow: auto;
-}
-
-.modalHeader{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  padding:14px 16px;
-  border-bottom:1px solid var(--border);
-}
-
-.modalTitle{ font-size:18px; font-weight:900; }
-.modalSubTitle{ font-size:13px; color:var(--muted); margin-top:2px; }
-
-.modalBody{
-  padding:16px;
-  display:grid;
-  gap:14px;
-}
-
-.modalFooter{
-  padding:14px 16px;
-  border-top:1px solid var(--border);
-  display:flex;
-  justify-content:flex-end;
-  gap:10px;
-}
-
-.x{
-  width:40px;height:40px;
-  border-radius:12px;
-  border:1px solid var(--border);
-  background:#fff;
-  cursor:pointer;
-  font-size:16px;
-}
-
-.label{
-  font-size:13px;
-  font-weight:900;
-  color:var(--muted);
-  margin-bottom:6px;
-}
-
-.bigInputBox, .memoBox{
-  background:#f8fafc;
-  border:1px solid var(--border);
-  border-radius:14px;
-  padding:12px;
-}
-.bigSelect{
-  width:100%;
-  font-size:26px;
-  font-weight:900;
-  padding:16px 14px;
-  border-radius:14px;
-  border:1px solid #cbd5e1;
-  background:#fff;
-}
-.memoArea{
-  width:100%;
-  font-size:13px;
-  padding:10px;
-  border-radius:12px;
-  border:1px solid #cbd5e1;
-  resize:vertical;
-  background:#fff;
-}
-
-.row{
-  display:flex;
-  gap:10px;
-  align-items:center;
-}
-.input{
-  flex:1;
-  padding:10px 12px;
-  border-radius:12px;
-  border:1px solid #cbd5e1;
-  background:#fff;
-  font-size:14px;
-}
-.hint{
-  margin-top:8px;
-  font-size:12px;
-  color:var(--muted);
-}
-
-.staffList{
-  display:grid;
-  gap:8px;
-}
-.staffItem{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:10px;
-  background:#fff;
-  border:1px solid var(--border);
-  border-radius:14px;
-  padding:10px 12px;
-}
-.staffLeft{
-  display:flex;
-  align-items:center;
-  gap:10px;
-  min-width:0;
-}
-.staffName{
-  font-weight:900;
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
-}
-.staffBtns{ display:flex; gap:6px; }
-.smallBtn{
-  padding:8px 10px;
-  border-radius:12px;
-  border:1px solid var(--border);
-  background:#fff;
-  cursor:pointer;
-  font-weight:900;
-  font-size:12px;
-}
-.smallBtn.danger{ background:#fee2e2; }
-.smallBtn.off{ opacity:.55; }
-
-/* スマホ/iPad微調整 */
-@media (max-width: 640px){
-  .calendar{ gap:8px; }
-  .dayCell{ min-height:80px; padding:10px; border-radius:16px; }
-  .bigSelect{ font-size:24px; }
-}
-/* ===== 店舗ボード（タスク型） ===== */
-.storeBoard{
-  margin-top: 16px;
-}
-
-.boardHeader{
-  display:flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 12px;
-  margin: 8px 0 12px;
-}
-
-.boardTitle{
-  font-weight: 700;
-  font-size: 16px;
-}
-
-.boardSub{
-  font-size: 12px;
-  opacity: .7;
-}
-
-.boardGrid{
-  display:grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-}
-
-.boardCard{
-  background: #fff;
-  border-radius: 14px;
-  padding: 12px;
-  box-shadow: 0 6px 18px rgba(0,0,0,.06);
-}
-
-.cardTitle{
-  font-weight: 700;
-  margin-bottom: 10px;
-}
-
-.row{
-  display:flex;
-  flex-direction: column;
-  gap: 6px;
-  margin-bottom: 10px;
-}
-
-.label{
-  font-size: 12px;
-  opacity: .8;
-}
-
-.memoBig{
-  width: 100%;
-  resize: vertical;
-  min-height: 180px; /* もう少し大きく */
-  border-radius: 12px;
-  padding: 10px 12px;
-  border: 1px solid rgba(0,0,0,.12);
-  outline: none;
-}
-
-.cardRow{
-  display:flex;
-  gap: 8px;
-  align-items: center;
-  margin-top: 6px;
-}
-
-.taskList{
-  margin-top: 12px;
-  display:flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-/* 1タスク行（JSで作る想定：完了で薄く） */
-.taskItem{
-  display:flex;
-  gap: 10px;
-  align-items: flex-start;
-  padding: 10px 10px;
-  border-radius: 12px;
-  border: 1px solid rgba(0,0,0,.08);
-}
-
-.taskItem.done{
-  opacity: .45;
-}
-
-.taskItem.done .taskText{
-  text-decoration: line-through;
-}
-
-.taskText{
-  white-space: pre-wrap;
-  word-break: break-word;
-  flex: 1;
-}
-
-/* 写真：アップロード左、プレビュー右 */
-.photoRowInline{
-  display:flex;
-  gap: 12px;
-  align-items: stretch;
-}
-
-.photoControls{
-  display:flex;
-  flex-direction: column;
-  gap: 8px;
-  min-width: 220px;
-}
-
-.photoPreviewSide{
-  flex: 1;
-  min-height: 140px;
-  border-radius: 12px;
-  border: 1px dashed rgba(0,0,0,.18);
-  display:flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-  background: rgba(0,0,0,.02);
-}
-
-.photoPreviewSide img{
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-/* 画面が狭い時は縦並び */
-@media (max-width: 900px){
-  .boardGrid{ grid-template-columns: 1fr; }
-  .photoRowInline{ flex-direction: column; }
-  .photoControls{ min-width: auto; }
-}
-/* =========================
-   THEME: Salon Elegant (iPad縦 + PC)
-   追記専用（既存CSSの下に貼って上書き）
-========================= */
-
-/* ---- ベース ---- */
-:root{
-  --bg: #f7f3ee;          /* 温かいベージュ */
-  --panel: #ffffff;
-  --text: #1f2937;
-  --muted: #6b7280;
-  --border: rgba(17,24,39,.10);
-  --accent: #b08d57;      /* ゴールド系 */
-  --accent2:#2f2a22;      /* ダークブラウン */
-  --shadow: 0 18px 55px rgba(17,24,39,.10);
-  --shadow2: 0 10px 25px rgba(17,24,39,.08);
-  --radius: 18px;
-  --radius2: 14px;
-}
-
-body{
-  background: radial-gradient(1200px 700px at 15% 0%, rgba(176,141,87,.10), transparent 55%),
-              radial-gradient(900px 600px at 85% 10%, rgba(47,42,34,.06), transparent 55%),
-              var(--bg);
-  color: var(--text);
-}
-
-/* ---- トップバー ---- */
-.topbar{
-  background: rgba(255,255,255,.82);
+  background: rgba(255,255,255,.75);
   backdrop-filter: blur(10px);
-  border-bottom: 1px solid var(--border);
-  box-shadow: 0 8px 22px rgba(17,24,39,.05);
-  padding: 12px 14px;
+  border-bottom: 1px solid rgba(0,0,0,.05);
+  display:flex;
+  align-items:center;
+  justify-content: space-between;
+  padding: 10px 14px;
 }
+.brandCenter{ display:flex; justify-content:center; flex:1; }
+.brandLogo{ height: 34px; object-fit: contain; }
+.left,.right{ width: 120px; }
 
-.topbar .left{
-  gap: 12px;
-}
-
-#monthTitle{
-  font-size: 18px;
-  font-weight: 800;
-  letter-spacing: .02em;
-  color: var(--accent2);
-}
-
-.navBtn{
-  width: 44px;
-  height: 44px;
-  border-radius: 14px;
-  border: 1px solid var(--border);
-  background: #fff;
-  box-shadow: 0 6px 16px rgba(17,24,39,.06);
-  transition: transform .08s ease, box-shadow .2s ease;
-}
-.navBtn:active{ transform: translateY(1px); }
-
-.btn{
-  border-radius: 14px;
-  border: 1px solid var(--border);
-  background: #fff;
-  box-shadow: 0 8px 18px rgba(17,24,39,.06);
-  padding: 12px 14px;
-  font-weight: 700;
-}
-.btn.primary{
-  background: linear-gradient(180deg, rgba(176,141,87,.95), rgba(150,115,67,.95));
-  color: #fff;
-  border: 1px solid rgba(176,141,87,.35);
-}
-.btn:active{ transform: translateY(1px); }
-
-/* ---- 全体レイアウト（iPad縦 + PC） ---- */
+/* ===== wrap ===== */
 .wrap{
-  max-width: 980px;      /* PCは中央寄せで上品に */
+  max-width: 1100px;
   margin: 0 auto;
   padding: 14px 14px 28px;
 }
 
+/* ===== legend ===== */
 .legend{
   display:flex;
-  gap: 10px;
   align-items:center;
-  margin: 12px 0 12px;
-}
-.chip{
-  border-radius: 999px;
-  padding: 8px 12px;
-  font-weight: 800;
-  border: 1px solid var(--border);
-  background: rgba(255,255,255,.9);
-  box-shadow: 0 6px 14px rgba(17,24,39,.05);
-}
-.chip.closed{ background: rgba(176,141,87,.12); }
-.chip.note{ background: rgba(47,42,34,.06); }
-
-/* ---- カレンダー（主役） ---- */
-.calendar{
-  display:grid;
-  grid-template-columns: repeat(7, minmax(0, 1fr));
-  gap: 10px;
-  padding: 10px;
-  border-radius: var(--radius);
-  background: rgba(255,255,255,.70);
-  border: 1px solid var(--border);
-  box-shadow: var(--shadow);
-}
-
-/* 各日セル（あなたの既存class名に合わせて、できるだけ広く上書き） */
-.dayCell, .day, .cell, .calendar .item, .calendar > div{
-  border-radius: var(--radius2);
-}
-
-/* “日付カードっぽく”見せる：既存がdivで組まれていても効くように */
-.calendar > div{
-  background: #fff;
-  border: 1px solid var(--border);
-  box-shadow: var(--shadow2);
-  min-height: 92px;          /* iPad縦で押しやすい */
-  padding: 10px 10px 12px;
-  position: relative;
-  transition: transform .08s ease, box-shadow .2s ease;
-}
-.calendar > div:active{
-  transform: translateY(1px);
-  box-shadow: 0 8px 18px rgba(17,24,39,.08);
-}
-
-/* 日付文字が左上に来る想定（既存構造に依存するので“控えめ”に） */
-.calendar .date, .calendar .dayNum{
-  font-weight: 900;
-  color: var(--accent2);
-}
-
-/* 予約数バッジっぽい見せ方（既存のボタン/ラベルに効くように） */
-.badge, .countPill, .calendar .count, .calendar button, .calendar .pill{
-  border-radius: 999px;
-  border: 1px solid rgba(176,141,87,.35);
-  background: rgba(176,141,87,.10);
-  padding: 6px 10px;
-  font-weight: 900;
-}
-
-/* “定休日”の背景を上品に */
-.closedDay, .isClosed{
-  background: linear-gradient(180deg, rgba(176,141,87,.18), rgba(176,141,87,.08)) !important;
-}
-
-/* メモありのヒント（📝）がある場合は見えやすく */
-.noteMark, .memoIcon{
-  filter: drop-shadow(0 6px 10px rgba(17,24,39,.10));
-}
-
-/* ---- 店舗ボード（カレンダーの下） ---- */
-.storeBoard{
-  margin-top: 14px;
-}
-
-.boardHeader{
-  margin: 16px 2px 10px;
-}
-.boardTitle{
-  font-size: 16px;
-  font-weight: 900;
-  color: var(--accent2);
-}
-.boardSub{
-  font-size: 12px;
-  color: var(--muted);
-}
-
-.boardGrid{
-  display:grid;
-  grid-template-columns: 1fr; /* iPad縦は1列が見やすい */
   gap: 12px;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 12px;
+  box-shadow: 0 10px 30px rgba(0,0,0,.06);
 }
 
-.boardCard{
-  background: rgba(255,255,255,.78);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
-}
-
-.cardTitle{
-  color: var(--accent2);
-  font-weight: 900;
-}
-
-/* 入力を“美容室っぽく” */
-.input, select, textarea{
-  border-radius: 14px;
-  border: 1px solid var(--border);
-  background: rgba(255,255,255,.92);
-  padding: 12px 12px;
-  outline: none;
-}
-textarea.memoBig{
-  min-height: 220px; /* “内容ボックスを大きく” */
-  font-size: 15px;
-  line-height: 1.55;
-}
-
-/* タスク行（完了は薄く） */
-.taskItem{
-  background: rgba(255,255,255,.92);
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  box-shadow: 0 10px 22px rgba(17,24,39,.06);
-}
-.taskItem.done{
-  opacity: .45;
-}
-.taskItem.done .taskText{
-  text-decoration: line-through;
-}
-
-/* 写真：右にプレビュー */
-.photoRowInline{
-  display:flex;
-  gap: 12px;
-  align-items: stretch;
-}
-.photoControls{
-  min-width: 260px;
-}
-.photoPreviewSide{
-  border-radius: 16px;
-  border: 1px dashed rgba(176,141,87,.45);
-  background: rgba(176,141,87,.06);
-}
-
-/* ---- モーダルも上品に ---- */
-.modalCard{
-  border-radius: 22px;
-  border: 1px solid var(--border);
-  box-shadow: 0 28px 80px rgba(17,24,39,.18);
-  background: rgba(255,255,255,.95);
-}
-.modalHeader .x{
-  width: 44px;
-  height: 44px;
-  border-radius: 14px;
-  border: 1px solid var(--border);
-  background: #fff;
-}
-
-/* ---- PCでは横2列も使える（広い画面だけ） ---- */
-@media (min-width: 1024px){
-  .boardGrid{
-    grid-template-columns: 1fr 1fr;
-  }
-}
-/* ===== Luxe update (month in legend / logo center / unified closed color / premium bg) ===== */
-
-:root{
-  --luxe-bg1:#0f0f12;         /* 深い黒 */
-  --luxe-bg2:#17151a;         /* 黒紫 */
-  --luxe-gold1:#b08d57;       /* ゴールド */
-  --luxe-gold2:#8b6b3f;       /* 深めゴールド */
-  --closed-tint: rgba(176,141,87,.16); /* 定休日カラー統一 */
-}
-
-/* 背景：高級感（暗め＋金のハイライト） */
-body{
-  background:
-    radial-gradient(1100px 700px at 20% -10%, rgba(176,141,87,.22), transparent 55%),
-    radial-gradient(900px 600px at 85% 10%, rgba(255,255,255,.06), transparent 55%),
-    radial-gradient(900px 700px at 15% 110%, rgba(176,141,87,.10), transparent 60%),
-    linear-gradient(180deg, var(--luxe-bg1), var(--luxe-bg2));
-  color: #f3f4f6;
-}
-
-/* 文字色：暗背景に合わせる */
-#monthTitle, .boardTitle, .cardTitle{
-  color: #f3f4f6;
-}
-.boardSub, .hint, .label{
-  color: rgba(243,244,246,.70);
-}
-
-/* topbar：中央ロゴ配置 */
-.topbar{
+.monthNav{
   display:flex;
   align-items:center;
-  justify-content: space-between;
-}
-.brandCenter{
-  display:flex;
-  align-items:center;
-  justify-content:center;
+  gap: 10px;
   flex: 1;
 }
-.topbar .left{ flex: 1; }
-.topbar .right{ flex: 1; justify-content:flex-end; }
-
-.brandLogo{
-  height: 34px;
-  width: auto;
-  object-fit: contain;
-  filter: drop-shadow(0 10px 18px rgba(0,0,0,.35));
-  opacity: .95;
-}
-
-/* legend：チップを上品に／月チップ追加 */
-.legend{
-  background: rgba(255,255,255,.06);
-  border: 1px solid rgba(255,255,255,.10);
-  border-radius: 16px;
-  padding: 10px;
-  box-shadow: 0 18px 55px rgba(0,0,0,.25);
-}
-.chip{
-  background: rgba(255,255,255,.08);
-  border: 1px solid rgba(255,255,255,.14);
-  color: rgba(243,244,246,.92);
-}
-.chip.closed{
-  background: var(--closed-tint);
-  border-color: rgba(176,141,87,.35);
-}
-.chip.note{
-  background: rgba(255,255,255,.08);
-}
-.chip.monthChip{
-  background: linear-gradient(180deg, rgba(176,141,87,.22), rgba(176,141,87,.10));
-  border-color: rgba(176,141,87,.38);
-  color: rgba(243,244,246,.95);
-}
-
-/* カレンダー：暗背景でも“高級ラウンジ感” */
-.calendar{
-  background: rgba(255,255,255,.06);
-  border: 1px solid rgba(255,255,255,.10);
-  box-shadow: 0 22px 70px rgba(0,0,0,.28);
-}
-
-/* 日セル：白カード→暗背景に映える“グレージュカード” */
-.calendar > div{
-  background: rgba(255,255,255,.92);
-  color: #1f2937;
-  border: 1px solid rgba(17,24,39,.10);
-}
-
-/* 定休日セル：チップと同じ色味に統一 */
-.closedDay, .isClosed, .calendar > div.closedDay, .calendar > div.isClosed{
-  background: linear-gradient(180deg, rgba(176,141,87,.18), rgba(176,141,87,.08)) !important;
-  border-color: rgba(176,141,87,.25) !important;
-}
-
-/* ボード側：暗背景でも読みやすく */
-.boardCard{
-  background: rgba(255,255,255,.08);
-  border: 1px solid rgba(255,255,255,.12);
-}
-.input, select, textarea{
-  background: rgba(255,255,255,.92);
-  color: #111827;
-}
-
-/* iPad縦でトップが詰まらないように */
-@media (max-width: 900px){
-  .brandLogo{ height: 30px; }
-}
-/* ===== Salon background refinement ===== */
-
-body{
-  background:
-    radial-gradient(900px 600px at 20% -10%, rgba(176,141,87,.18), transparent 55%),
-    radial-gradient(800px 600px at 80% 10%, rgba(232,220,200,.25), transparent 60%),
-    linear-gradient(180deg, #f3eee6, #e9e2d6);
-  color: #1f2937;
-}
-
-/* カレンダー背景を柔らかく */
-.calendar{
-  background: rgba(255,255,255,.85);
-  border: 1px solid rgba(0,0,0,.08);
-  box-shadow: 0 20px 60px rgba(0,0,0,.08);
-}
-
-/* legendも軽くする */
-.legend{
-  background: rgba(255,255,255,.85);
-  border: 1px solid rgba(0,0,0,.08);
-}
-
-/* 店舗ボードカード */
-.boardCard{
-  background: rgba(255,255,255,.92);
-  border: 1px solid rgba(0,0,0,.08);
-}
-
-/* ロゴ周り */
-.brandLogo{
-  filter: drop-shadow(0 8px 16px rgba(0,0,0,.18));
-}
-/* ===== Month navigation center ===== */
-
-.monthNav{
-  display:flex;
-  align-items:center;
-  gap:10px;
-  margin-right:10px;
-}
-
-.monthTitle{
-  font-size:18px;
-  font-weight:900;
-  min-width:140px;
-  text-align:center;
-}
-
-.legend{
-  display:flex;
-  align-items:center;
-  gap:10px;
-  flex-wrap:wrap;
-}
-
-/* iPadで押しやすく */
 .navBtn{
-  width:48px;
-  height:48px;
-  font-size:16px;
+  border: 1px solid var(--line);
+  background: #fff;
+  border-radius: 14px;
+  padding: 10px 12px;
+  cursor:pointer;
 }
-/* ===== Visibility fix (light background) ===== */
-body{
-  color: #1f2937; /* 全体の文字を濃く */
-}
+.monthTitle{ font-weight: 800; font-size: 18px; }
 
-.legend, .chip, .monthTitle, #monthTitle{
-  color: #1f2937 !important;
+.chip{
+  border: 1px solid var(--line);
+  background:#fff;
+  padding: 8px 10px;
+  border-radius: 999px;
+  font-size: 13px;
+  white-space: nowrap;
 }
-
-.boardTitle, .boardSub, .label, .hint{
-  color: #1f2937 !important;
-}
-
-.boardSub, .hint{
-  opacity: .7;
-}
-/* ===== Legend layout: actions inside ===== */
-.legend{
-  display:flex;
-  align-items:center;
-  gap: 10px;
-  flex-wrap: wrap;
-}
-
-.monthNav{
-  display:flex;
-  align-items:center;
-  gap: 10px;
-  padding-right: 6px;
-}
+.chip.closed{ background: #f5efe5; }
+.chip.note{ background: #eef3ff; }
 
 .legendActions{
-  margin-left: auto;          /* 右寄せ */
   display:flex;
   gap: 10px;
 }
-
-/* iPad縦でボタンが落ちても整う */
-@media (max-width: 900px){
-  .legendActions{
-    width: 100%;
-    justify-content: flex-end;
-  }
-}
-/* ===== Bigger booking count (CSS only) ===== */
-
-/* 予約数のピルっぽい要素をまとめて強化（既存構造が違っても効くように広めに指定） */
-.calendar .count,
-.calendar .pill,
-.calendar .countPill,
-.calendar button,
-.calendar .badge{
-  font-size: 18px;       /* 大きく */
-  font-weight: 900;
-  padding: 10px 14px;
-  border-radius: 999px;
-}
-
-/* ピルの位置を“見やすい”ように */
-.calendar > div{
-  position: relative;
-}
-
-/* 予約ピルがセル内にある場合、少し上寄りにして主役に（効きすぎたら外します） */
-.calendar > div .count,
-.calendar > div .pill,
-.calendar > div .countPill,
-.calendar > div .badge{
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 86px;
-}
-
-/* iPadでさらに押しやすく */
-@media (max-width: 900px){
-  .calendar > div{
-    min-height: 108px;
-  }
-  .calendar .count,
-  .calendar .pill,
-  .calendar .countPill,
-  .calendar button,
-  .calendar .badge{
-    font-size: 20px;
-    padding: 12px 16px;
-    min-width: 96px;
-  }
-}
-/* ===== Board headings visibility fix ===== */
-
-/* 店舗ボード全体の文字を濃く */
-.storeBoard,
-.storeBoard *{
-  color: #1f2937;
-}
-
-/* 見出し（メモ / 写真(共有) / ラベル）を強調 */
-.storeBoard h2,
-.storeBoard h3,
-.storeBoard .cardTitle,
-.storeBoard .label,
-.storeBoard .sectionTitle,
-.storeBoard .memoTitle,
-.storeBoard .photoTitle{
-  color: #111827 !important;
-  font-weight: 900;
-}
-
-/* 「メモ」「写真（共有）」がプレースホルダ扱いになっている場合にも効かせる */
-.storeBoard .muted,
-.storeBoard .hint{
-  color: rgba(17,24,39,.65) !important;
-}
-
-/* 入力欄のプレースホルダも見やすく */
-.storeBoard input::placeholder,
-.storeBoard textarea::placeholder{
-  color: rgba(17,24,39,.45);
-}
-/* スタッフ別入力（プルダウン化） */
-#staffInputs .staffRow{
-  display:flex;
-  align-items:center;
-  justify-content: space-between;
-  gap: 12px;
-  padding: 10px 0;
-}
-
-#staffInputs .staffName{
-  font-weight: 800;
-  font-size: 16px;
-}
-
-#staffInputs .staffCountSelect{
-  font-size: 18px;
+.btn{
+  border: 1px solid var(--line);
+  background:#fff;
+  border-radius: 14px;
   padding: 10px 12px;
-  border-radius: 12px;
-  border: 1px solid rgba(0,0,0,.12);
-  min-width: 120px;
-  background: #fff;
+  cursor:pointer;
+  font-weight: 700;
 }
-/* ===== Mobile: View-only layout ===== */
-@media (max-width: 520px){
-
-  /* ヘッダー・凡例周りを詰める */
-  .wrap{ padding: 10px 10px 20px; }
-  .legend{ gap: 8px; padding: 10px; }
-
-  /* カレンダーを「7列」→「日別リスト」にする（崩れ防止） */
-  .calendar{
-    grid-template-columns: 1fr !important;
-    gap: 10px;
-  }
-
-  /* 曜日ヘッダー（「日 月 火…」の行）を隠す */
-  .weekHeader{ display: none !important; }
-
-  /* 先頭の空白セル（visibility:hiddenのdiv）が縦に残るのを防ぐ */
-  .calendar > div[style*="visibility: hidden"]{
-    display: none !important;
-  }
-
-  /* 日セルを横並び風に（見やすく） */
-  .dayCell{
-    min-height: 74px !important;
-    padding: 12px !important;
-  }
-
-  .dayTop{
-    display:flex !important;
-    align-items:center;
-    gap: 10px;
-  }
-
-  .dayNum{
-    font-size: 18px !important;
-    font-weight: 900 !important;
-    width: 34px;
-    text-align: center;
-  }
-
-  /* 予約ピルは小さめで1行に収める */
-  .badge{
-    font-size: 16px !important;
-    padding: 10px 12px !important;
-    min-width: auto !important;
-  }
-
-  /* 📝は右寄せっぽく */
-  .badge.note{ margin-left: auto; }
-
-  /* ボードは1列で */
-  .boardGrid{ grid-template-columns: 1fr !important; }
+.btn.primary{
+  background: var(--accent);
+  color:#fff;
+  border-color: rgba(0,0,0,.08);
 }
-.monthlyTotal {
-  text-align: center;
-  font-weight: bold;
-  margin: 8px 0 12px;
-}
-/* ===== PC/Tablet layout: 2-column ===== */
+
+/* ===== top grid (calendar + sales) ===== */
 .topGrid{
-  display: grid;
-  grid-template-columns: 58% 42%;
+  display:grid;
+  grid-template-columns: 1fr 360px;
   gap: 16px;
+  margin-top: 14px;
   align-items: start;
 }
 
-.calArea .legend{
-  margin-bottom: 10px;
+.calBody{ min-width:0; }
+
+.rightSide{
+  display:grid;
+  grid-template-rows: auto auto 1fr;
+  gap: 12px;
+  min-width:0;
 }
 
-.salesArea{
-  background: rgba(255,255,255,0.65);
-  border: 1px solid rgba(0,0,0,.08);
-  border-radius: 16px;
+.salesPanel{
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 18px;
   padding: 14px;
+  box-shadow: 0 10px 30px rgba(0,0,0,.06);
 }
-
-.panelTitle{
-  font-weight: 900;
-  margin: 2px 0 10px;
-}
-
-.salesCard{
-  background: #fff;
-  border: 1px solid rgba(0,0,0,.08);
-  border-radius: 14px;
-  padding: 12px;
-  margin-bottom: 10px;
-}
-
 .salesRow{
   display:flex;
   justify-content: space-between;
-  align-items:center;
-  padding: 8px 0;
-  border-bottom: 1px dashed rgba(0,0,0,.10);
+  gap: 12px;
+  padding: 6px 0;
+  border-bottom: 1px dashed rgba(0,0,0,.08);
 }
 .salesRow:last-child{ border-bottom: none; }
-
-.bottomGrid{
-  display:grid;
-  grid-template-columns: 58% 42%;
-  gap: 16px;
-  margin-top: 14px;
-  align-items: start;
+.salesHr{
+  border: none;
+  border-top: 1px solid rgba(0,0,0,.08);
+  margin: 10px 0;
 }
-
-/* 右下：空白エリア */
-.futureArea{
-  min-height: 320px;
-  background: rgba(255,255,255,0.35);
-  border: 1px dashed rgba(0,0,0,.15);
-  border-radius: 16px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-}
-
 .futurePlaceholder{
-  opacity: .6;
-  font-weight: 700;
-}
-
-/* ===== Responsive: collapse to 1-column ===== */
-@media (max-width: 980px){
-  .topGrid, .bottomGrid{
-    grid-template-columns: 1fr;
-  }
-  .futureArea{ min-height: 160px; }
-}
-/* ===== top: legend行 + calendar行 で揃える ===== */
-.topGrid{
-  display:grid;
-  grid-template-columns: 66% 34%;  /* カレンダーを少し大きく */
-  grid-template-rows: auto 1fr;    /* 上=凡例 / 下=本体 */
-  gap: 16px;
-  align-items: start;
-}
-
-/* 配置 */
-.calHeader{ grid-column: 1; grid-row: 1; }
-.futureTop{ grid-column: 2; grid-row: 1; }
-
-.calBody{ grid-column: 1; grid-row: 2; }
-.rightBody{ grid-column: 2; grid-row: 2; }
-
-/* 右上の空白（今後用） */
-.futureTop{
-  min-height: 72px; /* 凡例と高さ感を合わせる。必要なら調整 */
-  border: 1px dashed rgba(0,0,0,.15);
-  border-radius: 16px;
-  background: rgba(255,255,255,0.25);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-}
-
-.rightBody{
-  height: 100%;                 /* 左のカレンダー段の高さに揃う */
-  display:flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.salesPanel{
-  background: rgba(255,255,255,0.65);
-  border: 1px solid rgba(0,0,0,.08);
-  border-radius: 16px;
-  padding: 14px;
-}
-
-.futureBottom{
-  flex: 1;                      /* 売上の下に“残る空白” */
-  border: 1px dashed rgba(0,0,0,.15);
-  border-radius: 16px;
-  background: rgba(255,255,255,0.25);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-}
-
-.futurePlaceholder{
-  opacity: .6;
-  font-weight: 700;
-}
-
-/* カレンダー内の重なり対策（予約数表示が変の改善） */
-.calendar{ width:100%; box-sizing:border-box; overflow:hidden; }
-.dayCell{ position:relative; overflow:hidden; }
-.dayTop{ display:flex; align-items:center; justify-content:space-between; gap:8px; }
-.badge{ white-space:nowrap; }
-
-/* レスポンシブ */
-@media (max-width: 980px){
-  .topGrid{ grid-template-columns: 1fr; grid-template-rows: auto auto auto auto; }
-  .calHeader, .futureTop, .calBody, .rightBody{ grid-column:auto; grid-row:auto; }
-  .rightBody{ height:auto; }
-}
-/* ===== Desktop layout: calendar left / sales right ===== */
-.topGrid{
-  display: grid;
-  grid-template-columns: 1fr 360px; /* 右カラム幅 */
-  gap: 16px;
-  align-items: start;
-  margin-top: 12px;
-}
-
-.calBody{
-  min-width: 0;
-}
-
-.rightSide{
-  min-width: 0;
-  display: grid;
-  grid-template-rows: auto auto 1fr;
-  gap: 12px;
-}
-
-.salesPanel{
-  background: rgba(255,255,255,.92);
-  border: 1px solid rgba(0,0,0,.08);
-  border-radius: 18px;
-  padding: 14px;
-}
-
-.futurePlaceholder{
-  border: 2px dashed rgba(0,0,0,.15);
+  border: 2px dashed rgba(0,0,0,.14);
   border-radius: 18px;
   padding: 18px;
-  text-align: center;
+  text-align:center;
   background: rgba(255,255,255,.55);
-  color: rgba(0,0,0,.55);
+  color: var(--muted);
 }
 
-.futureTop .futurePlaceholder,
-.futureBottom .futurePlaceholder{
-  min-height: 56px;
+/* ===== calendar ===== */
+.calendar{
+  display:grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 10px;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 12px;
+  box-shadow: 0 10px 30px rgba(0,0,0,.06);
+}
+
+.weekHeader{
+  font-weight: 900;
+  text-align:center;
+  padding: 10px 0;
+  border-radius: 12px;
+  background: rgba(255,255,255,.75);
+  border: 1px solid rgba(0,0,0,.06);
+}
+
+.dayCell{
+  border: 1px solid rgba(0,0,0,.08);
+  border-radius: 16px;
+  background: #fff;
+  padding: 10px;
+  min-height: 86px;
+  position: relative;
+  cursor: pointer;
+}
+.dayTop{
+  display:flex;
+  align-items:center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.dayNum{
+  font-weight: 900;
+  font-size: 14px;
+  color: rgba(0,0,0,.70);
+}
+.badge{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-width: 74px;
+  padding: 8px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(0,0,0,.12);
+  background: #f6f1e7;
+  font-weight: 900;
+}
+.badge.note{
+  background: #eaf0ff;
+  min-width: 44px;
+}
+
+.monthlyTotal{
+  text-align:center;
+  font-weight: 900;
+  margin: 10px 0 0;
+}
+
+/* ===== store board ===== */
+.storeBoard{
+  margin-top: 18px;
+}
+.boardHeader{
+  display:flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 10px;
+  margin: 10px 2px;
+}
+.boardTitle{ font-size: 18px; font-weight: 900; }
+.boardSub{ color: var(--muted); font-size: 13px; }
+
+.boardGrid{
+  display:grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+.boardCard{
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 14px;
+  box-shadow: 0 10px 30px rgba(0,0,0,.06);
+}
+.cardTitle{
+  font-weight: 900;
+  margin-bottom: 10px;
+}
+.row{ margin: 10px 0; }
+.label{ display:block; font-weight: 800; font-size: 12px; color: var(--muted); margin-bottom: 6px; }
+.input, select, textarea{
+  width: 100%;
+  border: 1px solid rgba(0,0,0,.12);
+  border-radius: 14px;
+  padding: 10px 12px;
+  background: #fff;
+  font-size: 14px;
+}
+.memoBig{ min-height: 220px; resize: vertical; }
+.cardRow{ display:flex; gap: 10px; margin-top: 10px; }
+.hint{ color: var(--muted); font-size: 12px; }
+
+.photoRowInline{
+  display:grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  align-items: start;
+}
+.photoPreviewSide{
+  min-height: 220px;
+  border: 2px dashed rgba(179,138,75,.35);
+  border-radius: 18px;
+  background: rgba(255,255,255,.65);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow:hidden;
+}
+
+/* ===== modal (minimum) ===== */
+.hidden{ display:none !important; }
+.modal{
+  position: fixed;
+  inset: 0;
+  z-index: 30;
+}
+.modalBackdrop{
+  position:absolute;
+  inset:0;
+  background: rgba(0,0,0,.35);
+}
+.modalCard{
+  position: relative;
+  width: min(640px, calc(100% - 28px));
+  margin: 50px auto;
+  background: #fff;
+  border-radius: 18px;
+  border: 1px solid rgba(0,0,0,.12);
+  box-shadow: 0 20px 60px rgba(0,0,0,.25);
+  overflow:hidden;
+}
+.modalHeader{
+  display:flex;
+  justify-content: space-between;
+  align-items: start;
+  padding: 14px 14px 10px;
+  border-bottom: 1px solid rgba(0,0,0,.08);
+}
+.modalTitle{ font-weight: 900; }
+.modalSubTitle{ color: var(--muted); font-size: 12px; }
+.x{
+  border: 1px solid rgba(0,0,0,.12);
+  background:#fff;
+  border-radius: 12px;
+  padding: 8px 10px;
+  cursor:pointer;
+}
+.modalBody{ padding: 14px; }
+.modalFooter{
+  padding: 12px 14px 14px;
+  border-top: 1px solid rgba(0,0,0,.08);
+  display:flex;
+  justify-content:flex-end;
+}
+
+.bigSelect{ font-size: 18px; padding: 10px 12px; }
+.staffBox{ margin-top: 10px; }
+#staffInputs{ display:grid; gap: 8px; margin-top: 6px; }
+.staffRow{ display:flex; align-items:center; justify-content: space-between; gap: 10px; }
+.staffName{ font-weight: 800; }
+#staffInputs .staffCountSelect{ width: 140px; }
+.memoArea{ resize: vertical; }
+
+/* ===== mobile ===== */
+@media (max-width: 860px){
+  .topGrid{ grid-template-columns: 1fr; }
+  .boardGrid{ grid-template-columns: 1fr; }
+  .left,.right{ width: 40px; }
+}
+@media (max-width: 520px){
+  .wrap{ padding: 10px 10px 20px; }
+  .legend{ flex-wrap: wrap; }
+  .calendar{ grid-template-columns: 1fr; }
+  .weekHeader{ display:none; }
+  .dayCell{ min-height: 74px; }
+  .photoRowInline{ grid-template-columns: 1fr; }
 }
