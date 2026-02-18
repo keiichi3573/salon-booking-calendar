@@ -264,8 +264,8 @@ function renderMonth(){
     num.textContent = day;
 
     const badge = document.createElement("div");
-    badge.className = "badge";
-    badge.textContent = `予約 ${Number(info.count||0)}`;
+    badge.className = "badge reserveBadge";
+badge.textContent = `予${Number(info.count || 0)}`;
 
     top.appendChild(num);
     top.appendChild(badge);
