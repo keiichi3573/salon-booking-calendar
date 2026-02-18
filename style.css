@@ -394,7 +394,7 @@ body{
   color: #2563eb;
   white-space: nowrap;
 
-  font-size: 14px;   /* ←追加：大きくする */
+  font-size: 16px;   /* ←追加：大きくする */
   line-height: 1;    /* ←追加：縦の余白を詰める（不要なら消してOK） */
 }
 
