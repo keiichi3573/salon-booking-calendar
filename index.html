@@ -6,126 +6,122 @@
   <title>予約数カレンダー</title>
   <link rel="stylesheet" href="style.css" />
 </head>
+
 <body>
   <header class="topbar">
-  <div class="left"></div>
+    <div class="left"></div>
+    <div class="brandCenter">
+      <img class="brandLogo" src="logo.png" alt="COMFORT" />
+    </div>
+    <div class="right"></div>
+  </header>
 
-  <div class="brandCenter">
-    <img class="brandLogo" src="logo.png" alt="COMFORT" />
-  </div>
+  <main class="wrap">
 
-  <div class="right">
-   
-  </div>
-</header>
+    <!-- ===== legend（ここは今のままの内容でOK） ===== -->
+    <div class="legend">
+      <div class="monthNav">
+        <button id="prevBtn" class="navBtn" type="button">◀</button>
+        <div id="monthTitle" class="monthTitle"></div>
+        <button id="nextBtn" class="navBtn" type="button">▶</button>
+      </div>
 
+      <span class="chip closed">定休日</span>
+      <span class="chip note">📝 メモあり</span>
 
- <main class="wrap">
-
- <!-- 上段：左=カレンダー / 右=売上 -->
-<section class="topGrid">
-
-  <!-- 左：カレンダー -->
-  <div class="calBody">
-    <div class="calendar" id="calendar"></div>
-    <div id="monthlyTotalBookings" class="monthlyTotal"></div>
-  </div>
-
-  <!-- 右：売上エリア -->
-  <div class="rightSide">
-
-    <div class="futureTop">
-      <div class="futurePlaceholder">（今後のアップデート用）</div>
+      <div class="legendActions">
+        <button id="exportCsvBtn" class="btn" type="button">CSV出力</button>
+        <button id="settingsBtn" class="btn" type="button">設定</button>
+      </div>
     </div>
 
-    <aside class="salesPanel">
-      <div class="cardTitle">売上（準備中）</div>
-      <div>月 売上合計 —</div>
-      <div>月 客数合計 —</div>
-      <div>月 客単価 —</div>
-    </aside>
+    <!-- ===== 上段：左=カレンダー / 右=売上 ===== -->
+    <section class="topGrid">
+      <!-- 左：カレンダー -->
+      <div class="calBody">
+        <div class="calendar" id="calendar"></div>
+        <div id="monthlyTotalBookings" class="monthlyTotal"></div>
+      </div>
 
-    <div class="futureBottom">
-      <div class="futurePlaceholder">（空白：今後用）</div>
-    </div>
-
-  </div>
-
-</section>
-
-      <!-- 店舗ボード（今のまま） -->
-      <section class="storeBoard" id="storeBoard" aria-label="店舗ボード">
-        <div class="boardHeader">
-          <div class="boardTitle">店舗ボード（メモ）</div>
-          <div class="boardSub">日付を選んでメモ追加 → 完了チェック</div>
+      <!-- 右：売上（準備中）＋空白 -->
+      <div class="rightSide">
+        <div class="futureTop">
+          <div class="futurePlaceholder">（今後のアップデート用）</div>
         </div>
 
-        <div class="boardGrid">
-          <div class="boardCard">
-            <div class="cardTitle">メモ</div>
+        <aside class="salesPanel" aria-label="売上サマリー">
+          <div class="cardTitle">売上（準備中）</div>
+          <div class="salesRow"><span>月 売上合計</span><b>—</b></div>
+          <div class="salesRow"><span>月 客数合計</span><b>—</b></div>
+          <div class="salesRow"><span>月 客単価</span><b>—</b></div>
+          <hr class="salesHr" />
+          <div class="salesRow"><span>目標まで不足（売上）</span><b>—</b></div>
+          <div class="salesRow"><span>目標まで不足（客数）</span><b>—</b></div>
+          <div class="salesRow"><span>目標まで不足（客単価）</span><b>—</b></div>
+          <div class="hint" style="margin-top:10px;">※ ここは後で数値入力・自動計算を実装します</div>
+        </aside>
 
-            <div class="row">
-              <label class="label" for="memoDateSelect">日付</label>
-              <select id="memoDateSelect" class="input"></select>
-            </div>
+        <div class="futureBottom">
+          <div class="futurePlaceholder">（空白：今後用）</div>
+        </div>
+      </div>
+    </section>
 
-            <div class="row">
-              <label class="label" for="memoText">内容</label>
-              <textarea id="memoText" class="memoBig" rows="8" placeholder="例：やるべき事／指示／画像依頼 などまとめてOK"></textarea>
-            </div>
+    <!-- ===== 店舗ボード（今のIDを維持） ===== -->
+    <section class="storeBoard" id="storeBoard" aria-label="店舗ボード">
+      <div class="boardHeader">
+        <div class="boardTitle">店舗ボード（メモ）</div>
+        <div class="boardSub">日付を選んでメモ追加 → 完了チェック</div>
+      </div>
 
-            <div class="cardRow">
-              <button id="memoAddBtn" class="btn primary" type="button">追加</button>
-              <button id="memoClearInputBtn" class="btn" type="button">入力クリア</button>
-            </div>
+      <div class="boardGrid">
+        <div class="boardCard">
+          <div class="cardTitle">メモ</div>
 
-            <div class="hint" id="memoHint">※ 完了したメモはチェックで薄く表示します</div>
-            <div class="taskList" id="taskList"></div>
+          <div class="row">
+            <label class="label" for="memoDateSelect">日付</label>
+            <select id="memoDateSelect" class="input"></select>
           </div>
 
-          <div class="boardCard">
-            <div class="cardTitle">写真（共有）</div>
+          <div class="row">
+            <label class="label" for="memoText">内容</label>
+            <textarea id="memoText" class="memoBig" rows="8" placeholder="例：やるべき事／指示／画像依頼 などまとめてOK"></textarea>
+          </div>
 
-            <div class="photoRowInline">
-              <div class="photoControls">
-                <input id="photoFile" type="file" accept="image/*" />
-                <button id="photoUploadBtn" class="btn" type="button">アップロード</button>
-                <button id="photoDeleteBtn" class="btn" type="button">写真削除</button>
-                <div class="hint">※ 日付と無関係でOK</div>
-              </div>
+          <div class="cardRow">
+            <button id="memoAddBtn" class="btn primary" type="button">追加</button>
+            <button id="memoClearInputBtn" class="btn" type="button">入力クリア</button>
+          </div>
 
-              <div class="photoPreviewSide" id="photoPreview">
-                <div class="hint">プレビュー</div>
-              </div>
+          <div class="hint" id="memoHint">※ 完了したメモはチェックで薄く表示します</div>
+          <div class="taskList" id="taskList"></div>
+        </div>
+
+        <div class="boardCard">
+          <div class="cardTitle">写真（共有）</div>
+
+          <div class="photoRowInline">
+            <div class="photoControls">
+              <input id="photoFile" type="file" accept="image/*" />
+              <button id="photoUploadBtn" class="btn" type="button">アップロード</button>
+              <button id="photoDeleteBtn" class="btn" type="button">写真削除</button>
+              <div class="hint">※ 日付と無関係でOK</div>
+            </div>
+
+            <div class="photoPreviewSide" id="photoPreview">
+              <div class="hint">プレビュー</div>
             </div>
           </div>
         </div>
-      </section>
-    </div>
-
-    <!-- 右：将来用空白 -->
-    <div class="futureArea" aria-label="将来用エリア">
-      <div class="futurePlaceholder">（今後のアップデート用）</div>
-    </div>
-  </section>
-
-</main>
-
-
+      </div>
+    </section>
 
   </main>
 
   <!-- 日付入力モーダル -->
   <div class="modal hidden" id="dayModal">
-  <div class="modalBackdrop" data-close="dayModal"></div>
-  <div class="modalCard"
-       role="dialog"
-       aria-modal="true"
-       aria-hidden="true"
-       tabindex="-1">
-
-
-
+    <div class="modalBackdrop" data-close="dayModal"></div>
+    <div class="modalCard" role="dialog" aria-modal="true" aria-hidden="true" tabindex="-1">
       <div class="modalHeader">
         <div>
           <div class="modalTitle" id="dayModalTitle">日付</div>
@@ -137,14 +133,13 @@
       <div class="modalBody">
         <div class="bigInputBox">
           <div class="label">合計予約数</div>
-         <select id="totalCountSelect" class="bigSelect" disabled></select>
-
+          <select id="totalCountSelect" class="bigSelect" disabled></select>
         </div>
-<!-- スタッフ別入力欄 -->
-<div class="staffBox">
-  <div class="label">スタッフ別予約数</div>
-  <div id="staffInputs"></div>
-</div>
+
+        <div class="staffBox">
+          <div class="label">スタッフ別予約数</div>
+          <div id="staffInputs"></div>
+        </div>
 
         <div class="memoBox">
           <div class="label">メモ（小さめ）</div>
@@ -158,16 +153,10 @@
     </div>
   </div>
 
-  <!-- 設定（スタッフ管理）モーダル -->
-<div class="modal hidden" id="settingsModal">
-  <div class="modalBackdrop" data-close="settingsModal"></div>
-  <div class="modalCard"
-       role="dialog"
-       aria-modal="true"
-       aria-hidden="true"
-       tabindex="-1">
-
-
+  <!-- 設定モーダル -->
+  <div class="modal hidden" id="settingsModal">
+    <div class="modalBackdrop" data-close="settingsModal"></div>
+    <div class="modalCard" role="dialog" aria-modal="true" aria-hidden="true" tabindex="-1">
       <div class="modalHeader">
         <div>
           <div class="modalTitle">設定（スタッフ管理）</div>
@@ -196,14 +185,14 @@
           </div>
 
           <div>
-            <div class="label">スタッフ一覧（↑↓で並び替え / 退職者は無効）</div>
+            <div class="label">スタッフ一覧</div>
             <div id="staffList" class="staffList"></div>
           </div>
 
           <div>
             <div class="label">管理者PIN変更</div>
             <div class="row">
-              <input id="newPinInput" class="input" inputmode="numeric" placeholder="新しいPIN（4桁以上推奨）" />
+              <input id="newPinInput" class="input" inputmode="numeric" placeholder="新しいPIN" />
               <button id="pinChangeBtn" class="btn" type="button">変更</button>
             </div>
           </div>
@@ -216,7 +205,6 @@
     </div>
   </div>
 
-  <!-- Supabase JS -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="app.js"></script>
 </body>
