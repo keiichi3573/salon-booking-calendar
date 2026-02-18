@@ -741,28 +741,31 @@ const elMUnit = document.getElementById("mUnitPrice");
 if (elMUnit) elMUnit.textContent = unitPrice ? fmtYen(unitPrice) : "—";
 
 // DOM反映（安全形）
-const elMSales = document.getElementById("mSales");
-if (elMSales) elMSales.textContent = fmtYen(sumSales);
+// DOM反映（var にして重複宣言でも落ちない）
+var el;
 
-const elMCus = document.getElementById("mCustomers");
-if (elMCus) elMCus.textContent = fmtNum(sumCustomers) + "名";
+el = document.getElementById("mSales");
+if (el) el.textContent = fmtYen(sumSales);
 
-const elMUnit = document.getElementById("mUnitPrice");
-if (elMUnit) elMUnit.textContent = unitPrice ? fmtYen(unitPrice) : "—";
+el = document.getElementById("mCustomers");
+if (el) el.textContent = fmtNum(sumCustomers) + "名";
 
-const elLackSales = document.getElementById("lackSales");
-if (elLackSales) elLackSales.textContent = fmtYen(lackSales);
+el = document.getElementById("mUnitPrice");
+if (el) el.textContent = unitPrice ? fmtYen(unitPrice) : "—";
 
-const elLackCus = document.getElementById("lackCustomers");
-if (elLackCus) elLackCus.textContent = fmtNum(lackCustomers) + "名";
+el = document.getElementById("lackSales");
+if (el) el.textContent = fmtYen(lackSales);
 
-const elNeedSales = document.getElementById("needSales");
-if (elNeedSales) elNeedSales.textContent = remDays ? (fmtYen(needSalesPerDay) + "/日") : "—";
+el = document.getElementById("lackCustomers");
+if (el) el.textContent = fmtNum(lackCustomers) + "名";
 
-const elNeedCus = document.getElementById("needCustomers");
-if (elNeedCus) elNeedCus.textContent = remDays ? (fmtNum(needCustomersPerDay) + "名/日") : "—";
+el = document.getElementById("needSales");
+if (el) el.textContent = remDays ? (fmtYen(needSalesPerDay) + "/日") : "—";
 
-const hint = document.getElementById("statusHint");
+el = document.getElementById("needCustomers");
+if (el) el.textContent = remDays ? (fmtNum(needCustomersPerDay) + "名/日") : "—";
+
+var hint = document.getElementById("statusHint");
 if (hint){
   if (!sameMonth){
     hint.textContent = "※今月以外はペース判定しません";
@@ -774,17 +777,6 @@ if (hint){
   }
 }
 
-const hint = document.getElementById("statusHint");
-if (hint){
-  if (!sameMonth){
-    hint.textContent = "※今月以外はペース判定しません";
-    hint.classList.remove("ok","ng");
-  } else {
-    hint.textContent = onTrack ? "黒字ペース（目標達成できそう）" : "赤字ペース（このままだと未達）";
-    hint.classList.toggle("ok", onTrack);
-    hint.classList.toggle("ng", !onTrack);
-  }
-}
 
   renderMonth();
 }
