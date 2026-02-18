@@ -20,83 +20,113 @@
 </header>
 
 
-  <main class="wrap">
-   <div class="legend">
+ <main class="wrap">
 
-  <div class="monthNav">
-    <button id="prevBtn" class="navBtn" type="button">◀</button>
-    <div id="monthTitle" class="monthTitle"></div>
-    <button id="nextBtn" class="navBtn" type="button">▶</button>
-  </div>
+  <!-- 上段：左=カレンダー / 右=売上 -->
+  <section class="topGrid">
+    <div class="calArea">
+      <div class="legend">
+        <div class="monthNav">
+          <button id="prevBtn" class="navBtn" type="button">◀</button>
+          <div id="monthTitle" class="monthTitle"></div>
+          <button id="nextBtn" class="navBtn" type="button">▶</button>
+        </div>
 
-  <span class="chip closed">定休日</span>
-  <span class="chip note">📝 メモあり</span>
+        <span class="chip closed">定休日</span>
+        <span class="chip note">📝 メモあり</span>
 
-  <div class="legendActions">
-    <button id="exportCsvBtn" class="btn" type="button">CSV出力</button>
-    <button id="settingsBtn" class="btn" type="button">設定</button>
-  </div>
-
-</div>
-
-
-
-
-    <div class="calendar" id="calendar"></div>
-    <div id="monthlyTotalBookings" class="monthlyTotal"></div>
-
-<!-- 店舗ボード（カレンダー下／タスク型：日付＋メモ＋完了＋写真） -->
-<section class="storeBoard" id="storeBoard" aria-label="店舗ボード">
-  <div class="boardHeader">
-    <div class="boardTitle">店舗ボード（メモ）</div>
-    <div class="boardSub">日付を選んでメモ追加 → 完了チェック</div>
-  </div>
-
-  <div class="boardGrid">
-    <!-- 左：メモ（選択日ごと） -->
-    <div class="boardCard">
-      <div class="cardTitle">メモ</div>
-
-      <div class="row">
-        <label class="label" for="memoDateSelect">日付</label>
-        <select id="memoDateSelect" class="input"></select>
-      </div>
-
-      <div class="row">
-        <label class="label" for="memoText">内容</label>
-        <textarea id="memoText" class="memoBig" rows="8" placeholder="例：やるべき事／指示／画像依頼 などまとめてOK"></textarea>
-      </div>
-
-      <div class="cardRow">
-        <button id="memoAddBtn" class="btn primary" type="button">追加</button>
-        <button id="memoClearInputBtn" class="btn" type="button">入力クリア</button>
-      </div>
-
-      <div class="hint" id="memoHint">※ 完了したメモはチェックで薄く表示します</div>
-
-      <div class="taskList" id="taskList"></div>
-    </div>
-
-    <!-- 右：写真（共有／日付に紐づけない、プレビューは右側） -->
-    <div class="boardCard">
-      <div class="cardTitle">写真（共有）</div>
-
-      <div class="photoRowInline">
-       <div class="photoControls">
-  <input id="photoFile" type="file" accept="image/*" />
-  <button id="photoUploadBtn" class="btn" type="button">アップロード</button>
-  <button id="photoDeleteBtn" class="btn" type="button">写真削除</button>
-  <div class="hint">※ 日付と無関係でOK</div>
-</div>
-
-
-        <div class="photoPreviewSide" id="photoPreview">
-          <div class="hint">プレビュー</div>
+        <div class="legendActions">
+          <button id="exportCsvBtn" class="btn" type="button">CSV出力</button>
+          <button id="settingsBtn" class="btn" type="button">設定</button>
         </div>
       </div>
+
+      <div class="calendar" id="calendar"></div>
+      <div id="monthlyTotalBookings" class="monthlyTotal"></div>
     </div>
-  </div>
-</section>
+
+    <!-- 右：売上エリア（今は仮枠） -->
+    <aside class="salesArea" aria-label="売上サマリー">
+      <div class="panelTitle">売上（準備中）</div>
+
+      <div class="salesCard">
+        <div class="salesRow"><span>月 売上合計</span><strong>—</strong></div>
+        <div class="salesRow"><span>月 客数合計</span><strong>—</strong></div>
+        <div class="salesRow"><span>月 客単価</span><strong>—</strong></div>
+      </div>
+
+      <div class="salesCard">
+        <div class="salesRow"><span>目標まで不足（売上）</span><strong>—</strong></div>
+        <div class="salesRow"><span>目標まで不足（客数）</span><strong>—</strong></div>
+        <div class="salesRow"><span>目標まで不足（客単価）</span><strong>—</strong></div>
+      </div>
+
+      <div class="salesCard">
+        <div class="hint">※ ここは後で数値入力・自動計算を実装します</div>
+      </div>
+    </aside>
+  </section>
+
+  <!-- 下段：左=店舗ボード（メモ＋写真） / 右=空白 -->
+  <section class="bottomGrid">
+    <div class="boardArea">
+      <!-- 店舗ボード（今のまま） -->
+      <section class="storeBoard" id="storeBoard" aria-label="店舗ボード">
+        <div class="boardHeader">
+          <div class="boardTitle">店舗ボード（メモ）</div>
+          <div class="boardSub">日付を選んでメモ追加 → 完了チェック</div>
+        </div>
+
+        <div class="boardGrid">
+          <div class="boardCard">
+            <div class="cardTitle">メモ</div>
+
+            <div class="row">
+              <label class="label" for="memoDateSelect">日付</label>
+              <select id="memoDateSelect" class="input"></select>
+            </div>
+
+            <div class="row">
+              <label class="label" for="memoText">内容</label>
+              <textarea id="memoText" class="memoBig" rows="8" placeholder="例：やるべき事／指示／画像依頼 などまとめてOK"></textarea>
+            </div>
+
+            <div class="cardRow">
+              <button id="memoAddBtn" class="btn primary" type="button">追加</button>
+              <button id="memoClearInputBtn" class="btn" type="button">入力クリア</button>
+            </div>
+
+            <div class="hint" id="memoHint">※ 完了したメモはチェックで薄く表示します</div>
+            <div class="taskList" id="taskList"></div>
+          </div>
+
+          <div class="boardCard">
+            <div class="cardTitle">写真（共有）</div>
+
+            <div class="photoRowInline">
+              <div class="photoControls">
+                <input id="photoFile" type="file" accept="image/*" />
+                <button id="photoUploadBtn" class="btn" type="button">アップロード</button>
+                <button id="photoDeleteBtn" class="btn" type="button">写真削除</button>
+                <div class="hint">※ 日付と無関係でOK</div>
+              </div>
+
+              <div class="photoPreviewSide" id="photoPreview">
+                <div class="hint">プレビュー</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- 右：将来用空白 -->
+    <div class="futureArea" aria-label="将来用エリア">
+      <div class="futurePlaceholder">（今後のアップデート用）</div>
+    </div>
+  </section>
+
+</main>
 
 
 
