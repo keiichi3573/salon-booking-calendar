@@ -334,3 +334,29 @@ body{
   .dayCell{ min-height: 74px; }
   .photoRowInline{ grid-template-columns: 1fr; }
 }
+/* ===== FIX: カレンダーが右側に食い込むのを防ぐ ===== */
+.calBody{
+  overflow: hidden;     /* 左列からのはみ出しを見せない */
+  min-width: 0;         /* Gridで縮められるように */
+}
+
+/* 7列を「縮められる列」にする（これが重要） */
+.calendar{
+  width: 100%;
+  max-width: 100%;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+}
+
+/* 各セルも縮められるように＆中身がはみ出しても隠す */
+.dayCell,
+.weekHeader{
+  min-width: 0;
+  overflow: hidden;
+}
+
+/* バッジの最小幅が原因で押し広げるのを防ぐ */
+.badge{
+  min-width: 0;         /* ← これでセルが広がらない */
+  max-width: 100%;
+  white-space: nowrap;
+}
