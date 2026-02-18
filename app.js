@@ -287,13 +287,14 @@ badge.textContent = `予${Number(info.count || 0)}`;
   }
 }
 
-function fillSelect(){
-  totalSelect.innerHTML = "";
+function fillCountSelect(el){
+  if(!el) return;
+  el.innerHTML = "";
   for(let i=0;i<=MAX_COUNT;i++){
     const opt = document.createElement("option");
     opt.value = String(i);
     opt.textContent = String(i);
-    totalSelect.appendChild(opt);
+    el.appendChild(opt);
   }
 }
 
@@ -368,13 +369,18 @@ async function openDayEditor(date){
   totalSelect.value = String(Number(daily?.total ?? total));
 
 
-  // ★メモを反映（ここが今回の目的）
-  
+ // 客数プルダウンを毎回埋める（空のまま問題を確実に防ぐ）
+fillCountSelect(newCustomersSelect);
+fillCountSelect(repeatCustomersSelect);
 
-  openModal(dayModal);
+// 売上/客数を入力欄へ反映（なければ0）
+if (techSalesInput)        techSalesInput.value = String(Number(daily?.tech_sales || 0));
+if (retailSalesInput)      retailSalesInput.value = String(Number(daily?.retail_sales || 0));
+if (newCustomersSelect)    newCustomersSelect.value = String(Number(daily?.new_customers || 0));
+if (repeatCustomersSelect) repeatCustomersSelect.value = String(Number(daily?.repeat_customers || 0));
+
+openModal(dayModal);
 }
-
-
 
 async function saveDay(){
   try{
