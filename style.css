@@ -397,4 +397,35 @@ body{
   font-size: 16px;   /* ←追加：大きくする */
   line-height: 1;    /* ←追加：縦の余白を詰める（不要なら消してOK） */
 }
+/* =========================
+  定休日カラー（セル＋上部チップ共通）
+========================= */
+:root{
+  --closed-bg: #fff2f2;     /* 定休日セルの背景 */
+  --closed-text: #d94848;   /* 定休日文字（セル/チップ） */
+  --closed-border: #f3b4b4; /* チップの枠 */
+}
+
+/* カレンダー：定休日セル */
+.dayCell.closed{
+  background: var(--closed-bg);
+}
+
+/* カレンダー：定休日の「日付数字」 */
+.dayCell.closed .dayNum{
+  color: var(--closed-text);
+  font-weight: 900;
+}
+
+/* カレンダー：定休日の「予〇」も同色にしたい場合 */
+.dayCell.closed .reserveBadge{
+  color: var(--closed-text);
+}
+
+/* 上部：定休日チップ（凡例）も同じ色 */
+.legend .chip.closed{
+  color: var(--closed-text);
+  border-color: var(--closed-border);
+  background: color-mix(in srgb, var(--closed-bg) 60%, #ffffff);
+}
 
