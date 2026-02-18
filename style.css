@@ -482,4 +482,30 @@ body{
   order: -1;          /* 売上カードを一番上へ */
   margin-top: 0 !important;
 }
+.salesInputs{
+  display: grid;
+  gap: 10px;
+}
+
+.fieldRow{
+  display: grid;
+  grid-template-columns: 130px 1fr;
+  gap: 10px;
+  align-items: center;
+}
+
+.fieldLabel{
+  font-size: 13px;
+  font-weight: 700;
+  opacity: 0.9;
+}
+
+.fieldInput,
+.fieldSelect{
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid #e5e7eb;
+  background: #fff;
+}
 
