@@ -147,6 +147,23 @@ const fromDateKey = (s)=>{
 
 function startOfMonth(d){ return new Date(d.getFullYear(), d.getMonth(), 1); }
 function endOfMonth(d){ return new Date(d.getFullYear(), d.getMonth()+1, 0); }
+function fmtYen(n){
+  const v = Math.max(0, Math.floor(Number(n||0)));
+  return v.toLocaleString("ja-JP") + "円";
+}
+function fmtNum(n){
+  const v = Math.max(0, Math.floor(Number(n||0)));
+  return v.toLocaleString("ja-JP");
+}
+function remainingDaysInViewedMonth(viewDate){
+  const now = new Date();
+  const sameMonth = (now.getFullYear() === viewDate.getFullYear()) && (now.getMonth() === viewDate.getMonth());
+  if (!sameMonth) return 0;
+  const last = endOfMonth(viewDate).getDate();
+  const today = now.getDate();
+  return Math.max(0, last - today + 1); // 今日含む
+}
+
 function addMonths(d, diff){ return new Date(d.getFullYear(), d.getMonth()+diff, 1); }
 
 const WEEK = ["日","月","火","水","木","金","土"];
