@@ -646,7 +646,8 @@ async function loadAndRender(){
 
   const res = await sb
     .from("bookings_daily")
-    .select("day,total,note")
+    .select("day,total,tech_sales,retail_sales,new_customers,repeat_customers")
+
     .gte("day", startKey)
     .lte("day", endKey);
 
@@ -663,10 +664,40 @@ if (el) el.textContent = "今月 合計予約数：0";
     console.log("bookings_daily rows:", res.data);
 
     let monthTotal = 0; // ★追加：月合計
+let sumSales = 0;
+let sumCustomers = 0;
+
+// 目標（固定）
+const GOAL_CUSTOMERS = 200;
+const GOAL_UNIT_PRICE = 7500;
+const GOAL_SALES = GOAL_CUSTOMERS * GOAL_UNIT_PRICE;
+      
+function fmtYen(n){
+  const v = Math.max(0, Math.floor(Number(n||0)));
+  return v.toLocaleString("ja-JP") + "円";
+}
+function fmtNum(n){
+  const v = Math.max(0, Math.floor(Number(n||0)));
+  return v.toLocaleString("ja-JP");
+}
+function remainingDaysInViewedMonth(viewDate){
+  const now = new Date();
+  const sameMonth = (now.getFullYear() === viewDate.getFullYear()) && (now.getMonth() === viewDate.getMonth());
+  if (!sameMonth) return 0;
+  const last = endOfMonth(viewDate).getDate();
+  const today = now.getDate();
+  return Math.max(0, last - today + 1); // 今日含む
+}
 
     for (const r of (res.data || [])) {
       const c = Number(r.total || 0);
       monthTotal += c; // ★追加：加算
+const tech = Number(r.tech_sales || 0);
+const retail = Number(r.retail_sales || 0);
+const cus = Number(r.new_customers || 0) + Number(r.repeat_customers || 0);
+
+sumSales += (tech + retail);
+sumCustomers += cus;
 
       monthData[r.day] = {
         count: c,
@@ -679,6 +710,49 @@ if (el) el.textContent = "今月 合計予約数：0";
 if (el) el.textContent = `今月 合計予約数：${monthTotal}`;
 
   }
+const lackSales = Math.max(0, GOAL_SALES - sumSales);
+const lackCustomers = Math.max(0, GOAL_CUSTOMERS - sumCustomers);
+
+const remDays = remainingDaysInViewedMonth(viewDate);
+const needSalesPerDay = remDays > 0 ? Math.ceil(lackSales / remDays) : 0;
+const needCustomersPerDay = remDays > 0 ? Math.ceil(lackCustomers / remDays) : 0;
+
+const unitPrice = sumCustomers > 0 ? Math.floor(sumSales / sumCustomers) : 0;
+
+// “達成できそう？”判定（今月のみ：経過日数に対する目標ペースと比較）
+let onTrack = true;
+const now = new Date();
+const sameMonth = (now.getFullYear() === viewDate.getFullYear()) && (now.getMonth() === viewDate.getMonth());
+if (sameMonth){
+  const elapsedDays = now.getDate();
+  const daysInMonth = endOfMonth(viewDate).getDate();
+  const expectedByNowSales = Math.floor(GOAL_SALES * (elapsedDays / daysInMonth));
+  const expectedByNowCustomers = Math.floor(GOAL_CUSTOMERS * (elapsedDays / daysInMonth));
+  onTrack = (sumSales >= expectedByNowSales) && (sumCustomers >= expectedByNowCustomers);
+}
+
+// DOM反映
+document.getElementById("mSales")?.textContent = fmtYen(sumSales);
+document.getElementById("mCustomers")?.textContent = fmtNum(sumCustomers) + "名";
+document.getElementById("mUnitPrice")?.textContent = unitPrice ? fmtYen(unitPrice) : "—";
+
+document.getElementById("lackSales")?.textContent = fmtYen(lackSales);
+document.getElementById("lackCustomers")?.textContent = fmtNum(lackCustomers) + "名";
+
+document.getElementById("needSales")?.textContent = remDays ? (fmtYen(needSalesPerDay) + "/日") : "—";
+document.getElementById("needCustomers")?.textContent = remDays ? (fmtNum(needCustomersPerDay) + "名/日") : "—";
+
+const hint = document.getElementById("statusHint");
+if (hint){
+  if (!sameMonth){
+    hint.textContent = "※今月以外はペース判定しません";
+    hint.classList.remove("ok","ng");
+  } else {
+    hint.textContent = onTrack ? "黒字ペース（目標達成できそう）" : "赤字ペース（このままだと未達）";
+    hint.classList.toggle("ok", onTrack);
+    hint.classList.toggle("ng", !onTrack);
+  }
+}
 
   renderMonth();
 }
