@@ -22,38 +22,33 @@
 
  <main class="wrap">
 
-  <!-- 上段：左=カレンダー / 右=売上 -->
+ <!-- 上段：左=カレンダー / 右=売上 -->
 <section class="topGrid">
 
-  <!-- 左上：凡例（以前と同じ幅＝左列幅） -->
-  <div class="calHeader">
-    <div class="legend">
-      <!-- ここは今の legend をそのまま -->
-      ...（省略：あなたの legend 内容をそのまま）...
-    </div>
-  </div>
-
-  <!-- 右上：空白（今後用） -->
-  <div class="futureTop">
-    <div class="futurePlaceholder">（今後のアップデート用）</div>
-  </div>
-
-  <!-- 左下：カレンダー本体 -->
+  <!-- 左：カレンダー -->
   <div class="calBody">
     <div class="calendar" id="calendar"></div>
     <div id="monthlyTotalBookings" class="monthlyTotal"></div>
   </div>
 
-  <!-- 右下：売上（＋下に空白を残す） -->
-  <div class="rightBody">
-    <aside class="salesPanel" aria-label="売上サマリー">
-      <!-- 売上の中身は今のままでOK -->
-      ...（売上カード類）...
+  <!-- 右：売上エリア -->
+  <div class="rightSide">
+
+    <div class="futureTop">
+      <div class="futurePlaceholder">（今後のアップデート用）</div>
+    </div>
+
+    <aside class="salesPanel">
+      <div class="cardTitle">売上（準備中）</div>
+      <div>月 売上合計 —</div>
+      <div>月 客数合計 —</div>
+      <div>月 客単価 —</div>
     </aside>
 
     <div class="futureBottom">
       <div class="futurePlaceholder">（空白：今後用）</div>
     </div>
+
   </div>
 
 </section>
