@@ -508,4 +508,6 @@ body{
   border: 1px solid #e5e7eb;
   background: #fff;
 }
+#statusHint.ok{ color: #111; font-weight: 800; }
+#statusHint.ng{ color: #dc2626; font-weight: 900; }
 
