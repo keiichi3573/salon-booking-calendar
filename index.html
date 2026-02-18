@@ -18,22 +18,34 @@
 
   <main class="wrap">
 
-    <!-- ===== legend（ここは今のままの内容でOK） ===== -->
-    <div class="legend">
-      <div class="monthNav">
-        <button id="prevBtn" class="navBtn" type="button">◀</button>
-        <div id="monthTitle" class="monthTitle"></div>
-        <button id="nextBtn" class="navBtn" type="button">▶</button>
-      </div>
-
-      <span class="chip closed">定休日</span>
-      <span class="chip note">📝 メモあり</span>
-
-      <div class="legendActions">
-        <button id="exportCsvBtn" class="btn" type="button">CSV出力</button>
-        <button id="settingsBtn" class="btn" type="button">設定</button>
-      </div>
+   <!-- ===== legend（3分割に変更） ===== -->
+<div class="legend">
+  <!-- 左：月移動 -->
+  <div class="legendLeft">
+    <div class="monthNav">
+      <button id="prevBtn" class="navBtn" type="button">◀</button>
+      <div id="monthTitle" class="monthTitle"></div>
+      <button id="nextBtn" class="navBtn" type="button">▶</button>
     </div>
+  </div>
+
+  <!-- 中央：合計予約数（ここに移動） -->
+  <div class="legendCenter">
+    <div id="totalMonthCount" class="totalMonthCount"></div>
+  </div>
+
+  <!-- 右：定休日・メモあり・CSV・設定 -->
+  <div class="legendRight">
+    <span class="chip closed">定休日</span>
+    <span class="chip note">📝 メモあり</span>
+
+    <div class="legendActions">
+      <button id="exportCsvBtn" class="btn" type="button">CSV出力</button>
+      <button id="settingsBtn" class="btn" type="button">設定</button>
+    </div>
+  </div>
+</div>
+
 
     <!-- ===== 上段：左=カレンダー / 右=売上 ===== -->
     <section class="topGrid">
