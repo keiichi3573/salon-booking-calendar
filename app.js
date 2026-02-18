@@ -732,8 +732,7 @@ if (sameMonth){
 }
 
 // DOM反映（安全形：optional chaining を代入の左側に使わない）
-const elMSales = document.getElementById("mSales");
-if (elMSales) elMSales.textContent = fmtYen(sumSales);
+
 
 const elMCus = document.getElementById("mCustomers");
 if (elMCus) elMCus.textContent = fmtNum(sumCustomers) + "名";
