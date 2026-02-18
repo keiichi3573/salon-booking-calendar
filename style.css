@@ -447,4 +447,29 @@ body{
   align-self: start;
   margin-top: 0;
 }
+/* 左右（カレンダー/売上）を上揃えに固定 */
+.topGrid{
+  align-items: start;     /* gridの場合に効く */
+}
+
+/* 右側カラム自体も上から詰める */
+.rightSide{
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+  align-self: start;
+}
+
+/* 売上カードを右カラムの先頭に揃える */
+.rightSide .salesPanel{
+  margin-top: 0 !important;
+  align-self: start;
+}
+
+/* （今後枠を消したあとに余白だけ残る対策） */
+.rightSide .futureTop,
+.rightSide .futureBottom{
+  margin: 0 !important;
+  padding: 0 !important;
+  height: 0 !important;
+}
 
