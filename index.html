@@ -23,53 +23,41 @@
  <main class="wrap">
 
   <!-- 上段：左=カレンダー / 右=売上 -->
-  <section class="topGrid">
-    <div class="calArea">
-      <div class="legend">
-        <div class="monthNav">
-          <button id="prevBtn" class="navBtn" type="button">◀</button>
-          <div id="monthTitle" class="monthTitle"></div>
-          <button id="nextBtn" class="navBtn" type="button">▶</button>
-        </div>
+<section class="topGrid">
 
-        <span class="chip closed">定休日</span>
-        <span class="chip note">📝 メモあり</span>
-
-        <div class="legendActions">
-          <button id="exportCsvBtn" class="btn" type="button">CSV出力</button>
-          <button id="settingsBtn" class="btn" type="button">設定</button>
-        </div>
-      </div>
-
-      <div class="calendar" id="calendar"></div>
-      <div id="monthlyTotalBookings" class="monthlyTotal"></div>
+  <!-- 左上：凡例（以前と同じ幅＝左列幅） -->
+  <div class="calHeader">
+    <div class="legend">
+      <!-- ここは今の legend をそのまま -->
+      ...（省略：あなたの legend 内容をそのまま）...
     </div>
+  </div>
 
-    <!-- 右：売上エリア（今は仮枠） -->
-    <aside class="salesArea" aria-label="売上サマリー">
-      <div class="panelTitle">売上（準備中）</div>
+  <!-- 右上：空白（今後用） -->
+  <div class="futureTop">
+    <div class="futurePlaceholder">（今後のアップデート用）</div>
+  </div>
 
-      <div class="salesCard">
-        <div class="salesRow"><span>月 売上合計</span><strong>—</strong></div>
-        <div class="salesRow"><span>月 客数合計</span><strong>—</strong></div>
-        <div class="salesRow"><span>月 客単価</span><strong>—</strong></div>
-      </div>
+  <!-- 左下：カレンダー本体 -->
+  <div class="calBody">
+    <div class="calendar" id="calendar"></div>
+    <div id="monthlyTotalBookings" class="monthlyTotal"></div>
+  </div>
 
-      <div class="salesCard">
-        <div class="salesRow"><span>目標まで不足（売上）</span><strong>—</strong></div>
-        <div class="salesRow"><span>目標まで不足（客数）</span><strong>—</strong></div>
-        <div class="salesRow"><span>目標まで不足（客単価）</span><strong>—</strong></div>
-      </div>
-
-      <div class="salesCard">
-        <div class="hint">※ ここは後で数値入力・自動計算を実装します</div>
-      </div>
+  <!-- 右下：売上（＋下に空白を残す） -->
+  <div class="rightBody">
+    <aside class="salesPanel" aria-label="売上サマリー">
+      <!-- 売上の中身は今のままでOK -->
+      ...（売上カード類）...
     </aside>
-  </section>
 
-  <!-- 下段：左=店舗ボード（メモ＋写真） / 右=空白 -->
-  <section class="bottomGrid">
-    <div class="boardArea">
+    <div class="futureBottom">
+      <div class="futurePlaceholder">（空白：今後用）</div>
+    </div>
+  </div>
+
+</section>
+
       <!-- 店舗ボード（今のまま） -->
       <section class="storeBoard" id="storeBoard" aria-label="店舗ボード">
         <div class="boardHeader">
