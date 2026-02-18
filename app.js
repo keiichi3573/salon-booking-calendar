@@ -181,6 +181,32 @@ function isClosedDay(date){
   return false;
 }
 
+// ★ここに追加（isClosedDay の直後）
+function remainingBusinessDaysInViewedMonth(viewDate){
+  const now = new Date();
+
+  const sameMonth =
+    (now.getFullYear() === viewDate.getFullYear()) &&
+    (now.getMonth() === viewDate.getMonth());
+
+  if (!sameMonth) return 0;
+
+  const y = viewDate.getFullYear();
+  const m = viewDate.getMonth();
+  const lastDay = endOfMonth(viewDate).getDate();
+  const today = now.getDate();
+
+  let count = 0;
+
+  // 今日を含めて残り営業日を数える（定休日は除外）
+  for (let i = today; i <= lastDay; i++){
+    const d = new Date(y, m, i);
+    if (!isClosedDay(d)) count++;
+  }
+  return count;
+}
+
+
 // ===== Supabase helpers =====
 async function ensureTablesExistHint(){
   // テーブルが無いと以降が失敗するので、エラーを見やすくする
