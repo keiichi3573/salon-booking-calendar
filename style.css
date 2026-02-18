@@ -1135,3 +1135,71 @@ body{
   }
   .futureArea{ min-height: 160px; }
 }
+/* ===== top: legend行 + calendar行 で揃える ===== */
+.topGrid{
+  display:grid;
+  grid-template-columns: 66% 34%;  /* カレンダーを少し大きく */
+  grid-template-rows: auto 1fr;    /* 上=凡例 / 下=本体 */
+  gap: 16px;
+  align-items: start;
+}
+
+/* 配置 */
+.calHeader{ grid-column: 1; grid-row: 1; }
+.futureTop{ grid-column: 2; grid-row: 1; }
+
+.calBody{ grid-column: 1; grid-row: 2; }
+.rightBody{ grid-column: 2; grid-row: 2; }
+
+/* 右上の空白（今後用） */
+.futureTop{
+  min-height: 72px; /* 凡例と高さ感を合わせる。必要なら調整 */
+  border: 1px dashed rgba(0,0,0,.15);
+  border-radius: 16px;
+  background: rgba(255,255,255,0.25);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.rightBody{
+  height: 100%;                 /* 左のカレンダー段の高さに揃う */
+  display:flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.salesPanel{
+  background: rgba(255,255,255,0.65);
+  border: 1px solid rgba(0,0,0,.08);
+  border-radius: 16px;
+  padding: 14px;
+}
+
+.futureBottom{
+  flex: 1;                      /* 売上の下に“残る空白” */
+  border: 1px dashed rgba(0,0,0,.15);
+  border-radius: 16px;
+  background: rgba(255,255,255,0.25);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.futurePlaceholder{
+  opacity: .6;
+  font-weight: 700;
+}
+
+/* カレンダー内の重なり対策（予約数表示が変の改善） */
+.calendar{ width:100%; box-sizing:border-box; overflow:hidden; }
+.dayCell{ position:relative; overflow:hidden; }
+.dayTop{ display:flex; align-items:center; justify-content:space-between; gap:8px; }
+.badge{ white-space:nowrap; }
+
+/* レスポンシブ */
+@media (max-width: 980px){
+  .topGrid{ grid-template-columns: 1fr; grid-template-rows: auto auto auto auto; }
+  .calHeader, .futureTop, .calBody, .rightBody{ grid-column:auto; grid-row:auto; }
+  .rightBody{ height:auto; }
+}
