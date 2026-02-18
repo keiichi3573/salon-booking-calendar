@@ -711,7 +711,8 @@ async function loadAndRender(){
   const lackSales = Math.max(0, GOAL_SALES - sumSales);
   const lackCustomers = Math.max(0, GOAL_CUSTOMERS - sumCustomers);
 
-  const remDays = remainingDaysInViewedMonth(viewDate);
+ const remDays = remainingDaysInViewedMonth(viewDate);
+
   const needSalesPerDay = remDays > 0 ? Math.ceil(lackSales / remDays) : 0;
   const needCustomersPerDay = remDays > 0 ? Math.ceil(lackCustomers / remDays) : 0;
 
