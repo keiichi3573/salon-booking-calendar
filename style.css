@@ -472,4 +472,14 @@ body{
   padding: 0 !important;
   height: 0 !important;
 }
+/* 右側を縦並びのflexにして、売上カードを先頭へ */
+.rightSide{
+  display: flex;
+  flex-direction: column;
+}
+
+.rightSide .salesPanel{
+  order: -1;          /* 売上カードを一番上へ */
+  margin-top: 0 !important;
+}
 
