@@ -225,22 +225,21 @@ function remainingBusinessDaysInViewedMonth(viewDate){
   const now = new Date();
 
   const sameMonth =
-    (now.getFullYear() === viewDate.getFullYear()) &&
-    (now.getMonth() === viewDate.getMonth());
-
+    now.getFullYear() === viewDate.getFullYear() &&
+    now.getMonth() === viewDate.getMonth();
   if (!sameMonth) return 0;
 
-  const first = startOfMonth(viewDate);
-  const lastDay = endOfMonth(viewDate).getDate();
-  const today = now.getDate();
-
+  const last = endOfMonth(viewDate).getDate();
   let count = 0;
-  for(let day=today; day<=lastDay; day++){
-    const d = new Date(first.getFullYear(), first.getMonth(), day);
-    if(isBusinessDay(d)) count++;
+
+  // ★明日から数える（今日入力=確定なので今日を残りに含めない）
+  for (let day = now.getDate() + 1; day <= last; day++){
+    const d = new Date(now.getFullYear(), now.getMonth(), day);
+    if (!isClosedDay(d)) count++;
   }
   return count;
 }
+
 
 // ===== 営業日カウント（isClosedDay を使う）=====
 function isBusinessDay(date){
