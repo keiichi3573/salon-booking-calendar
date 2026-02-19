@@ -511,65 +511,63 @@ body{
 #statusHint.ok{ color: #111; font-weight: 800; }
 #statusHint.ng{ color: #dc2626; font-weight: 900; }
 /* ===== スマホは前のシンプル表示に戻す ===== */
-@media (max-width: 520px) {
- /* 上のヘッダー（左右並び）を折り返し可能にする */
-  .legendBar{
+/* ===== スマホ：確認用（ヘッダー整形 + 売上非表示 + 一覧表示） ===== */
+@media (max-width: 520px){
+
+  /* ヘッダー全体（legend）を折り返して被り防止 */
+  .legend{
+    display: flex !important;
     flex-wrap: wrap !important;
-    row-gap: 10px !important;
+    gap: 10px !important;
     height: auto !important;
+    align-items: center !important;
   }
 
-  /* 右側（定休日・メモあり・CSV・設定）を折り返して2段に */
+  /* 右側（定休日・メモあり・CSV・設定） */
   .legendRight{
+    display: flex !important;
     flex-wrap: wrap !important;
     gap: 8px !important;
     justify-content: flex-end !important;
   }
 
-  /* チップが大きすぎる場合に少しだけ縮める */
   .chip{
     font-size: 12px !important;
     padding: 6px 10px !important;
   }
 
-  /* スマホはCSV/設定が無効で薄いので、表示自体なくしてスッキリ */
+  /* スマホはCSV/設定を非表示（確認専用） */
   .legendActions{
     display: none !important;
   }
-}
-  /* 上段を1カラム（カレンダーだけ）に */
-  .topGrid {
+
+  /* 上段は1カラム（カレンダーのみ） */
+  .topGrid{
     display: block !important;
   }
 
-  /* 右側（売上・今後枠）を非表示 */
+  /* 売上パネル類は非表示 */
   .rightSide,
   .salesPanel,
   .futureTop,
-  .futureBottom {
+  .futureBottom{
     display: none !important;
   }
 
   /* カレンダーを横いっぱい */
   .calBody,
-  .calendar {
+  .calendar{
     width: 100% !important;
     max-width: 100% !important;
-  }
-
-  /* 余白を少し詰める（必要なら） */
-  .calBody {
     margin: 0 !important;
   }
-}
-@media (max-width: 520px){
-  /* スマホは“一覧表示”用 */
+
+  /* スマホは“一覧表示” */
   .calendar.mobileList{
     display: flex !important;
     flex-direction: column !important;
     gap: 10px !important;
   }
-
   .calendar.mobileList .weekHeader{
     display: none !important;
   }
@@ -583,77 +581,35 @@ body{
     border-radius: 14px;
     background: #fff;
   }
-
   .mDayRow.closed{
     background: #fdecec;
     border-color: #f6cfcf;
   }
-
   .mDayLeft{
     font-weight: 700;
   }
-
   .mDayRight{
     display: flex;
     align-items: center;
     gap: 10px;
   }
-
   .mBadge{
     font-weight: 900;
     color: #2563eb;
     white-space: nowrap;
   }
 }
-@media (max-width: 520px){
 
-  /* 上のヘッダー（左右並び）を折り返し可能にする */
-  .legend{
-    display: flex;              /* 念のため（元がflex前提） */
-    flex-wrap: wrap !important;
-    row-gap: 10px !important;
-    height: auto !important;
-    align-items: center;
-  }
-
-  /* 右側（定休日・メモあり・CSV・設定）を折り返して2段に */
-  .legendRight{
-    display: flex;              /* 念のため */
-    flex-wrap: wrap !important;
-    gap: 8px !important;
-    justify-content: flex-end !important;
-  }
-
-  /* チップが大きすぎる場合に少しだけ縮める */
-  .chip{
-    font-size: 12px !important;
-    padding: 6px 10px !important;
-  }
-
-  /* スマホはCSV/設定が無効なら非表示でスッキリ */
-  .legendActions{
-    display: none !important;
-  }
-}
-@media (min-width: 521px){
-  .rightSide,
-  .salesPanel{
-    display: block !important;
-    visibility: visible !important;
-  }
-}
-/* ===== PC表示：カレンダー左 + 売上右 を固定 ===== */
+/* ===== PC：カレンダー左 + 売上右 ===== */
 @media (min-width: 521px){
   .topGrid{
     display: grid !important;
-    grid-template-columns: minmax(0, 1fr) 360px !important; /* 右の幅は好みで調整 */
+    grid-template-columns: minmax(0, 1fr) 360px !important;
     gap: 18px !important;
     align-items: start !important;
   }
 
-  .calBody{
-    min-width: 0;
-  }
+  .calBody{ min-width: 0; }
 
   .rightSide{
     display: flex !important;
@@ -663,6 +619,6 @@ body{
 
   .salesPanel{
     width: 100% !important;
+    display: block !important;
   }
 }
-
