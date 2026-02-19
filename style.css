@@ -538,4 +538,47 @@ body{
     margin: 0 !important;
   }
 }
+@media (max-width: 520px){
+  /* スマホは“一覧表示”用 */
+  .calendar.mobileList{
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 10px !important;
+  }
+
+  .calendar.mobileList .weekHeader{
+    display: none !important;
+  }
+
+  .mDayRow{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 14px;
+    border: 1px solid #eee;
+    border-radius: 14px;
+    background: #fff;
+  }
+
+  .mDayRow.closed{
+    background: #fdecec;
+    border-color: #f6cfcf;
+  }
+
+  .mDayLeft{
+    font-weight: 700;
+  }
+
+  .mDayRight{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .mBadge{
+    font-weight: 900;
+    color: #2563eb;
+    white-space: nowrap;
+  }
+}
 
