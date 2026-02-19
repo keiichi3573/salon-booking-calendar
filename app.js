@@ -875,7 +875,7 @@ let sumNew = 0;
 let sumRepeat = 0;
 
 // ★追加：新規/既存の月合計
-let sumNew = 0;
+
 let sumRepeat = 0;
 
 
