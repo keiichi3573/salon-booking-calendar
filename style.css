@@ -642,4 +642,27 @@ body{
     visibility: visible !important;
   }
 }
+/* ===== PC表示：カレンダー左 + 売上右 を固定 ===== */
+@media (min-width: 521px){
+  .topGrid{
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) 360px !important; /* 右の幅は好みで調整 */
+    gap: 18px !important;
+    align-items: start !important;
+  }
+
+  .calBody{
+    min-width: 0;
+  }
+
+  .rightSide{
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 14px !important;
+  }
+
+  .salesPanel{
+    width: 100% !important;
+  }
+}
 
