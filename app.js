@@ -273,6 +273,19 @@ function fillSelect(){
 
 // ===== render =====
 function renderMonth(){
+  // ★スマホは一覧（確認用）に切り替え
+  const isMobile = window.matchMedia("(max-width: 520px)").matches;
+  if (isMobile) {
+    renderMonthMobile();
+    return;
+  }
+
+  // ↓ここから下は今のPC/iPad用（月カレンダー）をそのまま残す
+  const first = startOfMonth(viewDate);
+  const last  = endOfMonth(viewDate);
+  ...
+}
+
   const first = startOfMonth(viewDate);
   const last  = endOfMonth(viewDate);
 
@@ -337,6 +350,49 @@ badge.textContent = `予${Number(info.count || 0)}`;
     });
 
     elCalendar.appendChild(cell);
+  }
+}
+@media (max-width: 520px){
+  /* スマホは“一覧表示”用 */
+  .calendar.mobileList{
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 10px !important;
+  }
+
+  .calendar.mobileList .weekHeader{
+    display: none !important;
+  }
+
+  .mDayRow{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 14px;
+    border: 1px solid #eee;
+    border-radius: 14px;
+    background: #fff;
+  }
+
+  .mDayRow.closed{
+    background: #fdecec;
+    border-color: #f6cfcf;
+  }
+
+  .mDayLeft{
+    font-weight: 700;
+  }
+
+  .mDayRight{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .mBadge{
+    font-weight: 900;
+    color: #2563eb;
+    white-space: nowrap;
   }
 }
 
