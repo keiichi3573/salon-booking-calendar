@@ -645,3 +645,11 @@ body{
   color: #991b1b;
   border: 1px solid #fecaca;
 }
+.daySales{
+  margin-top: 6px;
+  font-size: 12px;
+  font-weight: 800;
+  color: #111827;
+  opacity: .85;
+  white-space: nowrap;
+}
