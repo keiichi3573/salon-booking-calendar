@@ -1185,9 +1185,7 @@ loadAndRender();
   const now = new Date();
   viewDate = new Date(now.getFullYear(), now.getMonth(), 1);
 
-  // 2) 月移動を無効化
-  btnPrev?.setAttribute("disabled", "disabled");
-  btnNext?.setAttribute("disabled", "disabled");
+
 
   // 3) 設定/CSVなど “編集系” ボタン無効化（表示も薄く）
   [btnSettings, btnExport, daySaveBtn, pinEnterBtn, staffAddBtn, pinChangeBtn].forEach(el=>{
