@@ -635,4 +635,11 @@ body{
     display: none !important;
   }
 }
+@media (min-width: 521px){
+  .rightSide,
+  .salesPanel{
+    display: block !important;
+    visibility: visible !important;
+  }
+}
 
