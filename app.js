@@ -453,6 +453,14 @@ function renderMonth(){
     }
 
     cell.appendChild(top);
+// 売上（合計）を小さく表示（0は表示しない運用）
+const salesVal = Number(info.sales || 0);
+if (salesVal > 0) {
+  const salesEl = document.createElement("div");
+  salesEl.className = "daySales";
+  salesEl.textContent = salesVal.toLocaleString("ja-JP");
+  cell.appendChild(salesEl);
+}
 
     cell.addEventListener("click", ()=>{
       openDayEditor(d);
@@ -545,11 +553,12 @@ async function openDayEditor(date){
   const map = new Map((rows||[]).map(r => [r.staff_id, r.count || 0]));
 
   // 3) その日のメモ（bookings_daily.note）
-  const { data: daily, error: eDaily } = await sb
-    .from("bookings_daily")
-    .select("total,note")
-    .eq("day", editingDateKey)
-    .maybeSingle();
+ const { data: daily, error: eDaily } = await sb
+  .from("bookings_daily")
+  .select("total,tech_sales,retail_sales,new_customers,repeat_customers")
+  .eq("day", editingDateKey)
+  .maybeSingle();
+
   if(eDaily){ alert("daily取得エラー: " + eDaily.message); return; }
 
   const box = document.getElementById("staffInputs");
@@ -898,7 +907,14 @@ for (const r of (res.data || [])) {
   sumSales += (tech + retail);
   sumCustomers += cus;
 
-  monthData[r.day] = { count: c, memo: "" };
+  const daySales = tech + retail;
+
+monthData[r.day] = {
+  count: c,
+  memo: "",
+  sales: daySales
+};
+
 }
 
 
