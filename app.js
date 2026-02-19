@@ -180,6 +180,68 @@ function isClosedDay(date){
   }
   return false;
 }
+// ===== 営業日カウント（定休日ルールは isClosedDay を使う） =====
+function isBusinessDay(d){
+  // 営業日 = 定休日ではない日
+  return !isClosedDay(d);
+}
+
+// その月の営業日総数
+function businessDaysInMonth(viewDate){
+  const first = startOfMonth(viewDate);
+  const last  = endOfMonth(viewDate);
+  let count = 0;
+
+  for(let day=1; day<=last.getDate(); day++){
+    const d = new Date(first.getFullYear(), first.getMonth(), day);
+    if(isBusinessDay(d)) count++;
+  }
+  return count;
+}
+
+// 今日までの営業日数（今月のみ・今日が営業日なら今日を含む）
+function businessDaysElapsedInMonth(viewDate){
+  const now = new Date();
+
+  const sameMonth =
+    (now.getFullYear() === viewDate.getFullYear()) &&
+    (now.getMonth() === viewDate.getMonth());
+
+  if (!sameMonth) return 0;
+
+  const first = startOfMonth(viewDate);
+  const today = now.getDate();
+  let count = 0;
+
+  for(let day=1; day<=today; day++){
+    const d = new Date(first.getFullYear(), first.getMonth(), day);
+    if(isBusinessDay(d)) count++;
+  }
+  return count;
+}
+
+// 残り営業日（今日含む・今月のみ）
+function remainingBusinessDaysInViewedMonth(viewDate){
+  const now = new Date();
+
+  const sameMonth =
+    (now.getFullYear() === viewDate.getFullYear()) &&
+    (now.getMonth() === viewDate.getMonth());
+
+  if (!sameMonth) return 0;
+
+  const first = startOfMonth(viewDate);
+  const lastDay = endOfMonth(viewDate).getDate();
+  const today = now.getDate();
+
+  let count = 0;
+  for(let day=today; day<=lastDay; day++){
+    const d = new Date(first.getFullYear(), first.getMonth(), day);
+    if(isBusinessDay(d)) count++;
+  }
+  return count;
+}
+
 // ===== 営業日カウント（isClosedDay を使う）=====
 function isBusinessDay(date){
   // 休みでなければ営業日
