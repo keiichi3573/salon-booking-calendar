@@ -220,21 +220,25 @@ function businessDaysElapsedInMonth(viewDate){
   return count;
 }
 
-// 残り営業日（今日含む・今月のみ）
-function remainingBusinessDaysInViewedMonth(viewDate){
+// その月の「残り営業日数」を返す（定休日除外）
+// startFromTomorrow = false → 今日を含めて数える
+// startFromTomorrow = true  → 明日から数える（今日を含めない）
+function remainingBusinessDaysInViewedMonth(viewDate, startFromTomorrow = false){
   const now = new Date();
 
   const sameMonth =
-    now.getFullYear() === viewDate.getFullYear() &&
-    now.getMonth() === viewDate.getMonth();
+    (now.getFullYear() === viewDate.getFullYear()) &&
+    (now.getMonth() === viewDate.getMonth());
+
+  // 今月以外はペース計算しない（0扱い）
   if (!sameMonth) return 0;
 
-  const last = endOfMonth(viewDate).getDate();
-  let count = 0;
+  const lastDate = endOfMonth(viewDate).getDate();
+  const startDay = startFromTomorrow ? (now.getDate() + 1) : now.getDate();
 
-  // ★明日から数える（今日入力=確定なので今日を残りに含めない）
-  for (let day = now.getDate() + 1; day <= last; day++){
-    const d = new Date(now.getFullYear(), now.getMonth(), day);
+  let count = 0;
+  for (let day = startDay; day <= lastDate; day++){
+    const d = new Date(viewDate.getFullYear(), viewDate.getMonth(), day);
     if (!isClosedDay(d)) count++;
   }
   return count;
@@ -277,48 +281,6 @@ function elapsedBusinessDaysInViewedMonth(viewDate){
   return count;
 }
 
-// “今日から月末まで”の営業日数（今月のときだけ。営業日のみ。今日含む）
-function remainingBusinessDaysInViewedMonth(viewDate){
-  const now = new Date();
-  const sameMonth = (now.getFullYear() === viewDate.getFullYear()) && (now.getMonth() === viewDate.getMonth());
-  if (!sameMonth) return 0;
-
-  const last = endOfMonth(viewDate);
-
-  // 今日（00:00）に揃える
-  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-  let count = 0;
-
-  for(let d = new Date(today); d <= last; d.setDate(d.getDate() + 1)){
-    if (isBusinessDay(d)) count++;
-  }
-  return count;
-}
-
-// ★ここに追加（isClosedDay の直後）
-function remainingBusinessDaysInViewedMonth(viewDate){
-  const now = new Date();
-
-  const sameMonth =
-    (now.getFullYear() === viewDate.getFullYear()) &&
-    (now.getMonth() === viewDate.getMonth());
-
-  if (!sameMonth) return 0;
-
-  const y = viewDate.getFullYear();
-  const m = viewDate.getMonth();
-  const lastDay = endOfMonth(viewDate).getDate();
-  const today = now.getDate();
-
-  let count = 0;
-
-  // 今日を含めて残り営業日を数える（定休日は除外）
-  for (let i = today; i <= lastDay; i++){
-    const d = new Date(y, m, i);
-    if (!isClosedDay(d)) count++;
-  }
-  return count;
-}
 
 
 // ===== Supabase helpers =====
@@ -937,7 +899,8 @@ const lackSales = Math.max(0, GOAL_SALES - sumSales);
 const lackCustomers = Math.max(0, GOAL_CUSTOMERS - sumCustomers);
 
 // 残り営業日（今日含む・今月のみ）
-const remDays = remainingBusinessDaysInViewedMonth(viewDate);
+const remDays = remainingBusinessDaysInViewedMonth(viewDate, true);
+
 
 const needSalesPerDay = remDays > 0 ? Math.ceil(lackSales / remDays) : 0;
 const needCustomersPerDay = remDays > 0 ? Math.ceil(lackCustomers / remDays) : 0;
