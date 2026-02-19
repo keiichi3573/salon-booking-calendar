@@ -273,18 +273,12 @@ function fillSelect(){
 
 // ===== render =====
 function renderMonth(){
-  // ★スマホは一覧（確認用）に切り替え
+  // ===== mobile は別描画（確認のみ）=====
   const isMobile = window.matchMedia("(max-width: 520px)").matches;
-  if (isMobile) {
+  if (isMobile){
     renderMonthMobile();
     return;
   }
-
-  // ↓ここから下は今のPC/iPad用（月カレンダー）をそのまま残す
-  const first = startOfMonth(viewDate);
-  const last  = endOfMonth(viewDate);
-  ...
-}
 
   const first = startOfMonth(viewDate);
   const last  = endOfMonth(viewDate);
@@ -331,7 +325,7 @@ function renderMonth(){
 
     const badge = document.createElement("div");
     badge.className = "badge reserveBadge";
-badge.textContent = `予${Number(info.count || 0)}`;
+    badge.textContent = `予${Number(info.count || 0)}`;
 
     top.appendChild(num);
     top.appendChild(badge);
@@ -352,47 +346,49 @@ badge.textContent = `予${Number(info.count || 0)}`;
     elCalendar.appendChild(cell);
   }
 }
-@media (max-width: 520px){
-  /* スマホは“一覧表示”用 */
-  .calendar.mobileList{
-    display: flex !important;
-    flex-direction: column !important;
-    gap: 10px !important;
-  }
+function renderMonthMobile(){
+  const first = startOfMonth(viewDate);
+  const last  = endOfMonth(viewDate);
 
-  .calendar.mobileList .weekHeader{
-    display: none !important;
-  }
+  currentMonthKey = toMonthKey(first);
+  elMonthTitle.textContent = `${first.getFullYear()}年 ${first.getMonth()+1}月`;
 
-  .mDayRow{
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 14px 14px;
-    border: 1px solid #eee;
-    border-radius: 14px;
-    background: #fff;
-  }
+  // スマホ用クラスに切り替え
+  elCalendar.classList.add("mobileList");
+  elCalendar.innerHTML = "";
 
-  .mDayRow.closed{
-    background: #fdecec;
-    border-color: #f6cfcf;
-  }
+  // 今日〜月末を「一覧」で出す（確認のみ）
+  const now = new Date();
+  const sameMonth = (now.getFullYear() === first.getFullYear()) && (now.getMonth() === first.getMonth());
+  const startDay = sameMonth ? now.getDate() : 1;
 
-  .mDayLeft{
-    font-weight: 700;
-  }
+  for(let day=startDay; day<=last.getDate(); day++){
+    const d = new Date(first.getFullYear(), first.getMonth(), day);
+    const key = toDateKey(d);
+    const info = monthData[key] || { count: 0, memo: "" };
 
-  .mDayRight{
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
+    const row = document.createElement("div");
+    row.className = "mDayRow";
+    if (isClosedDay(d)) row.classList.add("closed");
 
-  .mBadge{
-    font-weight: 900;
-    color: #2563eb;
-    white-space: nowrap;
+    const left = document.createElement("div");
+    left.className = "mDayLeft";
+    left.textContent = `${d.getMonth()+1}/${d.getDate()}（${WEEK[d.getDay()]}）`;
+
+    const right = document.createElement("div");
+    right.className = "mDayRight";
+
+    const badge = document.createElement("div");
+    badge.className = "mBadge";
+    badge.textContent = `予${Number(info.count || 0)}`;
+
+    right.appendChild(badge);
+
+    // スマホは確認のみ：クリック無効（開かない）
+    row.appendChild(left);
+    row.appendChild(right);
+
+    elCalendar.appendChild(row);
   }
 }
 
