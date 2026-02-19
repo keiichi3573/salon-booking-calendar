@@ -510,4 +510,32 @@ body{
 }
 #statusHint.ok{ color: #111; font-weight: 800; }
 #statusHint.ng{ color: #dc2626; font-weight: 900; }
+/* ===== スマホは前のシンプル表示に戻す ===== */
+@media (max-width: 520px) {
+
+  /* 上段を1カラム（カレンダーだけ）に */
+  .topGrid {
+    display: block !important;
+  }
+
+  /* 右側（売上・今後枠）を非表示 */
+  .rightSide,
+  .salesPanel,
+  .futureTop,
+  .futureBottom {
+    display: none !important;
+  }
+
+  /* カレンダーを横いっぱい */
+  .calBody,
+  .calendar {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  /* 余白を少し詰める（必要なら） */
+  .calBody {
+    margin: 0 !important;
+  }
+}
 
