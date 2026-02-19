@@ -868,9 +868,16 @@ async function loadAndRender(){
   const GOAL_SALES = GOAL_CUSTOMERS * GOAL_UNIT_PRICE;
 
   // 集計（必ず関数スコープで保持）
-  let monthTotal = 0;
-  let sumSales = 0;
-  let sumCustomers = 0;
+let monthTotal = 0;
+let sumSales = 0;
+let sumCustomers = 0;
+let sumNew = 0;
+let sumRepeat = 0;
+
+// ★追加：新規/既存の月合計
+let sumNew = 0;
+let sumRepeat = 0;
+
 
   const res = await sb
     .from("bookings_daily")
@@ -902,10 +909,17 @@ for (const r of (res.data || [])) {
     console.log("売上あり日:", r.day, "tech:", tech, "retail:", retail);
   }
 
-  const cus = Number(r.new_customers || 0) + Number(r.repeat_customers || 0);
+  const newC = Number(r.new_customers || 0);
+const repC = Number(r.repeat_customers || 0);
 
-  sumSales += (tech + retail);
-  sumCustomers += cus;
+sumNew += newC;
+sumRepeat += repC;
+
+const cus = newC + repC;
+
+sumSales += (tech + retail);
+sumCustomers += cus;
+
 
   const daySales = tech + retail;
 
@@ -962,7 +976,12 @@ if (sameMonth) {
 
   el = document.getElementById("mCustomers");
   if (el) el.textContent = fmtNum(sumCustomers) + "名";
+　// ★ここに追加（新規 / 既存）
+　el = document.getElementById("mNewCustomers");
+　if (el) el.textContent = fmtNum(sumNew) + "名";
 
+　el = document.getElementById("mRepeatCustomers");
+　if (el) el.textContent = fmtNum(sumRepeat) + "名";
   el = document.getElementById("mUnitPrice");
   if (el) el.textContent = unitPrice ? fmtYen(unitPrice) : "—";
 
