@@ -622,3 +622,26 @@ body{
     display: block !important;
   }
 }
+/* 黒字/赤字ペース表示（右パネル内の一言） */
+#statusHint{
+  margin-top: 10px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  font-weight: 800;
+  font-size: 13px;
+  line-height: 1.4;
+  background: #f3f4f6;
+  color: #374151;
+}
+
+#statusHint.ok{
+  background: #ecfdf5;
+  color: #065f46;
+  border: 1px solid #a7f3d0;
+}
+
+#statusHint.ng{
+  background: #fef2f2;
+  color: #991b1b;
+  border: 1px solid #fecaca;
+}
