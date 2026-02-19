@@ -973,6 +973,17 @@ if (sameMonth) {
 
   el = document.getElementById("mCustomers");
   if (el) el.textContent = fmtNum(sumCustomers) + "名";
+  // 月 客数合計
+el = document.getElementById("mCustomers");
+if (el) el.textContent = fmtNum(sumCustomers) + "名";
+
+// ★追加：月 新規/既存 客数合計
+el = document.getElementById("mCustomersNew");
+if (el) el.textContent = fmtNum(sumNew) + "名";
+
+el = document.getElementById("mCustomersRepeat");
+if (el) el.textContent = fmtNum(sumRepeat) + "名";
+
 　// ★ここに追加（新規 / 既存）
 　el = document.getElementById("mNewCustomers");
 　if (el) el.textContent = fmtNum(sumNew) + "名";
