@@ -605,4 +605,34 @@ body{
     white-space: nowrap;
   }
 }
+@media (max-width: 520px){
+
+  /* 上のヘッダー（左右並び）を折り返し可能にする */
+  .legend{
+    display: flex;              /* 念のため（元がflex前提） */
+    flex-wrap: wrap !important;
+    row-gap: 10px !important;
+    height: auto !important;
+    align-items: center;
+  }
+
+  /* 右側（定休日・メモあり・CSV・設定）を折り返して2段に */
+  .legendRight{
+    display: flex;              /* 念のため */
+    flex-wrap: wrap !important;
+    gap: 8px !important;
+    justify-content: flex-end !important;
+  }
+
+  /* チップが大きすぎる場合に少しだけ縮める */
+  .chip{
+    font-size: 12px !important;
+    padding: 6px 10px !important;
+  }
+
+  /* スマホはCSV/設定が無効なら非表示でスッキリ */
+  .legendActions{
+    display: none !important;
+  }
+}
 
