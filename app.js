@@ -867,7 +867,7 @@ async function loadAndRender(){
   const GOAL_UNIT_PRICE = 7500;
   const GOAL_SALES = GOAL_CUSTOMERS * GOAL_UNIT_PRICE;
 
-  // 集計（必ず関数スコープで保持）
+ // 集計（必ず関数スコープで保持）
 let monthTotal = 0;
 let sumSales = 0;
 let sumCustomers = 0;
@@ -875,9 +875,6 @@ let sumNew = 0;
 let sumRepeat = 0;
 
 // ★追加：新規/既存の月合計
-
-let sumRepeat = 0;
-
 
   const res = await sb
     .from("bookings_daily")
