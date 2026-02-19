@@ -180,6 +180,59 @@ function isClosedDay(date){
   }
   return false;
 }
+// ===== 営業日カウント（isClosedDay を使う）=====
+function isBusinessDay(date){
+  // 休みでなければ営業日
+  return !isClosedDay(date);
+}
+
+// 対象月の営業日数（1日〜月末）
+function businessDaysInMonth(viewDate){
+  const first = startOfMonth(viewDate);
+  const last = endOfMonth(viewDate);
+  let count = 0;
+
+  for(let d = new Date(first); d <= last; d.setDate(d.getDate() + 1)){
+    if (isBusinessDay(d)) count++;
+  }
+  return count;
+}
+
+// “今日まで”の営業日数（今月のときだけ、今日を含む）
+function elapsedBusinessDaysInViewedMonth(viewDate){
+  const now = new Date();
+  const sameMonth = (now.getFullYear() === viewDate.getFullYear()) && (now.getMonth() === viewDate.getMonth());
+  if (!sameMonth) return 0;
+
+  const first = startOfMonth(viewDate);
+
+  // 今日（00:00）に揃える
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  let count = 0;
+
+  for(let d = new Date(first); d <= today; d.setDate(d.getDate() + 1)){
+    if (isBusinessDay(d)) count++;
+  }
+  return count;
+}
+
+// “今日から月末まで”の営業日数（今月のときだけ。営業日のみ。今日含む）
+function remainingBusinessDaysInViewedMonth(viewDate){
+  const now = new Date();
+  const sameMonth = (now.getFullYear() === viewDate.getFullYear()) && (now.getMonth() === viewDate.getMonth());
+  if (!sameMonth) return 0;
+
+  const last = endOfMonth(viewDate);
+
+  // 今日（00:00）に揃える
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  let count = 0;
+
+  for(let d = new Date(today); d <= last; d.setDate(d.getDate() + 1)){
+    if (isBusinessDay(d)) count++;
+  }
+  return count;
+}
 
 // ★ここに追加（isClosedDay の直後）
 function remainingBusinessDaysInViewedMonth(viewDate){
@@ -791,29 +844,37 @@ for (const r of (res.data || [])) {
     if (el) el.textContent = `今月 合計予約数：${monthTotal}`;
   }
 
-  // ===== ここからパネル計算（sumSales等が必ず存在する） =====
-  const lackSales = Math.max(0, GOAL_SALES - sumSales);
-  const lackCustomers = Math.max(0, GOAL_CUSTOMERS - sumCustomers);
+ // ===== ここからパネル計算（営業日ベース） =====
+const lackSales = Math.max(0, GOAL_SALES - sumSales);
+const lackCustomers = Math.max(0, GOAL_CUSTOMERS - sumCustomers);
 
- const remDays = remainingBusinessDaysInViewedMonth(viewDate);
+// 残り営業日（今日含む・今月のみ）
+const remDays = remainingBusinessDaysInViewedMonth(viewDate);
 
+const needSalesPerDay = remDays > 0 ? Math.ceil(lackSales / remDays) : 0;
+const needCustomersPerDay = remDays > 0 ? Math.ceil(lackCustomers / remDays) : 0;
 
-  const needSalesPerDay = remDays > 0 ? Math.ceil(lackSales / remDays) : 0;
-  const needCustomersPerDay = remDays > 0 ? Math.ceil(lackCustomers / remDays) : 0;
+const unitPrice = sumCustomers > 0 ? Math.floor(sumSales / sumCustomers) : 0;
 
-  const unitPrice = sumCustomers > 0 ? Math.floor(sumSales / sumCustomers) : 0;
+// ペース判定（今月だけ・営業日ペース）
+let onTrack = true;
+const now = new Date();
+const sameMonth =
+  (now.getFullYear() === viewDate.getFullYear()) &&
+  (now.getMonth() === viewDate.getMonth());
 
-  // ペース判定（今月だけ）
-  let onTrack = true;
-  const now = new Date();
-  const sameMonth = (now.getFullYear() === viewDate.getFullYear()) && (now.getMonth() === viewDate.getMonth());
-  if (sameMonth){
-    const elapsedDays = now.getDate();
-    const daysInMonth = endOfMonth(viewDate).getDate();
-    const expectedByNowSales = Math.floor(GOAL_SALES * (elapsedDays / daysInMonth));
-    const expectedByNowCustomers = Math.floor(GOAL_CUSTOMERS * (elapsedDays / daysInMonth));
-    onTrack = (sumSales >= expectedByNowSales) && (sumCustomers >= expectedByNowCustomers);
-  }
+if (sameMonth) {
+  // 今月の営業日総数
+  const bizTotal = businessDaysInMonth(viewDate);
+
+  // 今日までの営業日数（今日が営業日なら今日を含む）
+  const bizElapsed = businessDaysElapsedInMonth(viewDate);
+
+  const expectedByNowSales = Math.floor(GOAL_SALES * (bizElapsed / Math.max(1, bizTotal)));
+  const expectedByNowCustomers = Math.floor(GOAL_CUSTOMERS * (bizElapsed / Math.max(1, bizTotal)));
+
+  onTrack = (sumSales >= expectedByNowSales) && (sumCustomers >= expectedByNowCustomers);
+}
 
   // ===== DOM反映（var版だけに統一） =====
   var el;
@@ -840,16 +901,23 @@ for (const r of (res.data || [])) {
   if (el) el.textContent = remDays ? (fmtNum(needCustomersPerDay) + "名/日") : "—";
 
   var hint = document.getElementById("statusHint");
-  if (hint){
-    if (!sameMonth){
-      hint.textContent = "※今月以外はペース判定しません";
-      hint.classList.remove("ok","ng");
+if (hint){
+  if (!sameMonth){
+    hint.textContent = "※今月以外はペース判定しません";
+    hint.classList.remove("ok","ng");
+  } else {
+    // remDays=0 なら月末（or 全休）なので、判定も簡素に
+    if (remDays === 0){
+      hint.textContent = onTrack ? "黒字ペース" : "赤字ペース";
     } else {
-      hint.textContent = onTrack ? "黒字ペース（目標達成できそう）" : "赤字ペース（このままだと未達）";
-      hint.classList.toggle("ok", onTrack);
-      hint.classList.toggle("ng", !onTrack);
+      hint.textContent = onTrack
+        ? "黒字ペース（営業日ベースで達成できそう）"
+        : "赤字ペース（営業日ベースだと未達の可能性）";
     }
+    hint.classList.toggle("ok", onTrack);
+    hint.classList.toggle("ng", !onTrack);
   }
+}
 
   renderMonth();
 }
