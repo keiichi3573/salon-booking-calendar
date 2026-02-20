@@ -982,7 +982,22 @@ monthData[r.day] = {
     const el = document.getElementById("totalMonthCount");
     if (el) el.textContent = `今月 合計予約数：${monthTotal}`;
   }
+// ===== 今日の予約数（“予6”の合計） =====
+var tEl = document.getElementById("todayTotalCount");
+if (tEl){
+  const now = new Date();
+  const sameMonth =
+    (now.getFullYear() === viewDate.getFullYear()) &&
+    (now.getMonth() === viewDate.getMonth());
 
+  if (!sameMonth){
+    tEl.textContent = ""; // 今月以外は表示しない（好みで変えてOK）
+  } else {
+    const todayKey = toDateKey(now);
+    const todayTotal = Number(monthData?.[todayKey]?.count || 0);
+    tEl.textContent = `今日の予約数：${todayTotal}`;
+  }
+}
  // ===== ここからパネル計算（営業日ベース） =====
 const lackSales = Math.max(0, GOAL_SALES - sumSales);
 const lackCustomers = Math.max(0, GOAL_CUSTOMERS - sumCustomers);
