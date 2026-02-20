@@ -653,3 +653,155 @@ body{
   opacity: .85;
   white-space: nowrap;
 }
+/* ===== 売上：進捗バー（月） ===== */
+.mProgressWrap{
+  margin: 10px 0 12px;
+  padding: 10px 12px;
+  border: 1px solid #eee;
+  border-radius: 14px;
+  background: #fff;
+}
+.mProgressTop{
+  display:flex;
+  justify-content: space-between;
+  align-items:center;
+  margin-bottom: 8px;
+}
+.mProgressLabel{ font-weight:700; }
+#mProgressPct{ font-weight:900; }
+
+.bar{
+  height: 10px;
+  border-radius: 999px;
+  background: #f1f5f9;
+  overflow:hidden;
+}
+.bar .fill{
+  height:100%;
+  width:0%;
+  border-radius: 999px;
+  background: #2563eb;
+  transition: width .25s ease;
+}
+
+.mProgressMeta{
+  display:grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 8px;
+  margin-top: 10px;
+  font-size: 12px;
+}
+.mProgressMeta > div{
+  display:flex;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 6px 8px;
+  border-radius: 10px;
+  background:#f8fafc;
+}
+.mDailyGoalLine{
+  margin-top: 10px;
+  display:flex;
+  justify-content: space-between;
+  align-items:center;
+  padding-top: 8px;
+  border-top: 1px dashed #e5e7eb;
+}
+#mDailyGoal{ font-weight: 900; }
+
+/* ===== 今日のモチベ表示（モーダル） ===== */
+.boostPanel{
+  margin-top: 12px;
+  padding: 12px 12px;
+  border: 2px solid #e5e7eb;
+  border-radius: 16px;
+  background: #fff;
+}
+.boostHead{
+  display:flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.boostTitle{
+  font-weight: 900;
+  font-size: 14px;
+}
+.boostSub{
+  font-size: 12px;
+  color: #64748b;
+  white-space: nowrap;
+}
+
+.boostMain{
+  display:flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+}
+.bigDelta{
+  font-size: 24px;
+  font-weight: 1000;
+  line-height: 1.1;
+}
+.bigDelta small{
+  font-size: 12px;
+  font-weight: 700;
+  color:#64748b;
+  display:block;
+  margin-top: 4px;
+}
+
+.badgeTone{
+  display:inline-flex;
+  align-items:center;
+  gap: 8px;
+  font-weight: 900;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: #f1f5f9;
+}
+.badgeTone.ok{
+  background:#ecfdf5;
+  border:1px solid #bbf7d0;
+}
+.badgeTone.ng{
+  background:#fff7ed;
+  border:1px solid #fed7aa;
+}
+
+.stepList{
+  margin-top: 12px;
+  display:flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.stepRow{
+  display:flex;
+  justify-content: space-between;
+  align-items:center;
+  padding: 8px 10px;
+  border: 1px solid #eee;
+  border-radius: 12px;
+  background:#fff;
+}
+.stepRow .left{
+  font-weight: 800;
+}
+.stepRow .right{
+  display:flex;
+  align-items:center;
+  gap: 10px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+.stepTag{
+  font-size: 12px;
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: #f1f5f9;
+}
+.stepTag.ok{ background:#ecfdf5; border:1px solid #bbf7d0; }
+.stepTag.ng{ background:#fff7ed; border:1px solid #fed7aa; }
