@@ -63,7 +63,27 @@
 
       <aside class="salesPanel" aria-label="売上サマリー">
   <div class="cardTitle">売上</div>
+　<!-- 月の進捗（バー） -->
+<div class="mProgressWrap">
+  <div class="mProgressTop">
+    <span class="mProgressLabel">月 進捗</span>
+    <b id="mProgressPct">—</b>
+  </div>
+  <div class="bar">
+    <div id="mProgressFill" class="fill" style="width:0%"></div>
+  </div>
 
+  <div class="mProgressMeta">
+    <div><span>目標</span><b id="mGoalSales">—</b></div>
+    <div><span>累計</span><b id="mSales2">—</b></div>
+    <div><span>不足（累計）</span><b id="lackSales2">—</b></div>
+  </div>
+
+  <div class="mDailyGoalLine">
+    <span>営業日割 1日目標</span>
+    <b id="mDailyGoal">—</b>
+  </div>
+</div>
   <div class="salesRow"><span>月 売上合計（税抜）</span><b id="mSales">—</b></div>
   <div class="salesRow"><span>月 新規客数合計</span><b id="mCustomersNew">—</b></div>
   <div class="salesRow"><span>月 既存客数合計</span><b id="mCustomersRepeat">—</b></div>
@@ -170,7 +190,8 @@
       <label class="fieldLabel">技術売上</label>
       <input id="techSalesInput" class="fieldInput" type="number" inputmode="numeric" min="0" step="1" placeholder="例：35000" />
     </div>
-
+　　<!-- 今日のモチベ表示（自動計算） -->
+　<div id="boostPanel" class="boostPanel"></div>
     <div class="fieldRow">
       <label class="fieldLabel">店販売上</label>
       <input id="retailSalesInput" class="fieldInput" type="number" inputmode="numeric" min="0" step="1" placeholder="例：8000" />
