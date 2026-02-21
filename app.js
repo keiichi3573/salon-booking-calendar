@@ -1168,45 +1168,45 @@ if (el) el.textContent = fmtNum(sumRepeat) + "名";
 el = document.getElementById("mGoalSalesInline");
 if (el) el.textContent = fmtYen(GOAL_SALES);
 
-// ===== リング（売上 / 単価）更新 =====
-const pctSalesRaw = GOAL_SALES > 0 ? Math.floor((sumSales / GOAL_SALES) * 100) : 0;
-const pctSalesRing = Math.max(0, Math.min(100, pctSalesRaw)); // 円描画は0-100
-const pctUnitRaw = GOAL_UNIT_PRICE > 0 ? Math.floor((unitPrice / GOAL_UNIT_PRICE) * 100) : 0;
-const pctUnitRing = Math.max(0, Math.min(100, pctUnitRaw));
-
-// ===== リング描画：CSS変数をセット（URLテスト対応） =====
-const p = new URLSearchParams(location.search);
-const testPctNum = Number(p.get("test"));
-const overridePct = Number.isFinite(testPctNum)
-  ? Math.max(0, Math.min(100, Math.floor(testPctNum)))
-  : null;
-
-// 売上リング
+// ===== Rings (sales/unit) - single source of truth =====
 {
-  const ring = document.getElementById("mSalesRing");
-  if (ring){
-    const v = (overridePct ?? pctSalesRing);
-    ring.style.setProperty("--pct", String(v));
-    ring.style.setProperty("--pctCut", String(Math.min(90, v)));
+  // URLテスト（?test=92）
+  const ringParams = new URLSearchParams(location.search);
+  const ringTestNum = Number(ringParams.get("test"));
+  const ringOverride = Number.isFinite(ringTestNum)
+    ? Math.max(0, Math.min(100, Math.floor(ringTestNum)))
+    : null;
+
+  // ここで「必ず」計算（スコープ事故を避ける）
+  const pctSalesRaw2 = GOAL_SALES > 0 ? Math.floor((sumSales / GOAL_SALES) * 100) : 0;
+  const pctSalesRing2 = Math.max(0, Math.min(100, pctSalesRaw2));
+
+  const pctUnitRaw2 = GOAL_UNIT_PRICE > 0 ? Math.floor((unitPrice / GOAL_UNIT_PRICE) * 100) : 0;
+  const pctUnitRing2 = Math.max(0, Math.min(100, pctUnitRaw2));
+
+  // 中央の％表示（生の％は100超えも表示OK）
+  el = document.getElementById("mSalesPct");
+  if (el) el.textContent = pctSalesRaw2 + "%";
+
+  el = document.getElementById("mUnitPct");
+  if (el) el.textContent = pctUnitRaw2 + "%";
+
+  // リングに渡す値（表示は0-100、テスト時は上書き）
+  const vSales = (ringOverride ?? pctSalesRing2);
+  const vUnit  = (ringOverride ?? pctUnitRing2);
+
+  const salesRingEl = document.getElementById("mSalesRing");
+  if (salesRingEl){
+    salesRingEl.style.setProperty("--pct", String(vSales));
+    salesRingEl.style.setProperty("--pctCut", String(Math.min(90, vSales)));
+  }
+
+  const unitRingEl = document.getElementById("mUnitRing");
+  if (unitRingEl){
+    unitRingEl.style.setProperty("--pct", String(vUnit));
+    unitRingEl.style.setProperty("--pctCut", String(Math.min(90, vUnit)));
   }
 }
-
-// 単価リング
-{
-  const ring = document.getElementById("mUnitRing");
-  if (ring){
-    const v = (overridePct ?? pctUnitRing);
-    ring.style.setProperty("--pct", String(v));
-    ring.style.setProperty("--pctCut", String(Math.min(90, v)));
-  }
-}
-
-// 中央の％表示
-el = document.getElementById("mSalesPct");
-if (el) el.textContent = pctSalesRaw + "%";
-
-el = document.getElementById("mUnitPct");
-if (el) el.textContent = pctUnitRaw + "%";
 
   
 
