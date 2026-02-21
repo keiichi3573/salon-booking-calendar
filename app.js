@@ -1077,11 +1077,7 @@ if (el) el.textContent = fmtNum(sumRepeat) + "名";
   el = document.getElementById("mUnitPrice");
   if (el) el.textContent = unitPrice ? fmtYen(unitPrice) : "—";
 
-  el = document.getElementById("lackSales");
-  if (el) el.textContent = fmtYen(lackSales);
-
-  el = document.getElementById("lackCustomers");
-  if (el) el.textContent = fmtNum(lackCustomers) + "名";
+  
 
   el = document.getElementById("needSales");
   if (el) el.textContent = remDays ? (fmtYen(needSalesPerDay) + "/日") : "—";
