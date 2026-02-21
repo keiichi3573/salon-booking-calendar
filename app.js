@@ -214,9 +214,7 @@ function renderBoostPanel(){
   const sales = tech + retail;
 
   const bookings = Number(document.getElementById("totalCountSelect")?.value || 0); // その日の予約数（合計）
-  const GOAL_CUSTOMERS = 200;
-  const GOAL_UNIT_PRICE = 7500;
-  const GOAL_SALES = GOAL_CUSTOMERS * GOAL_UNIT_PRICE;
+  
 
   const dailyGoal = dailyGoalSalesByBusinessDays(viewDate, GOAL_SALES);
 
