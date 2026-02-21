@@ -770,50 +770,7 @@ if (verify.error) {
   }
 }
 
-async function saveDay(){
-  try{
-    if(!editingDateKey){
-      alert("保存できません：日付が選択されていません");
-      return;
-    }
 
-    daySaveBtn.disabled = true;
-    daySaveBtn.textContent = "保存中...";
-
-    const total = Number(totalSelect?.value || 0);
-    const sales = Number(salesInput?.value || 0);
-
-    // bookings_daily に最小項目だけ保存
-    // ★売上は tech_sales に入れる（retail_sales 等は 0 固定）
-    const r2 = await sb
-      .from("bookings_daily")
-      .upsert(
-        [{
-          day: editingDateKey,
-          total,
-          tech_sales: sales,
-          retail_sales: 0,
-          new_customers: 0,
-          repeat_customers: 0,
-          updated_by: "ipad"
-        }],
-        { onConflict: "day" }
-      );
-
-    if(r2.error) throw new Error("保存失敗: " + r2.error.message);
-
-    closeModal(dayModal);
-    await loadAndRender();
-    alert("保存しました");
-
-  }catch(e){
-    console.error(e);
-    alert("保存で止まりました: " + (e?.message || e));
-  }finally{
-    daySaveBtn.disabled = false;
-    daySaveBtn.textContent = "保存";
-  }
-}
 
 
 
