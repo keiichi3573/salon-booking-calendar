@@ -1181,12 +1181,18 @@ if (el) el.textContent = pctSalesRaw + "%";
 el = document.getElementById("mUnitPct");
 if (el) el.textContent = pctUnitRaw + "%";
 
-// 円の進捗（CSS変数 --pct を更新）
+// 円の進捗（CSS変数 --pct / --pctCut を更新）
 const salesRing = document.getElementById("mSalesRing");
-if (salesRing) salesRing.style.setProperty("--pct", String(pctSalesRing));
+if (salesRing){
+  salesRing.style.setProperty("--pct", String(pctSalesRing));
+  salesRing.style.setProperty("--pctCut", String(Math.min(90, pctSalesRing))); // ★90%で色切替
+}
 
 const unitRing = document.getElementById("mUnitRing");
-if (unitRing) unitRing.style.setProperty("--pct", String(pctUnitRing));
+if (unitRing){
+  unitRing.style.setProperty("--pct", String(pctUnitRing));
+  unitRing.style.setProperty("--pctCut", String(Math.min(90, pctUnitRing))); // ★90%で色切替
+}
   
 
   el = document.getElementById("needSales");
