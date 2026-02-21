@@ -152,7 +152,13 @@ const fromDateKey = (s)=>{
   return new Date(y, m-1, dd);
 };
 function isStoreLikeDevice(){
-  // iPad/タブレット寄り（タッチ＋幅）を店舗モード扱い
+  const p = new URLSearchParams(location.search);
+
+  // ★PCでも確認できる強制フラグ
+  if (p.get("ui") === "store") return true;
+  if (p.get("ui") === "pc") return false;
+
+  // 通常の自動判定（iPad/タブレット寄り）
   return window.matchMedia("(pointer: coarse) and (max-width: 1024px)").matches;
 }
 function startOfMonth(d){ return new Date(d.getFullYear(), d.getMonth(), 1); }
@@ -593,9 +599,8 @@ async function openDayEditor(date){
     `${date.getFullYear()}年${date.getMonth()+1}月${date.getDate()}日（${WEEK[date.getDay()]}）`;
 
   // 店舗(iPad)では売上欄を隠す（PCは表示）
-  const storeMode = isStoreLikeDevice();
-  if (salesSection) salesSection.style.display = storeMode ? "none" : "";
-
+ const storeMode = isStoreLikeDevice();
+document.getElementById("salesSection")?.style.display = storeMode ? "none" : "";
   // スタッフ一覧（active=true）
   const { data: staffRows, error: eStaff } = await sb
     .from("staffs")
