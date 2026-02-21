@@ -191,6 +191,8 @@ function updateRings(sumSales, unitPrice){
     unitRing.style.setProperty("--pct", String(vUnit));
     unitRing.style.setProperty("--pctCut", String(Math.min(90, vUnit)));
   }
+   // ★ここを追加（updateRingsの最後・閉じカッコの直前）
+  console.log("[updateRings]", { sumSales, unitPrice, salesStyle: document.getElementById("mSalesRing")?.getAttribute("style") });
 }
 function isStoreLikeDevice(){
   const p = new URLSearchParams(location.search);
