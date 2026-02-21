@@ -1174,7 +1174,7 @@ if (hint){
   }
 }
 
-  updateRings(sumSales, unitPrice);
+updateRings(sumSales, unitPrice);
 renderMonth();
 }
 
