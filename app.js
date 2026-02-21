@@ -1206,38 +1206,7 @@ if (el) el.textContent = pctSalesRaw + "%";
 el = document.getElementById("mUnitPct");
 if (el) el.textContent = pctUnitRaw + "%";
 
-// 円の進捗（CSS変数 --pct / --pctCut を更新）※URLテスト対応＆安全版
-const p = new URLSearchParams(location.search);
-const testPctRaw = p.get("test");                 // 例: ?test=92
-const testPctNum = Number(testPctRaw);
-const overridePct = Number.isFinite(testPctNum)
-  ? Math.max(0, Math.min(100, Math.floor(testPctNum)))
-  : null;
 
-// 0〜100に丸める関数（undefined/NaNを0に）
-const clampPct = (x) => {
-  const n = Number(x);
-  if (!Number.isFinite(n)) return 0;
-  return Math.max(0, Math.min(100, Math.floor(n)));
-};
-
-// 売上リング
-const salesRing = document.getElementById("mSalesRing");
-if (salesRing){
-  const base = clampPct(pctSalesRing);            // ←ここがポイント（必ず数字）
-  const v = (overridePct ?? base);
-  salesRing.style.setProperty("--pct", String(v));
-  salesRing.style.setProperty("--pctCut", String(Math.min(90, v)));
-}
-
-// 単価リング
-const unitRing = document.getElementById("mUnitRing");
-if (unitRing){
-  const base = clampPct(pctUnitRing);
-  const v = (overridePct ?? base);
-  unitRing.style.setProperty("--pct", String(v));
-  unitRing.style.setProperty("--pctCut", String(Math.min(90, v)));
-}
   
 
   el = document.getElementById("needSales");
