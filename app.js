@@ -599,8 +599,9 @@ async function openDayEditor(date){
     `${date.getFullYear()}年${date.getMonth()+1}月${date.getDate()}日（${WEEK[date.getDay()]}）`;
 
   // 店舗(iPad)では売上欄を隠す（PCは表示）
- const storeMode = isStoreLikeDevice();
-document.getElementById("salesSection")?.style.display = storeMode ? "none" : "";
+const storeMode = isStoreLikeDevice();
+const salesEl = document.getElementById("salesSection");
+if (salesEl) salesEl.style.display = storeMode ? "none" : "";
   // スタッフ一覧（active=true）
   const { data: staffRows, error: eStaff } = await sb
     .from("staffs")
