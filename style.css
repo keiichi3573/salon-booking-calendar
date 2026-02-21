@@ -1221,3 +1221,21 @@ body{
 #mUnitRing{
   background: conic-gradient(#2ec4b6 calc(var(--pct) * 1%), #e9e9e9 0);
 }
+/* ===== Ring color with 90% highlight ===== */
+#mSalesRing{
+  /* 0〜90%: オレンジ / 90〜達成%: レッド / 残り: グレー */
+  background: conic-gradient(
+    #ff9f1c 0 calc(var(--pctCut) * 1%),
+    #ff3b30 calc(var(--pctCut) * 1%) calc(var(--pct) * 1%),
+    #e9e9e9 calc(var(--pct) * 1%) 100%
+  );
+}
+
+#mUnitRing{
+  /* 0〜90%: ティール / 90〜達成%: シアン / 残り: グレー */
+  background: conic-gradient(
+    #2ec4b6 0 calc(var(--pctCut) * 1%),
+    #00d1ff calc(var(--pctCut) * 1%) calc(var(--pct) * 1%),
+    #e9e9e9 calc(var(--pct) * 1%) 100%
+  );
+}
