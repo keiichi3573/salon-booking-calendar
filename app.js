@@ -1173,6 +1173,7 @@ const pctSalesRaw = GOAL_SALES > 0 ? Math.floor((sumSales / GOAL_SALES) * 100) :
 const pctSalesRing = Math.max(0, Math.min(100, pctSalesRaw)); // 円描画は0-100
 const pctUnitRaw = GOAL_UNIT_PRICE > 0 ? Math.floor((unitPrice / GOAL_UNIT_PRICE) * 100) : 0;
 const pctUnitRing = Math.max(0, Math.min(100, pctUnitRaw));
+
 // ===== リング描画：CSS変数をセット（URLテスト対応） =====
 const p = new URLSearchParams(location.search);
 const testPctNum = Number(p.get("test"));
@@ -1199,13 +1200,13 @@ const overridePct = Number.isFinite(testPctNum)
     ring.style.setProperty("--pctCut", String(Math.min(90, v)));
   }
 }
+
 // 中央の％表示
 el = document.getElementById("mSalesPct");
 if (el) el.textContent = pctSalesRaw + "%";
 
 el = document.getElementById("mUnitPct");
 if (el) el.textContent = pctUnitRaw + "%";
-
 
   
 
