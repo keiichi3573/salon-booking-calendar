@@ -1181,17 +1181,26 @@ if (el) el.textContent = pctSalesRaw + "%";
 el = document.getElementById("mUnitPct");
 if (el) el.textContent = pctUnitRaw + "%";
 
-// 円の進捗（CSS変数 --pct / --pctCut を更新）
+// 円の進捗（CSS変数 --pct / --pctCut を更新）※URLテスト対応
+const p = new URLSearchParams(location.search);
+const testPctRaw = p.get("test");                 // 例: ?test=92
+const testPctNum = Number(testPctRaw);
+const overridePct = Number.isFinite(testPctNum)
+  ? Math.max(0, Math.min(100, Math.floor(testPctNum)))
+  : null;
+
 const salesRing = document.getElementById("mSalesRing");
 if (salesRing){
-  salesRing.style.setProperty("--pct", String(pctSalesRing));
-  salesRing.style.setProperty("--pctCut", String(Math.min(90, pctSalesRing))); // ★90%で色切替
+  const v = (overridePct ?? pctSalesRing);        // ←ここが安全（pctSalesRingは触らない）
+  salesRing.style.setProperty("--pct", String(v));
+  salesRing.style.setProperty("--pctCut", String(Math.min(90, v)));
 }
 
 const unitRing = document.getElementById("mUnitRing");
 if (unitRing){
-  unitRing.style.setProperty("--pct", String(pctUnitRing));
-  unitRing.style.setProperty("--pctCut", String(Math.min(90, pctUnitRing))); // ★90%で色切替
+  const v = (overridePct ?? pctUnitRing);
+  unitRing.style.setProperty("--pct", String(v));
+  unitRing.style.setProperty("--pctCut", String(Math.min(90, v)));
 }
   
 
