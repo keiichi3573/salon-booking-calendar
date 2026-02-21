@@ -82,7 +82,7 @@ const dayCloseBtn   = document.getElementById("dayCloseBtn");
 const daySaveBtn    = document.getElementById("daySaveBtn");
 const dayTitle      = document.getElementById("dayModalTitle");
 const totalSelect   = document.getElementById("totalCountSelect");
-
+const salesInput    = document.getElementById("salesInput");
 
 // settings modal
 const settingsModal = document.getElementById("settingsModal");
@@ -584,81 +584,26 @@ async function openDayEditor(date){
   dayTitle.textContent =
     `${date.getFullYear()}年${date.getMonth()+1}月${date.getDate()}日（${WEEK[date.getDay()]}）`;
 
-  // 1) スタッフ一覧（active=true）
-  const { data: staffs, error: eStaff } = await sb
-    .from("staffs")
-    .select("id,name,sort_order")
-    .eq("active", true)
-    .order("sort_order");
-  if(eStaff){ alert("staffs取得エラー: " + eStaff.message); return; }
+  // その日のデータ（合計予約数 + 売上）だけ取得
+  const { data: daily, error: eDaily } = await sb
+    .from("bookings_daily")
+    .select("total, tech_sales")
+    .eq("day", editingDateKey)
+    .maybeSingle();
 
-  // 2) その日のスタッフ別
-  const { data: rows, error: eRows } = await sb
-    .from("bookings_staff_daily")
-    .select("staff_id,count")
-    .eq("day", editingDateKey);
-  if(eRows){ alert("staff別取得エラー: " + eRows.message); return; }
-
-  const map = new Map((rows||[]).map(r => [r.staff_id, r.count || 0]));
-
-  // 3) その日のメモ（bookings_daily.note）
- const { data: daily, error: eDaily } = await sb
-  .from("bookings_daily")
-  .select("total,tech_sales,retail_sales,new_customers,repeat_customers")
-  .eq("day", editingDateKey)
-  .maybeSingle();
-
-  if(eDaily){ alert("daily取得エラー: " + eDaily.message); return; }
-
-  const box = document.getElementById("staffInputs");
-  box.innerHTML = "";
-
-  let total = 0;
- (staffs||[]).forEach(s => {
-  const v = map.get(s.id) || 0;
-  total += v;
-
-  const row = document.createElement("div");
-  row.className = "staffRow";
-
-  const label = document.createElement("label");
-  label.className = "staffName";
-  label.textContent = s.name;
-
-  const select = document.createElement("select");
-  select.className = "staffCountSelect";
-  select.setAttribute("data-staff", String(s.id));
-
-  for (let i = 0; i <= MAX_COUNT; i++) {
-    const opt = document.createElement("option");
-    opt.value = String(i);
-    opt.textContent = String(i);
-    if (i === Number(v)) opt.selected = true;
-    select.appendChild(opt);
+  if(eDaily){
+    alert("daily取得エラー: " + eDaily.message);
+    return;
   }
 
-  row.appendChild(label);
-  row.appendChild(select);
-  box.appendChild(row);
-});
+  // 合計予約数
+  totalSelect.value = String(Number(daily?.total || 0));
 
+  // 売上（※ tech_sales に“合計売上”を入れる運用）
+  if (salesInput) salesInput.value = String(Number(daily?.tech_sales || 0));
 
-  // 合計（ロックされてる想定）
-  totalSelect.value = String(Number(daily?.total ?? total));
-
-
- // 客数プルダウンを毎回埋める（空のまま問題を確実に防ぐ）
-fillCountSelect(newCustomersSelect);
-fillCountSelect(repeatCustomersSelect);
-
-// 売上/客数を入力欄へ反映（なければ0）
-if (techSalesInput)        techSalesInput.value = String(Number(daily?.tech_sales || 0));
-if (retailSalesInput)      retailSalesInput.value = String(Number(daily?.retail_sales || 0));
-if (newCustomersSelect)    newCustomersSelect.value = String(Number(daily?.new_customers || 0));
-if (repeatCustomersSelect) repeatCustomersSelect.value = String(Number(daily?.repeat_customers || 0));
-renderBoostPanel();   // ★追加：モーダルのモチベ表示を描画
-openModal(dayModal);
-openModal(dayModal);
+  // ★ openModal は1回だけ（今2回呼ばれてるので修正）
+  openModal(dayModal);
 }
 
 async function saveDay(){
@@ -671,65 +616,32 @@ async function saveDay(){
     daySaveBtn.disabled = true;
     daySaveBtn.textContent = "保存中...";
 
-    
+    const total = Number(totalSelect?.value || 0);
+    const sales = Number(salesInput?.value || 0);
 
- const inputs = document.querySelectorAll("#staffInputs [data-staff]");
-let total = 0;
+    // bookings_daily に最小項目だけ保存
+    // ★売上は tech_sales に入れる（retail_sales 等は 0 固定）
+    const r2 = await sb
+      .from("bookings_daily")
+      .upsert(
+        [{
+          day: editingDateKey,
+          total,
+          tech_sales: sales,
+          retail_sales: 0,
+          new_customers: 0,
+          repeat_customers: 0,
+          updated_by: "ipad"
+        }],
+        { onConflict: "day" }
+      );
 
-const rows = Array.from(inputs)
-  .map(i => {
-    const staff_id = i.dataset.staff;
-    if (!staff_id) return null;
-
-    const c = Number(i.value || 0);
-    total += c;
-
-    return {
-      day: editingDateKey,
-      staff_id: staff_id,      // ★Number()しない（uuidだから）
-      count: c,
-      updated_by: "ipad"
-    };
-  })
-  .filter(Boolean);
-
-if (rows.length === 0) {
-  alert("スタッフ情報を取得できません。再読み込みしてください。");
-  return;
-}
-
-const r1 = await sb
-  .from("bookings_staff_daily")
-  .upsert(rows, { onConflict: "day,staff_id" });
-if (r1.error) throw new Error("スタッフ別保存失敗: " + r1.error.message);
-
-    const techSales = Number(techSalesInput?.value || 0);
-const retailSales = Number(retailSalesInput?.value || 0);
-const newCus = Number(newCustomersSelect?.value || 0);
-const repeatCus = Number(repeatCustomersSelect?.value || 0);
-
-const r2 = await sb
-  .from("bookings_daily")
-  .upsert(
-    [{
-      day: editingDateKey,
-      total,
-      tech_sales: techSales,
-      retail_sales: retailSales,
-      new_customers: newCus,
-      repeat_customers: repeatCus,
-      updated_by: "ipad"
-    }],
-    { onConflict: "day" }
-  );
-
-
-    if(r2.error) throw new Error("合計保存失敗: " + r2.error.message);
+    if(r2.error) throw new Error("保存失敗: " + r2.error.message);
 
     closeModal(dayModal);
     await loadAndRender();
-
     alert("保存しました");
+
   }catch(e){
     console.error(e);
     alert("保存で止まりました: " + (e?.message || e));
@@ -1138,9 +1050,7 @@ btnNext?.addEventListener("click", async ()=>{
 dayCloseBtn?.addEventListener("click", ()=> closeModal(dayModal));
 daySaveBtn?.addEventListener("click", saveDay);
 // 入力のたびに「今日のモチベ表示」を更新（効果大）
-document.getElementById("techSalesInput")?.addEventListener("input", renderBoostPanel);
-document.getElementById("retailSalesInput")?.addEventListener("input", renderBoostPanel);
-document.getElementById("totalCountSelect")?.addEventListener("change", renderBoostPanel);
+
 btnSettings?.addEventListener("click", openSettings);
 settingsCloseBtn?.addEventListener("click", ()=> closeModal(settingsModal));
 settingsCloseBtn2?.addEventListener("click", ()=> closeModal(settingsModal));
