@@ -697,7 +697,7 @@ async function saveDay(){
         total += c;
         return {
           day: editingDateKey,
-          staff_id: staff_id, // uuid想定
+          staff_id: staff_id,
           count: c,
           updated_by: "ipad"
         };
@@ -736,10 +736,13 @@ async function saveDay(){
         { onConflict: "day" }
       );
 
-    if(r2.error) throw new Error("daily保存失敗: " + r2.error.message);
+    if (r2.error) throw new Error("daily保存失敗: " + r2.error.message);
 
     closeModal(dayModal);
+
+    // 反映（再取得して再描画）
     await loadAndRender();
+
     alert("保存しました");
 
   }catch(e){
