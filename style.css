@@ -1186,3 +1186,31 @@ body{
   transform: translateY(1px);
   box-shadow: 0 8px 22px rgba(0,0,0,.07);
 }
+/* ===== Extra polish pack (all) ===== */
+
+/* 1) 売上ブロックの見出しを締める（境目を作る） */
+.memoBox .label{
+  font-weight: 800;
+  letter-spacing: .03em;
+  margin-top: 6px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(0,0,0,.06);
+}
+
+/* 2) スタッフカードの高さ＆中身の配置を揃える */
+.staffCard{
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 132px;
+}
+
+/* 3) 保存ボタンを“押したくなる”上品ボタンに */
+#daySaveBtn{
+  box-shadow: 0 10px 24px rgba(0,0,0,.12);
+  transition: transform .08s ease, box-shadow .08s ease;
+}
+#daySaveBtn:active{
+  transform: translateY(1px) scale(.99);
+  box-shadow: 0 6px 16px rgba(0,0,0,.10);
+}
