@@ -1043,3 +1043,29 @@ body{
 @media (max-width: 520px){
   .staffCards{ grid-template-columns: 1fr; }
 }
+/* ===== Modal scroll safety (iPad対策) ===== */
+.modalCard{
+  max-height: min(92vh, 820px);
+  display: flex;
+  flex-direction: column;
+}
+
+.modalHeader{
+  flex: 0 0 auto;
+}
+
+.modalBody{
+  flex: 1 1 auto;
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 12px;
+}
+
+.modalFooter{
+  flex: 0 0 auto;
+  position: sticky;
+  bottom: 0;
+  background: #fff;
+  padding-bottom: max(12px, env(safe-area-inset-bottom));
+  border-top: 1px solid rgba(0,0,0,.06);
+}
