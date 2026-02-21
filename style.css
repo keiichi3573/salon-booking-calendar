@@ -846,3 +846,47 @@ body{
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
+/* ===== Ring Progress（円の達成度）===== */
+.ringWrap{
+  display:flex;
+  justify-content:center;
+  margin: 10px 0 12px;
+}
+
+.ringProgress{
+  --pct: 0;            /* 0〜100 */
+  --size: 110px;
+  --thickness: 12px;
+
+  width: var(--size);
+  height: var(--size);
+  border-radius: 999px;
+  position: relative;
+
+  /* 進捗リング */
+  background: conic-gradient(#111 calc(var(--pct) * 1%), #e7e7e7 0);
+}
+
+.ringInner{
+  position:absolute;
+  inset: var(--thickness);
+  background: #fff;
+  border-radius: 999px;
+
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+}
+
+.ringInner b{
+  font-size: 22px;
+  line-height: 1;
+}
+
+.ringSub{
+  font-size: 12px;
+  opacity: .75;
+  margin-top: 4px;
+}
