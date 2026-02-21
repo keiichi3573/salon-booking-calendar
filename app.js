@@ -151,6 +151,47 @@ const fromDateKey = (s)=>{
   const [y,m,dd] = s.split("-").map(Number);
   return new Date(y, m-1, dd);
 };
+
+function updateRings(sumSales, unitPrice){
+  // 目標（あなたの設定に合わせて）
+  const GOAL_CUSTOMERS = 200;
+  const GOAL_UNIT_PRICE = 7500;
+  const GOAL_SALES = GOAL_CUSTOMERS * GOAL_UNIT_PRICE;
+
+  // URLテスト（?test=92）
+  const p = new URLSearchParams(location.search);
+  const n = Number(p.get("test"));
+  const overridePct = Number.isFinite(n) ? Math.max(0, Math.min(100, Math.floor(n))) : null;
+
+  // %計算（リング表示は 0〜100 に丸める）
+  const pctSalesRaw = GOAL_SALES > 0 ? Math.floor((sumSales / GOAL_SALES) * 100) : 0;
+  const pctSalesRing = Math.max(0, Math.min(100, pctSalesRaw));
+
+  const pctUnitRaw = GOAL_UNIT_PRICE > 0 ? Math.floor((unitPrice / GOAL_UNIT_PRICE) * 100) : 0;
+  const pctUnitRing = Math.max(0, Math.min(100, pctUnitRaw));
+
+  // 中央の%（100超えも表示OK）
+  let el = document.getElementById("mSalesPct");
+  if (el) el.textContent = pctSalesRaw + "%";
+  el = document.getElementById("mUnitPct");
+  if (el) el.textContent = pctUnitRaw + "%";
+
+  // リングに反映（テスト時は上書き）
+  const vSales = (overridePct ?? pctSalesRing);
+  const vUnit  = (overridePct ?? pctUnitRing);
+
+  const salesRing = document.getElementById("mSalesRing");
+  if (salesRing){
+    salesRing.style.setProperty("--pct", String(vSales));
+    salesRing.style.setProperty("--pctCut", String(Math.min(90, vSales)));
+  }
+
+  const unitRing = document.getElementById("mUnitRing");
+  if (unitRing){
+    unitRing.style.setProperty("--pct", String(vUnit));
+    unitRing.style.setProperty("--pctCut", String(Math.min(90, vUnit)));
+  }
+}
 function isStoreLikeDevice(){
   const p = new URLSearchParams(location.search);
 
@@ -1113,6 +1154,7 @@ const needSalesPerDay = remDays > 0 ? Math.ceil(lackSales / remDays) : 0;
 const needCustomersPerDay = remDays > 0 ? Math.ceil(lackCustomers / remDays) : 0;
 
 const unitPrice = sumCustomers > 0 ? Math.floor(sumSales / sumCustomers) : 0;
+updateRings(sumSales, unitPrice);
 
 // ペース判定（今月だけ・営業日ペース）
 let onTrack = true;
