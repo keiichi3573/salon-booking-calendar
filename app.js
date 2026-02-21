@@ -99,6 +99,15 @@ const staffAddBtn   = document.getElementById("staffAddBtn");
 const staffList     = document.getElementById("staffList");
 const newPinInput   = document.getElementById("newPinInput");
 const pinChangeBtn  = document.getElementById("pinChangeBtn");
+// ▼ここに追記（追加DOM）
+const totalCountDisplay = document.getElementById("totalCountDisplay");
+
+// sales inputs (PCのみ表示)
+const salesSection = document.getElementById("salesSection");
+const techSalesInput = document.getElementById("techSalesInput");
+const retailSalesInput = document.getElementById("retailSalesInput");
+const newCustomersSelect = document.getElementById("newCustomersSelect");
+const repeatCustomersSelect = document.getElementById("repeatCustomersSelect");
 // ===== Modal open / close events =====
 
 // 設定モーダルを開く
@@ -147,7 +156,10 @@ const fromDateKey = (s)=>{
   const [y,m,dd] = s.split("-").map(Number);
   return new Date(y, m-1, dd);
 };
-
+function isStoreLikeDevice(){
+  // iPad/タブレット寄り（タッチ＋幅）を店舗モード扱い
+  return window.matchMedia("(pointer: coarse) and (max-width: 1024px)").matches;
+}
 function startOfMonth(d){ return new Date(d.getFullYear(), d.getMonth(), 1); }
 function endOfMonth(d){ return new Date(d.getFullYear(), d.getMonth()+1, 0); }
 function fmtYen(n){
@@ -585,96 +597,146 @@ async function openDayEditor(date){
   dayTitle.textContent =
     `${date.getFullYear()}年${date.getMonth()+1}月${date.getDate()}日（${WEEK[date.getDay()]}）`;
 
-  // 0) 客数プルダウンを必ず埋める
-  fillCountSelect(newCustomersSelect);
-  fillCountSelect(repeatCustomersSelect);
+  // 店舗(iPad)では売上欄を隠す（PCは表示）
+  const storeMode = isStoreLikeDevice();
+  if (salesSection) salesSection.style.display = storeMode ? "none" : "";
 
-  // 1) スタッフ一覧（active=true） ※ sort列で並び
+  // スタッフ一覧（active=true）
   const { data: staffRows, error: eStaff } = await sb
     .from("staffs")
-    .select("id,name,sort,active")
+    .select("id,name,sort_order")
     .eq("active", true)
-    .order("sort", { ascending: true });
+    .order("sort_order");
 
-  if (eStaff){
-    alert("staffs取得エラー: " + eStaff.message);
-    return;
-  }
+  if (eStaff){ alert("staffs取得エラー: " + eStaff.message); return; }
 
-  // 2) その日のスタッフ別予約数
-  const { data: rows, error: eRows } = await sb
+  // その日のスタッフ別予約数
+  const { data: dailyStaff, error: eRows } = await sb
     .from("bookings_staff_daily")
     .select("staff_id,count")
     .eq("day", editingDateKey);
 
-  if (eRows){
-    alert("staff別取得エラー: " + eRows.message);
-    return;
-  }
+  if (eRows){ alert("staff別取得エラー: " + eRows.message); return; }
 
-  const map = new Map((rows||[]).map(r => [String(r.staff_id), Number(r.count || 0)]));
+  const staffCountMap = new Map((dailyStaff||[]).map(r => [r.staff_id, Number(r.count||0)]));
 
-  // 3) その日の売上/客数（bookings_daily）
+  // その日の売上/客数（bookings_daily）
   const { data: daily, error: eDaily } = await sb
     .from("bookings_daily")
     .select("total,tech_sales,retail_sales,new_customers,repeat_customers")
     .eq("day", editingDateKey)
     .maybeSingle();
 
-  if (eDaily){
-    alert("daily取得エラー: " + eDaily.message);
-    return;
-  }
+  if (eDaily){ alert("daily取得エラー: " + eDaily.message); return; }
 
-  // 4) スタッフ入力欄を描画
+  // カード描画
   const box = document.getElementById("staffInputs");
   box.innerHTML = "";
 
-  let total = 0;
+  const maxTotal = MAX_COUNT; // 合計上限（20）
+  const getTotal = () => {
+    let t = 0;
+    for (const s of (staffRows||[])) t += Number(staffCountMap.get(s.id) || 0);
+    return t;
+  };
 
-  (staffRows || []).forEach(s => {
-    const v = map.get(String(s.id)) || 0;
-    total += v;
+  const renderTotal = () => {
+    const t = getTotal();
+    if (totalSelect) totalSelect.value = String(t);
+    if (totalCountDisplay) totalCountDisplay.textContent = String(t);
+  };
 
-    const row = document.createElement("div");
-    row.className = "staffRow";
+  const makeCard = (s) => {
+    const current = Number(staffCountMap.get(s.id) || 0);
 
-    const label = document.createElement("label");
-    label.className = "staffName";
-    label.textContent = s.name;
+    const card = document.createElement("div");
+    card.className = "staffCard";
+    card.dataset.staff = String(s.id);
 
-    const select = document.createElement("select");
-    select.className = "staffCountSelect";
-    select.setAttribute("data-staff", String(s.id));
+    const top = document.createElement("div");
+    top.className = "staffCardTop";
 
-    for (let i = 0; i <= MAX_COUNT; i++) {
-      const opt = document.createElement("option");
-      opt.value = String(i);
-      opt.textContent = String(i);
-      if (i === Number(v)) opt.selected = true;
-      select.appendChild(opt);
-    }
+    const name = document.createElement("div");
+    name.className = "staffCardName";
+    name.textContent = s.name;
 
-    row.appendChild(label);
-    row.appendChild(select);
-    box.appendChild(row);
-  });
+    const smallCount = document.createElement("div");
+    smallCount.className = "staffCardCount";
+    smallCount.textContent = String(current);
 
-  // 5) 合計予約数（スタッフ合計 or daily.total）
-  totalSelect.value = String(Number(daily?.total ?? total));
+    top.appendChild(name);
+    top.appendChild(smallCount);
 
-  // 6) 売上/客数を入力欄へ反映（なければ0）
+    const stepper = document.createElement("div");
+    stepper.className = "stepper";
+
+    const btnMinus = document.createElement("button");
+    btnMinus.type = "button";
+    btnMinus.className = "stepBtn";
+    btnMinus.textContent = "−";
+
+    const val = document.createElement("div");
+    val.className = "stepValue";
+    val.textContent = String(current);
+
+    const btnPlus = document.createElement("button");
+    btnPlus.type = "button";
+    btnPlus.className = "stepBtn";
+    btnPlus.textContent = "＋";
+
+    const syncButtons = () => {
+      const v = Number(staffCountMap.get(s.id) || 0);
+      const total = getTotal();
+      btnMinus.disabled = (v <= 0);
+      // 合計上限に達している時は＋を止める（そのスタッフが増やす場合）
+      btnPlus.disabled = (total >= maxTotal);
+      smallCount.textContent = String(v);
+      val.textContent = String(v);
+      renderTotal();
+    };
+
+    btnMinus.addEventListener("click", () => {
+      const v = Number(staffCountMap.get(s.id) || 0);
+      staffCountMap.set(s.id, Math.max(0, v - 1));
+      syncButtons();
+    });
+
+    btnPlus.addEventListener("click", () => {
+      const total = getTotal();
+      if (total >= maxTotal) return;
+      const v = Number(staffCountMap.get(s.id) || 0);
+      staffCountMap.set(s.id, Math.min(MAX_COUNT, v + 1));
+      syncButtons();
+    });
+
+    stepper.appendChild(btnMinus);
+    stepper.appendChild(val);
+    stepper.appendChild(btnPlus);
+
+    card.appendChild(top);
+    card.appendChild(stepper);
+
+    // 初期状態
+    syncButtons();
+    return card;
+  };
+
+  (staffRows||[]).forEach(s => box.appendChild(makeCard(s)));
+  renderTotal();
+
+  // PCのみ：売上/客数を反映（iPadは非表示なので値は入れてもOK）
+  fillCountSelect(newCustomersSelect);
+  fillCountSelect(repeatCustomersSelect);
+
   if (techSalesInput)        techSalesInput.value = String(Number(daily?.tech_sales || 0));
   if (retailSalesInput)      retailSalesInput.value = String(Number(daily?.retail_sales || 0));
   if (newCustomersSelect)    newCustomersSelect.value = String(Number(daily?.new_customers || 0));
   if (repeatCustomersSelect) repeatCustomersSelect.value = String(Number(daily?.repeat_customers || 0));
 
-  // 7) モーダルを開く（1回だけ）
   openModal(dayModal);
 }
 
 async function saveDay(){
-
   try{
     if(!editingDateKey){
       alert("保存できません：日付が選択されていません");
@@ -684,66 +746,89 @@ async function saveDay(){
     daySaveBtn.disabled = true;
     daySaveBtn.textContent = "保存中...";
 
-    // 1) スタッフ別を集計して total を作る
-    const inputs = document.querySelectorAll("#staffInputs [data-staff]");
+    const storeMode = isStoreLikeDevice();
+
+    // --- スタッフ別予約数を集計 ---
+    const cards = document.querySelectorAll("#staffInputs .staffCard[data-staff]");
     let total = 0;
 
-    const staffUpserts = Array.from(inputs)
-      .map(i => {
-        const staff_id = i.dataset.staff;
-        if (!staff_id) return null;
-        const c = Number(i.value || 0);
-        total += c;
-        return {
-          day: editingDateKey,
-          staff_id: staff_id,
-          count: c,
-          updated_by: "ipad"
-        };
-      })
-      .filter(Boolean);
+    const rows = Array.from(cards).map(card=>{
+      const staff_id = card.dataset.staff;
+      const v = Number(card.querySelector(".stepValue")?.textContent || 0);
+      total += v;
+      return {
+        day: editingDateKey,
+        staff_id,
+        count: v,
+        updated_by: storeMode ? "ipad" : "pc"
+      };
+    });
 
-    if (staffUpserts.length === 0) {
-      alert("スタッフ情報を取得できません。再読み込みしてください。");
-      return;
-    }
-
+    // 1) bookings_staff_daily を保存
     const r1 = await sb
       .from("bookings_staff_daily")
-      .upsert(staffUpserts, { onConflict: "day,staff_id" });
+      .upsert(rows, { onConflict: "day,staff_id" });
 
     if (r1.error) throw new Error("スタッフ別保存失敗: " + r1.error.message);
 
-    // 2) 売上/客数
-    const techSales = Number(techSalesInput?.value || 0);
-    const retailSales = Number(retailSalesInput?.value || 0);
-    const newCus = Number(newCustomersSelect?.value || 0);
-    const repeatCus = Number(repeatCustomersSelect?.value || 0);
+    // 2) bookings_daily を保存
+    if (storeMode){
+      // iPad：予約（total）だけ更新。売上/客数は上書きしない。
+      const exists = await sb
+        .from("bookings_daily")
+        .select("day")
+        .eq("day", editingDateKey)
+        .maybeSingle();
 
-    const r2 = await sb
-      .from("bookings_daily")
-      .upsert(
-        [{
+      if (exists.error) throw new Error("daily存在確認失敗: " + exists.error.message);
+
+      if (exists.data){
+        const u = await sb
+          .from("bookings_daily")
+          .update({ total, updated_by: "ipad" })
+          .eq("day", editingDateKey);
+
+        if (u.error) throw new Error("daily更新失敗: " + u.error.message);
+      } else {
+        // 初回だけ最低限で作成（売上等は0でOK）
+        const ins = await sb
+          .from("bookings_daily")
+          .insert([{
+            day: editingDateKey,
+            total,
+            tech_sales: 0,
+            retail_sales: 0,
+            new_customers: 0,
+            repeat_customers: 0,
+            updated_by: "ipad"
+          }]);
+        if (ins.error) throw new Error("daily作成失敗: " + ins.error.message);
+      }
+    } else {
+      // PC：売上/客数も保存
+      const techSales = Number(techSalesInput?.value || 0);
+      const retailSales = Number(retailSalesInput?.value || 0);
+      const newCus = Number(newCustomersSelect?.value || 0);
+      const repeatCus = Number(repeatCustomersSelect?.value || 0);
+
+      const r2 = await sb
+        .from("bookings_daily")
+        .upsert([{
           day: editingDateKey,
           total,
           tech_sales: techSales,
           retail_sales: retailSales,
           new_customers: newCus,
           repeat_customers: repeatCus,
-          updated_by: "ipad"
-        }],
-        { onConflict: "day" }
-      );
+          updated_by: "pc"
+        }], { onConflict: "day" });
 
-    if (r2.error) throw new Error("daily保存失敗: " + r2.error.message);
+      if (r2.error) throw new Error("daily保存失敗: " + r2.error.message);
+    }
 
     closeModal(dayModal);
-
-    // 反映（再取得して再描画）
     await loadAndRender();
-
     alert("保存しました");
-
   }catch(e){
     console.error(e);
     alert("保存で止まりました: " + (e?.message || e));
