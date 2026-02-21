@@ -162,7 +162,7 @@
 
   </main>
 
- <!-- 日付入力モーダル -->
+<!-- 日付入力モーダル -->
 <div class="modal hidden" id="dayModal">
   <div class="modalBackdrop" data-close="dayModal"></div>
   <div class="modalCard" role="dialog" aria-modal="true" aria-hidden="true" tabindex="-1">
@@ -175,21 +175,42 @@
     </div>
 
     <div class="modalBody">
-      <!-- 予約数 -->
+      <!-- 合計予約数（自動計算：スタッフ別合計を表示するだけ） -->
       <div class="bigInputBox">
         <div class="label">合計予約数</div>
-        <!-- ★ disabled を外す（編集できるようにする） -->
-        <select id="totalCountSelect" class="bigSelect"></select>
+        <!-- ★合計はロック（スタッフ別入力で決まる） -->
+        <select id="totalCountSelect" class="bigSelect" disabled></select>
       </div>
 
-      <!-- 売上（1本化） -->
+      <!-- スタッフ別予約数 -->
+      <div class="staffBox">
+        <div class="label">スタッフ別予約数</div>
+        <div id="staffInputs"></div>
+      </div>
+
+      <!-- 売上入力（税抜）＋客数 -->
       <div class="memoBox">
         <div class="label">売上入力（税抜）</div>
+
         <div class="salesInputs">
           <div class="fieldRow">
-            <label class="fieldLabel">売上</label>
-            <!-- ★ id を salesInput にする -->
-            <input id="salesInput" class="fieldInput" type="number" inputmode="numeric" min="0" step="1" placeholder="例：43000" />
+            <label class="fieldLabel">技術売上</label>
+            <input id="techSalesInput" class="fieldInput" type="number" inputmode="numeric" min="0" step="1" placeholder="例：35000" />
+          </div>
+
+          <div class="fieldRow">
+            <label class="fieldLabel">店販売上</label>
+            <input id="retailSalesInput" class="fieldInput" type="number" inputmode="numeric" min="0" step="1" placeholder="例：8000" />
+          </div>
+
+          <div class="fieldRow">
+            <label class="fieldLabel">客数（新規）</label>
+            <select id="newCustomersSelect" class="fieldSelect"></select>
+          </div>
+
+          <div class="fieldRow">
+            <label class="fieldLabel">客数（既存）</label>
+            <select id="repeatCustomersSelect" class="fieldSelect"></select>
           </div>
         </div>
       </div>
