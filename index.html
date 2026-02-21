@@ -55,73 +55,73 @@
   <div class="msItem"><span>客単価</span><b id="mUnitPrice">—</b></div>
 </div>
 
-    <!-- ===== 上段：左=カレンダー / 右=売上 ===== -->
-    <section class="topGrid">
-      <!-- 左：カレンダー -->
-      <div class="calBody">
-        <div class="calendar" id="calendar"></div>
-        <div id="monthlyTotalBookings" class="monthlyTotal"></div>
+<!-- ===== 上段：左=カレンダー / 右=売上 ===== -->
+<section class="topGrid">
+  <!-- 左：カレンダー -->
+  <div class="calBody">
+    <div class="calendar" id="calendar"></div>
+    <div id="monthlyTotalBookings" class="monthlyTotal"></div>
+  </div>
+
+  <!-- 右：売上パネル -->
+  <div class="rightSide">
+    <div class="futureTop">
+      <div class="futureBox">（今後のアップデート用）</div>
+    </div>
+
+    <aside class="salesPanel" aria-label="売上サマリー">
+      <!-- タイトル行（売上 + 目標） -->
+      <div class="cardTitleRow">
+        <div class="cardTitle">売上</div>
+        <div class="goalInline">目標 <b id="mGoalSalesInline">—</b></div>
       </div>
 
-      <!-- 右：売上（準備中）＋空白 -->
-      <div class="rightSide">
-        <div class="futureTop">
-          <div class="futureBox">（今後のアップデート用）</div>
+      <!-- 達成度（円）2個：売上 / 客単価 -->
+      <div class="ringRow">
+        <!-- 売上 -->
+        <div class="ringBlock">
+          <div class="ringLabel">月 達成度</div>
+          <div class="ringProgress" id="mSalesRing" style="--pct:0;">
+            <div class="ringInner">
+              <b id="mSalesPct">—</b>
+              <div class="ringSub">売上</div>
+            </div>
+          </div>
         </div>
 
-      <aside class="salesPanel" aria-label="売上サマリー">
- <div class="cardTitleRow">
-  <div class="cardTitle">売上</div>
-  <div class="goalInline">目標 <b id="mGoalSalesInline">—</b></div>
-</div>
-<!-- 達成度（円）2個：売上 / 客単価 -->
-<div class="ringRow">
-  <!-- 売上 -->
-  <div class="ringBlock">
-    <div class="ringLabel">月 達成度</div>
-    <div class="ringProgress" id="mSalesRing" style="--pct:0;">
-      <div class="ringInner">
-        <b id="mSalesPct">—</b>
-        <div class="ringSub">売上</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- 客単価 -->
-  <div class="ringBlock">
-    <div class="ringLabel">単価 達成度</div>
-    <div class="ringProgress" id="mUnitRing" style="--pct:0;">
-      <div class="ringInner">
-        <b id="mUnitPct">—</b>
-        <div class="ringSub">客単価</div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- ⑦：目標/累計/不足（累計）ブロックは削除するので、mProgressMeta は消す -->
- <div class="mDailyGoalLine">
-    <span>営業日割 1日目標</span>
-    <b id="mDailyGoal">—</b>
-  </div>
-</div> <!-- /mProgressWrap -->
- 
-  <hr class="salesHr" />
-
-  
-
-  <div class="salesRow"><span>残り営業日あたり必要（売上）</span><b id="needSales">—</b></div>
-  <div class="salesRow"><span>残り営業日あたり必要（客数）</span><b id="needCustomers">—</b></div>
-
-  <div class="hint" id="statusHint" style="margin-top:10px;">—</div>
-</aside>
-
-
-        <div class="futureBottom">
-          <div class="futureBox">（空白：今後用）</div>
+        <!-- 客単価 -->
+        <div class="ringBlock">
+          <div class="ringLabel">単価 達成度</div>
+          <div class="ringProgress" id="mUnitRing" style="--pct:0;">
+            <div class="ringInner">
+              <b id="mUnitPct">—</b>
+              <div class="ringSub">客単価</div>
+            </div>
+          </div>
         </div>
       </div>
-    </section>
+
+      <!-- 営業日割 1日目標（残す） -->
+      <div class="mDailyGoalLine">
+        <span>営業日割 1日目標</span>
+        <b id="mDailyGoal">—</b>
+      </div>
+
+      <hr class="salesHr" />
+
+      <!-- ⑦で削除済み：lackSales / lackCustomers は置かない -->
+
+      <div class="salesRow"><span>残り営業日あたり必要（売上）</span><b id="needSales">—</b></div>
+      <div class="salesRow"><span>残り営業日あたり必要（客数）</span><b id="needCustomers">—</b></div>
+
+      <div class="hint" id="statusHint" style="margin-top:10px;">—</div>
+    </aside>
+
+    <div class="futureBottom">
+      <div class="futureBox">（空白：今後用）</div>
+    </div>
+  </div>
+</section>
 
     <!-- ===== 店舗ボード（今のIDを維持） ===== -->
     <section class="storeBoard" id="storeBoard" aria-label="店舗ボード">
