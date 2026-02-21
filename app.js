@@ -257,72 +257,12 @@ function dailyGoalSalesByBusinessDays(viewDate, goalSales){
   return Math.ceil(Number(goalSales || 0) / bd);
 }
 
-// ===== モーダル内：今日のモチベ表示を描画 =====
-function renderBoostPanel(){
-  const panel = document.getElementById("boostPanel");
-  if (!panel) return;
-
-  // 入力欄が無い場合も落ちないように
-  const tech = Number(document.getElementById("techSalesInput")?.value || 0);
-  const retail = Number(document.getElementById("retailSalesInput")?.value || 0);
-  const sales = tech + retail;
-
-  const bookings = Number(document.getElementById("totalCountSelect")?.value || 0); // その日の予約数（合計）
-  
-
-  const dailyGoal = dailyGoalSalesByBusinessDays(viewDate, GOAL_SALES);
-
-  const gap = Math.max(0, dailyGoal - sales);
-  const pct = dailyGoal > 0 ? Math.min(100, Math.floor((sales / dailyGoal) * 100)) : 0;
-
-  // 今日の目標に届く「必要客単価」（予約数ベース）
-  const neededUnit = bookings > 0 ? Math.ceil(dailyGoal / bookings) : null;
-  const deltaUnit = (neededUnit != null) ? Math.max(0, neededUnit - GOAL_UNIT_PRICE) : null;
-
-  // 段階表示（+500/+1000/+2000/+3000）
-  const steps = [500, 1000, 2000, 3000].map(inc=>{
-    const add = inc * bookings;
-    const rem = Math.max(0, gap - add);
-    return { inc, add, rem, ok: rem === 0 };
-  });
-
-  const isOk = gap === 0;
-
-  // 画面（HTML）を組む
-  panel.innerHTML = `
-    <div class="boostHead">
-      <div class="boostTitle">今日の目標（営業日割）</div>
-      <div class="boostSub">1日目標：${fmtYen(dailyGoal)}</div>
-    </div>
-
-    <div class="bar" aria-label="今日の進捗バー">
-      <div class="fill" style="width:${pct}%"></div>
-    </div>
-
-    <div class="boostMain">
-      <div class="badgeTone ${isOk ? "ok" : "ng"}">
-        ${isOk ? "達成圏" : "未達"}　${pct}%
-      </div>
-
-      <div class="bigDelta">
-        ${deltaUnit == null ? "—" : `＋${fmtNum(deltaUnit)}円/人`}
-        <small>${deltaUnit == null ? "予約数が0のため計算できません" : `必要単価：${fmtYen(neededUnit)}（目標単価 ${fmtYen(7500)}）`}</small>
-      </div>
-    </div>
-
-    <div class="stepList">
-      ${steps.map(s=>`
-        <div class="stepRow">
-          <div class="left">＋${fmtNum(s.inc)}円/人</div>
-          <div class="right">
-            <span>${bookings>0 ? `＋${fmtYen(s.add)}` : "—"}</span>
-            <span class="stepTag ${s.ok ? "ok":"ng"}">${s.ok ? "達成圏" : `あと ${fmtYen(s.rem)}`}</span>
-          </div>
-        </div>
-      `).join("")}
-    </div>
-  `;
-}
+/*
+ // ===== モーダル内：今日のモチベ表示を描画 =====
+ function renderBoostPanel(){
+   ...
+ }
+*/
 // ===== 営業日カウント（定休日ルールは isClosedDay を使う） =====
 function isBusinessDay(d){
   // 営業日 = 定休日ではない日
