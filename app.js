@@ -1076,7 +1076,34 @@ if (el) el.textContent = fmtNum(sumRepeat) + "名";
 　if (el) el.textContent = fmtNum(sumRepeat) + "名";
   el = document.getElementById("mUnitPrice");
   if (el) el.textContent = unitPrice ? fmtYen(unitPrice) : "—";
+　// ===== 目標（固定）=====
+const GOAL_CUSTOMERS = 200;
+const GOAL_UNIT_PRICE = 7500;
+const GOAL_SALES = GOAL_CUSTOMERS * GOAL_UNIT_PRICE;
 
+// ⑥：売上タイトル横の目標表示
+el = document.getElementById("mGoalSalesInline");
+if (el) el.textContent = fmtYen(GOAL_SALES);
+
+// ===== リング（売上 / 単価）更新 =====
+const pctSalesRaw = GOAL_SALES > 0 ? Math.floor((sumSales / GOAL_SALES) * 100) : 0;
+const pctSalesRing = Math.max(0, Math.min(100, pctSalesRaw)); // 円描画は0-100
+const pctUnitRaw = GOAL_UNIT_PRICE > 0 ? Math.floor((unitPrice / GOAL_UNIT_PRICE) * 100) : 0;
+const pctUnitRing = Math.max(0, Math.min(100, pctUnitRaw));
+
+// 中央の％表示
+el = document.getElementById("mSalesPct");
+if (el) el.textContent = pctSalesRaw + "%";
+
+el = document.getElementById("mUnitPct");
+if (el) el.textContent = pctUnitRaw + "%";
+
+// 円の進捗（CSS変数 --pct を更新）
+const salesRing = document.getElementById("mSalesRing");
+if (salesRing) salesRing.style.setProperty("--pct", String(pctSalesRing));
+
+const unitRing = document.getElementById("mUnitRing");
+if (unitRing) unitRing.style.setProperty("--pct", String(pctUnitRing));
   
 
   el = document.getElementById("needSales");
@@ -1105,9 +1132,7 @@ if (hint){
 }
 // ===== 月の進捗バー反映（売上パネル）=====
 (function(){
-  const GOAL_CUSTOMERS = 200;
-  const GOAL_UNIT_PRICE = 7500;
-  const GOAL_SALES = GOAL_CUSTOMERS * GOAL_UNIT_PRICE;
+  
 
   const pct = GOAL_SALES > 0 ? Math.min(100, Math.floor((sumSales / GOAL_SALES) * 100)) : 0;
   const dailyGoal = dailyGoalSalesByBusinessDays(viewDate, GOAL_SALES);
