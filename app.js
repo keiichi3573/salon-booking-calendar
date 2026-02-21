@@ -1119,10 +1119,10 @@ if (hint){
   let el;
 
   el = document.getElementById("mProgressPct");
-  if (el) el.textContent = pct + "%";
+if (el) el.textContent = pct + "%";
 
-  el = document.getElementById("mProgressFill");
-  if (el) el.style.width = pct + "%";
+const ring = document.getElementById("mSalesRing");
+if (ring) ring.style.setProperty("--pct", String(pct));
 
   el = document.getElementById("mGoalSales");
   if (el) el.textContent = fmtYen(GOAL_SALES);
