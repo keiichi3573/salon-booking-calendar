@@ -102,12 +102,7 @@ const pinChangeBtn  = document.getElementById("pinChangeBtn");
 // ▼ここに追記（追加DOM）
 const totalCountDisplay = document.getElementById("totalCountDisplay");
 
-// sales inputs (PCのみ表示)
-const salesSection = document.getElementById("salesSection");
-const techSalesInput = document.getElementById("techSalesInput");
-const retailSalesInput = document.getElementById("retailSalesInput");
-const newCustomersSelect = document.getElementById("newCustomersSelect");
-const repeatCustomersSelect = document.getElementById("repeatCustomersSelect");
+
 // ===== Modal open / close events =====
 
 // 設定モーダルを開く
