@@ -930,10 +930,7 @@ async function loadAndRender(){
 
   monthData = {};
 
-  // 目標（固定）
-  const GOAL_CUSTOMERS = 200;
-  const GOAL_UNIT_PRICE = 7500;
-  const GOAL_SALES = GOAL_CUSTOMERS * GOAL_UNIT_PRICE;
+ 
 
  // 集計（必ず関数スコープで保持）
 let monthTotal = 0;
