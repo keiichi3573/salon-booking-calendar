@@ -738,7 +738,22 @@ async function saveDay(){
       );
 
     if (r2.error) throw new Error("daily保存失敗: " + r2.error.message);
+　　// ★保存できたかDBから読み直して確認（ここだけ入れてOK）
+const verify = await sb
+  .from("bookings_daily")
+  .select("day,total,tech_sales,retail_sales,new_customers,repeat_customers")
+  .eq("day", editingDateKey)
+  .maybeSingle();
 
+if (verify.error) {
+  alert("保存検証（bookings_daily）失敗: " + verify.error.message);
+} else {
+  const v = verify.data || {};
+  alert(
+    "保存検証OK: " +
+    `${v.day} total=${v.total}, tech=${v.tech_sales}, retail=${v.retail_sales}, new=${v.new_customers}, repeat=${v.repeat_customers}`
+  );
+}
     closeModal(dayModal);
 
     // 反映（再取得して再描画）
