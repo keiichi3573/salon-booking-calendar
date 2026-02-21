@@ -1011,6 +1011,10 @@ if (tEl){
     tEl.textContent = `今日の予約数：${todayTotal}`;
   }
 }
+  　// ===== 目標（固定）=====
+const GOAL_CUSTOMERS = 200;
+const GOAL_UNIT_PRICE = 7500;
+const GOAL_SALES = GOAL_CUSTOMERS * GOAL_UNIT_PRICE;
  // ===== ここからパネル計算（営業日ベース） =====
 const lackSales = Math.max(0, GOAL_SALES - sumSales);
 const lackCustomers = Math.max(0, GOAL_CUSTOMERS - sumCustomers);
@@ -1046,7 +1050,8 @@ if (sameMonth) {
 
   // ===== DOM反映（var版だけに統一） =====
   var el;
-
+el = document.getElementById("mDailyGoal");
+if (el) el.textContent = fmtYen(dailyGoalSalesByBusinessDays(viewDate, GOAL_SALES));
   el = document.getElementById("mSales");
   if (el) el.textContent = fmtYen(sumSales);
 
@@ -1071,10 +1076,7 @@ if (el) el.textContent = fmtNum(sumRepeat) + "名";
 　if (el) el.textContent = fmtNum(sumRepeat) + "名";
   el = document.getElementById("mUnitPrice");
   if (el) el.textContent = unitPrice ? fmtYen(unitPrice) : "—";
-　// ===== 目標（固定）=====
-const GOAL_CUSTOMERS = 200;
-const GOAL_UNIT_PRICE = 7500;
-const GOAL_SALES = GOAL_CUSTOMERS * GOAL_UNIT_PRICE;
+
 
 // ⑥：売上タイトル横の目標表示
 el = document.getElementById("mGoalSalesInline");
@@ -1125,33 +1127,7 @@ if (hint){
     hint.classList.toggle("ng", !onTrack);
   }
 }
-// ===== 月の進捗バー反映（売上パネル）=====
-(function(){
-  
 
-  const pct = GOAL_SALES > 0 ? Math.min(100, Math.floor((sumSales / GOAL_SALES) * 100)) : 0;
-  const dailyGoal = dailyGoalSalesByBusinessDays(viewDate, GOAL_SALES);
-
-  let el;
-
-  el = document.getElementById("mProgressPct");
-if (el) el.textContent = pct + "%";
-
-const ring = document.getElementById("mSalesRing");
-if (ring) ring.style.setProperty("--pct", String(pct));
-
-  el = document.getElementById("mGoalSales");
-  if (el) el.textContent = fmtYen(GOAL_SALES);
-
-  el = document.getElementById("mSales2");
-  if (el) el.textContent = fmtYen(sumSales);
-
-  el = document.getElementById("lackSales2");
-  if (el) el.textContent = fmtYen(Math.max(0, GOAL_SALES - sumSales));
-
-  el = document.getElementById("mDailyGoal");
-  if (el) el.textContent = fmtYen(dailyGoal);
-})();
   renderMonth();
 }
 
