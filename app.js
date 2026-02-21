@@ -738,7 +738,7 @@ async function saveDay(){
       );
 
     if (r2.error) throw new Error("daily保存失敗: " + r2.error.message);
-　　// ★保存できたかDBから読み直して確認（ここだけ入れてOK）
+// ★保存できたかDBから読み直して確認（ここだけ入れてOK）
 const verify = await sb
   .from("bookings_daily")
   .select("day,total,tech_sales,retail_sales,new_customers,repeat_customers")
