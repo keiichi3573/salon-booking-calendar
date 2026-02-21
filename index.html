@@ -70,40 +70,45 @@
         </div>
 
       <aside class="salesPanel" aria-label="売上サマリー">
+ <div class="cardTitleRow">
   <div class="cardTitle">売上</div>
-<!-- 月の達成（円） -->
-<div class="mProgressWrap">
-  <div class="mProgressTop">
-    <span class="mProgressLabel">月 達成度</span>
-  </div>
-
-  <!-- ★円タイプ -->
-  <div class="ringWrap">
+  <div class="goalInline">目標 <b id="mGoalSalesInline">—</b></div>
+</div>
+<!-- 達成度（円）2個：売上 / 客単価 -->
+<div class="ringRow">
+  <!-- 売上 -->
+  <div class="ringBlock">
+    <div class="ringLabel">月 達成度</div>
     <div class="ringProgress" id="mSalesRing" style="--pct:0;">
       <div class="ringInner">
-        <b id="mProgressPct">—</b>
+        <b id="mSalesPct">—</b>
         <div class="ringSub">売上</div>
       </div>
     </div>
   </div>
 
-  <!-- 既存の表示（そのまま） -->
-  <div class="mProgressMeta">
-    <div><span>目標</span><b id="mGoalSales">—</b></div>
-    <div><span>累計</span><b id="mSales2">—</b></div>
-    <div><span>不足（累計）</span><b id="lackSales2">—</b></div>
+  <!-- 客単価 -->
+  <div class="ringBlock">
+    <div class="ringLabel">単価 達成度</div>
+    <div class="ringProgress" id="mUnitRing" style="--pct:0;">
+      <div class="ringInner">
+        <b id="mUnitPct">—</b>
+        <div class="ringSub">客単価</div>
+      </div>
+    </div>
   </div>
+</div>
 
-  <div class="mDailyGoalLine">
+<!-- ⑦：目標/累計/不足（累計）ブロックは削除するので、mProgressMeta は消す -->
+ <div class="mDailyGoalLine">
     <span>営業日割 1日目標</span>
     <b id="mDailyGoal">—</b>
   </div>
-</div>
+</div> <!-- /mProgressWrap -->
  
   <hr class="salesHr" />
 
-  <div class="salesRow"><span>目標まで不足（累計・売上）</span><b id="lackSales">—</b></div>
-  <div class="salesRow"><span>目標まで不足（累計・客数）</span><b id="lackCustomers">—</b></div>
+  
 
   <div class="salesRow"><span>残り営業日あたり必要（売上）</span><b id="needSales">—</b></div>
   <div class="salesRow"><span>残り営業日あたり必要（客数）</span><b id="needCustomers">—</b></div>
