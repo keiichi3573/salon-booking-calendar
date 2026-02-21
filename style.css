@@ -867,19 +867,38 @@ body{
   background: conic-gradient(#111 calc(var(--pct) * 1%), #e7e7e7 0);
 }
 
+/* ===== Ring: center text perfectly ===== */
+.ringProgress{
+  position: relative;
+  display: grid;
+  place-items: center;
+}
+
 .ringInner{
-  position:absolute;
-  inset: var(--thickness);
+  position: absolute;
+  inset: var(--thickness); /* ←ここは残すのがポイント（内側の白円サイズ） */
   background: #fff;
   border-radius: 999px;
 
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  text-align:center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  pointer-events: none;
 }
 
+.ringInner > b{
+  display: block;
+  line-height: 1;
+  margin: 0;
+}
+
+.ringInner > .ringSub{
+  margin-top: 6px;
+  line-height: 1.1;
+  opacity: .75;
+}
 .ringInner b{
   font-size: 22px;
   line-height: 1;
