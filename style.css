@@ -1319,3 +1319,40 @@ body{
   position: relative;
   z-index: 1;
 }
+/* ===== Ring center fix (force) ===== */
+.ringProgress{
+  position: relative !important;
+  display: grid !important;
+  place-items: center !important;
+}
+
+/* 重要：absolute + inset だとズレが残る事があるので、
+   grid中央配置 + 幅/高さを明示してセンターを固定する */
+.ringProgress .ringInner{
+  position: relative !important;      /* absolute を殺す */
+  inset: auto !important;             /* inset を殺す */
+  width: calc(100% - (var(--thickness) * 2)) !important;
+  height: calc(100% - (var(--thickness) * 2)) !important;
+
+  background: #fff !important;
+  border-radius: 999px !important;
+
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  text-align: center !important;
+
+  pointer-events: none !important;
+}
+
+.ringProgress .ringInner > b{
+  display: block !important;
+  margin: 0 !important;
+  line-height: 1 !important;
+}
+
+.ringProgress .ringInner > .ringSub{
+  margin-top: 6px !important;
+  line-height: 1.1 !important;
+}
