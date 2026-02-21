@@ -71,16 +71,23 @@
 
       <aside class="salesPanel" aria-label="売上サマリー">
   <div class="cardTitle">売上</div>
-　<!-- 月の進捗（バー） -->
+<!-- 月の達成（円） -->
 <div class="mProgressWrap">
   <div class="mProgressTop">
-    <span class="mProgressLabel">月 進捗</span>
-    <b id="mProgressPct">—</b>
-  </div>
-  <div class="bar">
-    <div id="mProgressFill" class="fill" style="width:0%"></div>
+    <span class="mProgressLabel">月 達成度</span>
   </div>
 
+  <!-- ★円タイプ -->
+  <div class="ringWrap">
+    <div class="ringProgress" id="mSalesRing" style="--pct:0;">
+      <div class="ringInner">
+        <b id="mProgressPct">—</b>
+        <div class="ringSub">売上</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 既存の表示（そのまま） -->
   <div class="mProgressMeta">
     <div><span>目標</span><b id="mGoalSales">—</b></div>
     <div><span>累計</span><b id="mSales2">—</b></div>
