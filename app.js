@@ -676,6 +676,7 @@ async function openDayEditor(date){
 }
 
 async function saveDay(){
+  alert("saveDayが呼ばれました");
   try{
     if(!editingDateKey){
       alert("保存できません：日付が選択されていません");
