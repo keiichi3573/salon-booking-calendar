@@ -159,9 +159,15 @@ function updateRings(sumSales, unitPrice){
   const GOAL_SALES = GOAL_CUSTOMERS * GOAL_UNIT_PRICE;
 
   // URLテスト（?test=92）
+    // URLテスト（?test=92） ※testが「ある時だけ」上書きする
   const p = new URLSearchParams(location.search);
-  const n = Number(p.get("test"));
-  const overridePct = Number.isFinite(n) ? Math.max(0, Math.min(100, Math.floor(n))) : null;
+  const raw = p.get("test"); // null か "92" など
+
+  const overridePct =
+    (raw !== null && raw !== "") ? (() => {
+      const n = Number(raw);
+      return Number.isFinite(n) ? Math.max(0, Math.min(100, Math.floor(n))) : null;
+    })() : null;
 
   // %計算（リング表示は 0〜100 に丸める）
   const pctSalesRaw = GOAL_SALES > 0 ? Math.floor((sumSales / GOAL_SALES) * 100) : 0;
