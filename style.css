@@ -1069,3 +1069,120 @@ body{
   padding-bottom: max(12px, env(safe-area-inset-bottom));
   border-top: 1px solid rgba(0,0,0,.06);
 }
+/* ===== Polished UI: salon-like (override) ===== */
+
+/* 共通：少しだけ上品な文字と余白感 */
+.modalCard{
+  font-feature-settings: "palt" 1;
+}
+
+/* 合計表示：上品に（淡い背景＋細い枠＋控えめな影） */
+.totalHero{
+  background: linear-gradient(180deg, rgba(250,250,252,1) 0%, rgba(255,255,255,1) 100%);
+  border: 1px solid rgba(0,0,0,.05);
+  border-radius: 18px;
+  padding: 16px 14px 12px;
+  box-shadow: 0 10px 28px rgba(0,0,0,.06);
+  margin-bottom: 14px;
+}
+
+.totalHeroLabel{
+  font-size: 12px;
+  letter-spacing: .06em;
+  opacity: .70;
+}
+
+.totalHeroNum{
+  font-size: 48px;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: .02em;
+}
+
+.totalHeroSub{
+  font-size: 12px;
+  opacity: .55;
+}
+
+/* スタッフカード：角丸/影/余白を統一して“サロンっぽく” */
+.staffCards{
+  gap: 12px;
+}
+
+.staffCard{
+  border-radius: 18px;
+  padding: 14px;
+  border: 1px solid rgba(0,0,0,.06);
+  box-shadow: 0 10px 30px rgba(0,0,0,.07);
+  transition: transform .14s ease, box-shadow .14s ease;
+}
+
+.staffCardTop{
+  gap: 10px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid rgba(0,0,0,.05);
+}
+
+.staffCardName{
+  font-weight: 800;
+  font-size: 14px;
+  letter-spacing: .03em;
+}
+
+.staffCardCount{
+  font-weight: 800;
+  font-size: 16px;
+  opacity: .75;
+}
+
+/* ステッパー：中央数字を“主役”に */
+.stepper{
+  gap: 12px;
+  padding-top: 10px;
+}
+
+.stepValue{
+  font-size: 26px;
+  font-weight: 900;
+  letter-spacing: .03em;
+}
+
+/* ＋/−ボタン：押下アニメ（ぷにっ）＋上品な影 */
+.stepBtn{
+  width: 46px;
+  height: 42px;
+  border-radius: 14px;
+  border: 1px solid rgba(0,0,0,.10);
+  background: rgba(250,250,250,1);
+  box-shadow: 0 6px 16px rgba(0,0,0,.10);
+  transition: transform .08s ease, box-shadow .08s ease, background-color .12s ease;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+
+.stepBtn:hover{
+  box-shadow: 0 10px 22px rgba(0,0,0,.12);
+}
+
+.stepBtn:active{
+  transform: translateY(1px) scale(.97);
+  box-shadow: 0 4px 12px rgba(0,0,0,.10);
+  background: rgba(245,245,247,1);
+}
+
+.stepBtn:focus-visible{
+  outline: 2px solid rgba(0,0,0,.18);
+  outline-offset: 2px;
+}
+
+.stepBtn:disabled{
+  opacity: .35;
+  box-shadow: none;
+  background: rgba(250,250,250,1);
+}
+
+/* スタッフカードもタップで少し反応（気持ちよさ） */
+.staffCard:active{
+  transform: translateY(1px);
+  box-shadow: 0 8px 22px rgba(0,0,0,.07);
+}
