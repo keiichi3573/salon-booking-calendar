@@ -152,6 +152,14 @@ const fromDateKey = (s)=>{
   return new Date(y, m-1, dd);
 };
 
+// ★ここに追加（fromDateKey の直後）
+function ensureViewDate(){
+  if (!(viewDate instanceof Date) || isNaN(viewDate.getTime())) {
+    console.warn("[fix] viewDate invalid -> reset", viewDate);
+    viewDate = new Date();
+  }
+}
+
 function updateRings(sumSales, unitPrice){
   // 目標（あなたの設定に合わせて）
   const GOAL_CUSTOMERS = 200;
@@ -1012,11 +1020,7 @@ function exportCsv(){
 
 // ===== init =====
 async function loadAndRender(){
-  // ★追加：viewDate が null/不正なら復旧（ここ超重要）
-  if (!(viewDate instanceof Date) || isNaN(viewDate.getTime())) {
-    console.warn("[fix] viewDate was invalid -> reset", viewDate);
-    viewDate = new Date();
-  }
+  ensureViewDate();
   fillSelect();
 
   const y = viewDate.getFullYear();
@@ -1248,10 +1252,13 @@ renderMonth();
 
 
 btnPrev?.addEventListener("click", async ()=>{
+  ensureViewDate();
   viewDate = addMonths(viewDate, -1);
   await loadAndRender();
 });
+
 btnNext?.addEventListener("click", async ()=>{
+  ensureViewDate();
   viewDate = addMonths(viewDate, +1);
   await loadAndRender();
 });
