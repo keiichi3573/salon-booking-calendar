@@ -1163,6 +1163,31 @@ if (el) el.textContent = fmtYen(GOAL_SALES);
   el = document.getElementById("needCustomers");
   if (el) el.textContent = remDays ? (fmtNum(needCustomersPerDay) + "名/日") : "—";
 
+  // ★追加：本日 必要客単価（= 本日の必要売上 ÷ 本日の予約数）
+el = document.getElementById("needUnitPrice");
+if (el){
+  const now = new Date();
+  const sameMonthNow =
+    (now.getFullYear() === viewDate.getFullYear()) &&
+    (now.getMonth() === viewDate.getMonth());
+
+  // 今月以外 or 定休日なら表示しない（必要なら文言変更OK）
+  if (!sameMonthNow || isClosedDay(now)){
+    el.textContent = "—";
+  } else {
+    const todayKey = toDateKey(now);
+    const todayBookings = Number(monthData?.[todayKey]?.count || 0); // 予約数（合計）
+
+    if (todayBookings <= 0 || !remDays){
+      el.textContent = "—";
+    } else {
+      // 「本日必要売上」は、あなたのロジック上 needSalesPerDay（残り営業日あたり必要売上）を使う
+      const reqUnit = Math.ceil(needSalesPerDay / todayBookings);
+      el.textContent = fmtYen(reqUnit);
+    }
+  }
+}
+
   var hint = document.getElementById("statusHint");
 if (hint){
   if (!sameMonth){
