@@ -245,6 +245,28 @@ function isClosedDay(date){
   }
   return false;
 }
+// 次回営業日（今日の翌日〜）を返す。見つからなければ null
+function getNextBusinessDay(viewDate){
+  const now = new Date();
+  const y = viewDate.getFullYear();
+  const m = viewDate.getMonth();
+
+  // 今見ている月が「今月」じゃないなら、次回営業日は出さない（運用上わかりやすい）
+  if (now.getFullYear() !== y || now.getMonth() !== m) return null;
+
+  // 明日から探す
+  const d = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
+
+  // 念のため上限（40日）を設けて無限ループ防止
+  for (let i = 0; i < 40; i++){
+    // 月をまたいだら、この月のデータだけで計算できないので終了
+    if (d.getFullYear() !== y || d.getMonth() !== m) return null;
+
+    if (!isClosedDay(d)) return new Date(d);
+    d.setDate(d.getDate() + 1);
+  }
+  return null;
+}
 // ===== 営業日数（その月の営業日）=====
 function businessDaysInMonth(viewDate){
   const y = viewDate.getFullYear();
@@ -1163,28 +1185,32 @@ if (el) el.textContent = fmtYen(GOAL_SALES);
   el = document.getElementById("needCustomers");
   if (el) el.textContent = remDays ? (fmtNum(needCustomersPerDay) + "名/日") : "—";
 
-  // ★追加：本日 必要客単価（= 本日の必要売上 ÷ 本日の予約数）
+// ★追加：次回営業日 必要客単価（= 次回営業日の必要売上 ÷ 次回営業日の予約数）
 el = document.getElementById("needUnitPrice");
 if (el){
-  const now = new Date();
-  const sameMonthNow =
-    (now.getFullYear() === viewDate.getFullYear()) &&
-    (now.getMonth() === viewDate.getMonth());
+  // 次回営業日（今月以外は表示しない運用なら sameMonth の条件で切る）
+  const nextBiz = getNextBusinessDay(viewDate);
 
-  // 今月以外 or 定休日なら表示しない（必要なら文言変更OK）
-  if (!sameMonthNow || isClosedDay(now)){
+  // 次回営業日が今月の範囲外なら "—"
+  const sameMonthNext =
+    (nextBiz.getFullYear() === viewDate.getFullYear()) &&
+    (nextBiz.getMonth() === viewDate.getMonth());
+
+  if (!sameMonthNext){
     el.textContent = "—";
   } else {
-    const todayKey = toDateKey(now);
-    const todayBookings = Number(monthData?.[todayKey]?.count || 0); // 予約数（合計）
+    const nextKey = toDateKey(nextBiz);
 
-    if (todayBookings <= 0 || !remDays){
-      el.textContent = "—";
-    } else {
-      // 「本日必要売上」は、あなたのロジック上 needSalesPerDay（残り営業日あたり必要売上）を使う
-      const reqUnit = Math.ceil(needSalesPerDay / todayBookings);
-      el.textContent = fmtYen(reqUnit);
-    }
+    // 次回営業日の予約数（合計）
+    const nextBookings = Number(monthData?.[nextKey]?.count || 0);
+
+    // 「残り営業日あたり必要（売上）」＝ needSalesPerDay を使う（表示と同じ前提）
+    const needUnit = (nextBookings > 0)
+      ? Math.ceil(needSalesPerDay / nextBookings)
+      : 0;
+
+    // 表示（予約0なら — にするのがおすすめ）
+    el.textContent = (nextBookings > 0) ? (fmtNum(needUnit) + "円") : "—";
   }
 }
 
