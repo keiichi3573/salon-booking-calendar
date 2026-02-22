@@ -1604,7 +1604,27 @@ loadAndRender();
     cal.style.position = "relative";
     cal.appendChild(guard);
   }
+  
+// ★切り分け用：HTML onclick から呼ぶ（月移動）
+window.__goPrev = async function(){
+  try{
+    viewDate = addMonths(viewDate, -1);
+    await loadAndRender();
+  }catch(e){
+    console.error(e);
+    alert("prevでエラー: " + (e?.message || e));
+  }
+};
 
+window.__goNext = async function(){
+  try{
+    viewDate = addMonths(viewDate, +1);
+    await loadAndRender();
+  }catch(e){
+    console.error(e);
+    alert("nextでエラー: " + (e?.message || e));
+  }
+};
   // 再描画（今月固定）
   loadAndRender();
 })();
