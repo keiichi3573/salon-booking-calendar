@@ -1012,6 +1012,11 @@ function exportCsv(){
 
 // ===== init =====
 async function loadAndRender(){
+  // ★追加：viewDate が null/不正なら復旧（ここ超重要）
+  if (!(viewDate instanceof Date) || isNaN(viewDate.getTime())) {
+    console.warn("[fix] viewDate was invalid -> reset", viewDate);
+    viewDate = new Date();
+  }
   fillSelect();
 
   const y = viewDate.getFullYear();
