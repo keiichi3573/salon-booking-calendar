@@ -1563,27 +1563,6 @@ window.addEventListener("focus", ()=>{
   });
 })();
 
-// ===== 月移動（HTML onclick 用）=====
-async function __moveMonth(diff){
-  try{
-    // ※loadAndRender内で復旧してるならここは無くてもOK
-    if (!(viewDate instanceof Date) || isNaN(viewDate.getTime())) viewDate = new Date();
-
-    viewDate = addMonths(viewDate, diff);
-    await loadAndRender();
-  }catch(e){
-    console.error(e);
-    alert("月移動でエラー: " + (e?.message || e));
-  }
-}
-
-// HTMLが _goPrev/_goNext を呼ぶなら、これが必須
-window._goPrev = ()=> __moveMonth(-1);
-window._goNext = ()=> __moveMonth(+1);
-
-// もしHTMLが __goPrev/__goNext になってても動くよう保険（任意）
-window.__goPrev = ()=> __moveMonth(-1);
-window.__goNext = ()=> __moveMonth(+1);
 
 // 起動
 loadAndRender();
@@ -1650,3 +1629,29 @@ window.__goNext = async function(){
   // 再描画（今月固定）
   loadAndRender();
 })();
+// ===== 月移動（HTML onclick 用：最終保険）=====
+function __ensureViewDate(){
+  if (!(viewDate instanceof Date) || isNaN(viewDate.getTime())) {
+    console.warn("[fix] viewDate invalid -> reset", viewDate);
+    viewDate = new Date();
+  }
+}
+
+async function __moveMonth(diff){
+  try{
+    __ensureViewDate();
+    viewDate = addMonths(viewDate, diff);
+    await loadAndRender();
+  }catch(e){
+    console.error(e);
+    alert("月移動でエラー: " + (e?.message || e));
+  }
+}
+
+// HTML が _goPrev/_goNext を呼んでいる前提
+window._goPrev = ()=> __moveMonth(-1);
+window._goNext = ()=> __moveMonth(+1);
+
+// ついでに別名でも動くよう保険（あっても害なし）
+window.goPrev = window._goPrev;
+window.goNext = window._goNext;
