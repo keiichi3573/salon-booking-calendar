@@ -1563,6 +1563,28 @@ window.addEventListener("focus", ()=>{
   });
 })();
 
+// ===== 月移動（HTML onclick 用）=====
+async function __moveMonth(diff){
+  try{
+    // ※loadAndRender内で復旧してるならここは無くてもOK
+    if (!(viewDate instanceof Date) || isNaN(viewDate.getTime())) viewDate = new Date();
+
+    viewDate = addMonths(viewDate, diff);
+    await loadAndRender();
+  }catch(e){
+    console.error(e);
+    alert("月移動でエラー: " + (e?.message || e));
+  }
+}
+
+// HTMLが _goPrev/_goNext を呼ぶなら、これが必須
+window._goPrev = ()=> __moveMonth(-1);
+window._goNext = ()=> __moveMonth(+1);
+
+// もしHTMLが __goPrev/__goNext になってても動くよう保険（任意）
+window.__goPrev = ()=> __moveMonth(-1);
+window.__goNext = ()=> __moveMonth(+1);
+
 // 起動
 loadAndRender();
 // ===== Mobile view-only mode (today〜今月だけ閲覧) =====
