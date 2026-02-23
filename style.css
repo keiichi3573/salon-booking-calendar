@@ -568,3 +568,20 @@ body{
 .taskItem.done .taskText{
   text-decoration: line-through;
 }
+/* 店舗ボード見出し：サブ文言を「タイトルのすぐ右」に寄せる */
+.boardHeader{
+  display:flex;
+  align-items: baseline;
+  justify-content: flex-start; /* 右寄せをやめる */
+  gap: 12px;
+}
+
+.boardTitle{
+  white-space: nowrap;
+}
+
+.boardSub{
+  margin-left: 8px;     /* “すぐ右”の距離（好みで 6〜12px） */
+  flex: 0 0 auto;       /* 伸びない＝右に飛ばない */
+  text-align: left;
+}
