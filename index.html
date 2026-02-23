@@ -73,6 +73,11 @@
       <!-- タイトル行（売上 + 目標） -->
       <div class="cardTitleRow">
         <div class="cardTitle">売上</div>
+        <div class="goalInlineRow">
+  <span class="goalInlineLabel">目標</span>
+  <b id="mGoalSalesInline">—</b>
+  <button id="goalEditBtn" class="goalEditBtn" type="button">変更✏</button>
+</div>
         <div class="goalInline">目標 <b id="mGoalSalesInline">—</b></div>
       </div>
 
@@ -296,5 +301,35 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="app.js"></script>
+  <!-- 目標編集モーダル -->
+<div class="modal hidden" id="goalModal">
+  <div class="modalBackdrop" data-close="goalModal"></div>
+  <div class="modalCard" role="dialog" aria-modal="true" aria-hidden="true" tabindex="-1">
+    <div class="modalHeader">
+      <div>
+        <div class="modalTitle">目標売上（税抜）</div>
+        <div class="modalSubTitle">この月の目標を変更します</div>
+      </div>
+      <button class="x" id="goalCloseBtn" type="button">✕</button>
+    </div>
+
+    <div class="modalBody">
+      <div class="memoBox">
+        <div class="label">目標売上（円）</div>
+        <div class="salesInputs">
+          <div class="fieldRow">
+            <label class="fieldLabel">目標</label>
+            <input id="goalSalesInput" class="fieldInput" type="number" inputmode="numeric" min="0" step="1" placeholder="例：1500000" />
+          </div>
+        </div>
+        <div class="hint">※ 変更すると達成度・必要売上などもこの目標で再計算されます</div>
+      </div>
+    </div>
+
+    <div class="modalFooter">
+      <button id="goalSaveBtn" class="btn primary" type="button">保存</button>
+    </div>
+  </div>
+</div>
 </body>
 </html>
