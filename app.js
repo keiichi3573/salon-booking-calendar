@@ -254,26 +254,23 @@ function isClosedDay(date){
   return false;
 }
 // 次回営業日（今日の翌日〜）を返す。見つからなければ null
-function getNextBusinessDay(viewDate){
-  const now = new Date();
-  const y = viewDate.getFullYear();
-  const m = viewDate.getMonth();
+function getNextBusinessDay(baseDate){
+  // baseDate が壊れてても必ず Date にする
+  const d0 = (baseDate instanceof Date && !isNaN(baseDate.getTime()))
+    ? baseDate
+    : new Date();
 
-  // 今見ている月が「今月」じゃないなら、次回営業日は出さない（運用上わかりやすい）
-  if (now.getFullYear() !== y || now.getMonth() !== m) return null;
+  // その日の 00:00 に揃える
+  const d = new Date(d0.getFullYear(), d0.getMonth(), d0.getDate());
 
-  // 明日から探す
-  const d = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
-
-  // 念のため上限（40日）を設けて無限ループ防止
-  for (let i = 0; i < 40; i++){
-    // 月をまたいだら、この月のデータだけで計算できないので終了
-    if (d.getFullYear() !== y || d.getMonth() !== m) return null;
-
-    if (!isClosedDay(d)) return new Date(d);
+  // 明日から最大40日探す（定休日ルールを回避できない月があっても落ちない）
+  for(let i=0; i<40; i++){
     d.setDate(d.getDate() + 1);
+    if (!isClosedDay(d)) return d;
   }
-  return null;
+
+  // 万一見つからなくても null を返さない
+  return d0;
 }
 // ===== 営業日数（その月の営業日）=====
 function businessDaysInMonth(viewDate){
