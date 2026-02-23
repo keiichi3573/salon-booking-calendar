@@ -100,32 +100,40 @@ const staffList     = document.getElementById("staffList");
 const newPinInput   = document.getElementById("newPinInput");
 const pinChangeBtn  = document.getElementById("pinChangeBtn");
 // goal modal
-const goalEditBtn    = document.getElementById("goalEditBtn");
-const goalModal      = document.getElementById("goalModal");
-const goalCloseBtn   = document.getElementById("goalCloseBtn");
-const goalSaveBtn    = document.getElementById("goalSaveBtn");
-const goalSalesInput = document.getElementById("goalSalesInput");
+const goalModal = document.getElementById("goalModal");
+const goalEditBtn = document.getElementById("goalEditBtn");
+const goalCloseBtn = document.getElementById("goalCloseBtn");
+const goalSaveBtn = document.getElementById("goalSaveBtn");
+const goalCustomersInput = document.getElementById("goalCustomersInput");
+const goalUnitPriceInput = document.getElementById("goalUnitPriceInput");
 // ▼ここに追記（追加DOM）
 const totalCountDisplay = document.getElementById("totalCountDisplay");
 
 
 // ===== Modal open / close events =====
-goalEditBtn?.addEventListener("click", () => {
-  if (goalSalesInput) goalSalesInput.value = String(goalSales || 0);
+goalEditBtn?.addEventListener("click", ()=>{
+  // 現在値を入れて開く
+  if (goalCustomersInput) goalCustomersInput.value = String(monthGoalCustomers ?? 0);
+  if (goalUnitPriceInput) goalUnitPriceInput.value = String(monthGoalUnitPrice ?? 0);
   openModal(goalModal);
 });
 
-goalCloseBtn?.addEventListener("click", () => closeModal(goalModal));
+goalCloseBtn?.addEventListener("click", ()=> closeModal(goalModal));
 
-goalSaveBtn?.addEventListener("click", async () => {
+goalSaveBtn?.addEventListener("click", async ()=>{
   try{
-    const v = Number(goalSalesInput?.value || 0);
-    const saved = await saveGoalSales(currentMonthKey, v, "pc");
-    goalSales = saved;
+    const gc = Number(goalCustomersInput?.value || 0);
+    const gu = Number(goalUnitPriceInput?.value || 0);
+
+    await saveMonthGoal(currentMonthKey, gc, gu, isStoreLikeDevice() ? "ipad" : "pc");
+
+    // ローカル state も更新して再描画
+    monthGoalCustomers = gc;
+    monthGoalUnitPrice = gu;
 
     closeModal(goalModal);
     await loadAndRender();
-    alert("目標を保存しました");
+    alert("保存しました");
   }catch(e){
     console.error(e);
     alert("目標の保存で止まりました: " + (e?.message || e));
@@ -164,6 +172,8 @@ document.querySelectorAll('.modalBackdrop[data-close]').forEach(backdrop => {
 
 
 // ===== state =====
+let monthGoalCustomers = 200;    // 初期値（好きに）
+let monthGoalUnitPrice = 7500;   // 初期値（好きに）
 let goalSales = 1500000; // 初期値（Supabaseから読めたら上書き）
 let viewDate = new Date();
 let currentMonthKey = ""; // YYYY-MM
@@ -188,19 +198,19 @@ function ensureViewDate(){
   }
 }
 
-function updateRings(sumSales, unitPrice, goalSalesValue){
-  const GOAL_UNIT_PRICE = 7500;
-  const GOAL_SALES = Math.max(0, Math.floor(Number(goalSalesValue || 0)));
+function updateRings(sumSales, unitPrice, goalSales, goalUnitPrice){
+  const GOAL_SALES = Number(goalSales || 0);
+  const GOAL_UNIT_PRICE = Number(goalUnitPrice || 0);
 
   // URLテスト（?test=92）
   const p = new URLSearchParams(location.search);
   const n = Number(p.get("test"));
   const overridePct = Number.isFinite(n) ? Math.max(0, Math.min(100, Math.floor(n))) : null;
 
-  const pctSalesRaw = GOAL_SALES > 0 ? Math.floor((sumSales / GOAL_SALES) * 100) : 0;
+  const pctSalesRaw = GOAL_SALES > 0 ? Math.floor((Number(sumSales||0) / GOAL_SALES) * 100) : 0;
   const pctSalesRing = Math.max(0, Math.min(100, pctSalesRaw));
 
-  const pctUnitRaw = GOAL_UNIT_PRICE > 0 ? Math.floor((unitPrice / GOAL_UNIT_PRICE) * 100) : 0;
+  const pctUnitRaw = GOAL_UNIT_PRICE > 0 ? Math.floor((Number(unitPrice||0) / GOAL_UNIT_PRICE) * 100) : 0;
   const pctUnitRing = Math.max(0, Math.min(100, pctUnitRaw));
 
   let el = document.getElementById("mSalesPct");
@@ -417,32 +427,53 @@ function elapsedBusinessDaysInViewedMonth(viewDate){
 
 
 // ===== Supabase helpers =====
-async function loadGoalSales(monthKey){
+async function loadGoals(monthKey){
   const res = await sb
     .from("goals_monthly")
-    .select("goal_sales")
+    .select("goal_customers, goal_unit_price, goal_sales")
     .eq("month_key", monthKey)
     .maybeSingle();
 
   if (res.error) {
     console.warn("goals_monthly load error:", res.error);
-    return null;
+    return { goalCustomers: null, goalUnitPrice: null };
   }
-  return res.data?.goal_sales ?? null;
+
+  const row = res.data || {};
+
+  // 新方式（客数・単価）が入っていればそれを優先
+  const gc = (row.goal_customers != null) ? Number(row.goal_customers) : null;
+  const gu = (row.goal_unit_price != null) ? Number(row.goal_unit_price) : null;
+
+  // 互換：もし旧方式（goal_sales）しか無い月があれば、とりあえず返す（後で入力し直し推奨）
+  // ※ここは「旧データをどう扱うか」で調整できます
+  if ((gc == null || gu == null) && row.goal_sales != null) {
+    // 暫定：客数200/単価=goal_sales/200 とかに自動変換したいならここで。
+    // 何もしないなら null のままにして、UIで入力させるのが安全。
+  }
+
+  return {
+    goalCustomers: Number.isFinite(gc) ? gc : null,
+    goalUnitPrice: Number.isFinite(gu) ? gu : null,
+  };
 }
 
-async function saveGoalSales(monthKey, value, updatedBy){
-  const v = Math.max(0, Math.floor(Number(value || 0)));
+async function saveGoals(monthKey, goalCustomers, goalUnitPrice, updatedBy){
+  const gc = Math.max(0, Math.floor(Number(goalCustomers || 0)));
+  const gu = Math.max(0, Math.floor(Number(goalUnitPrice || 0)));
+
   const res = await sb
     .from("goals_monthly")
     .upsert([{
       month_key: monthKey,
-      goal_sales: v,
-      updated_by: updatedBy || "pc"
+      goal_customers: gc,
+      goal_unit_price: gu,
+      updated_by: updatedBy || "pc",
     }], { onConflict: "month_key" });
 
   if (res.error) throw res.error;
-  return v;
+
+  return { goalCustomers: gc, goalUnitPrice: gu };
 }
 async function ensureTablesExistHint(){
   // テーブルが無いと以降が失敗するので、エラーを見やすくする
@@ -1084,6 +1115,14 @@ if (Number.isFinite(Number(gs)) && Number(gs) >= 0) {
   const endKey   = toDateKey(end);
 
   monthData = {};
+  // ===== 月キー（この月の目標ロードに使う）=====
+currentMonthKey = toMonthKey(start);
+
+// ===== 月目標（客数・単価）をSupabaseから読む =====
+const goals = await loadGoals(currentMonthKey); // ← 前に作った loadGoals を使う
+const GOAL_CUSTOMERS = (goals.goalCustomers ?? 200);
+const GOAL_UNIT_PRICE = (goals.goalUnitPrice ?? 7500);
+const GOAL_SALES = GOAL_CUSTOMERS * GOAL_UNIT_PRICE;
 
  
 
@@ -1168,10 +1207,7 @@ if (tEl){
     tEl.textContent = `今日の予約数：${todayTotal}`;
   }
 }
-  　// ===== 目標（固定）=====
-const GOAL_CUSTOMERS = 200;
-const GOAL_UNIT_PRICE = 7500;
-const GOAL_SALES = goalSales; // ★ここが可変
+  　
  // ===== ここからパネル計算（営業日ベース） =====
 const lackSales = Math.max(0, GOAL_SALES - sumSales);
 const lackCustomers = Math.max(0, GOAL_CUSTOMERS - sumCustomers);
