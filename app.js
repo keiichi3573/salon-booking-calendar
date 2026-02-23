@@ -1020,11 +1020,15 @@ function exportCsv(){
 
 // ===== init =====
 async function loadAndRender(){
-  ensureViewDate();
+   // ★超重要：viewDate を必ず Date に復旧してから以降は vd を使う
+  const vd = (viewDate instanceof Date && !isNaN(viewDate.getTime()))
+    ? viewDate
+    : new Date();
+  viewDate = vd;
   fillSelect();
 
-  const y = viewDate.getFullYear();
-  const m = viewDate.getMonth();
+  const y = vd.getFullYear();
+const m = vd.getMonth();
 
   const start = new Date(y, m, 1);
   const end   = new Date(y, m + 1, 0);
@@ -1126,7 +1130,7 @@ const lackSales = Math.max(0, GOAL_SALES - sumSales);
 const lackCustomers = Math.max(0, GOAL_CUSTOMERS - sumCustomers);
 
 // 残り営業日（今日含む・今月のみ）
-const remDays = remainingBusinessDaysInViewedMonth(viewDate, true);
+const remDays = remainingBusinessDaysInViewedMonth(vd, true);
 
 
 const needSalesPerDay = remDays > 0 ? Math.ceil(lackSales / remDays) : 0;
@@ -1143,10 +1147,10 @@ const sameMonth =
 
 if (sameMonth) {
   // 今月の営業日総数
-  const bizTotal = businessDaysInMonth(viewDate);
+  const bizTotal = businessDaysInMonth(vd);
 
   // 今日までの営業日数（今日が営業日なら今日を含む）
-  const bizElapsed = businessDaysElapsedInMonth(viewDate);
+  const bizElapsed = businessDaysElapsedInMonth(vd);
 
   const expectedByNowSales = Math.floor(GOAL_SALES * (bizElapsed / Math.max(1, bizTotal)));
   const expectedByNowCustomers = Math.floor(GOAL_CUSTOMERS * (bizElapsed / Math.max(1, bizTotal)));
@@ -1157,7 +1161,7 @@ if (sameMonth) {
   // ===== DOM反映（var版だけに統一） =====
   var el;
 el = document.getElementById("mDailyGoal");
-if (el) el.textContent = fmtYen(dailyGoalSalesByBusinessDays(viewDate, GOAL_SALES));
+if (el) el.textContent = fmtYen(dailyGoalSalesByBusinessDays(vd, GOAL_SALES));
   el = document.getElementById("mSales");
   if (el) el.textContent = fmtYen(sumSales);
 
@@ -1198,12 +1202,12 @@ if (el) el.textContent = fmtYen(GOAL_SALES);
 el = document.getElementById("needUnitPrice");
 if (el){
   // 次回営業日（今月以外は表示しない運用なら sameMonth の条件で切る）
-  const nextBiz = getNextBusinessDay(viewDate);
+  const nextBiz = getNextBusinessDay(vd);
 
   // 次回営業日が今月の範囲外なら "—"
   const sameMonthNext =
-    (nextBiz.getFullYear() === viewDate.getFullYear()) &&
-    (nextBiz.getMonth() === viewDate.getMonth());
+    (nextBiz.getFullYear() === vd.getFullYear()) &&
+    (nextBiz.getMonth() === vd.getMonth());
 
   if (!sameMonthNext){
     el.textContent = "—";
@@ -1252,14 +1256,14 @@ renderMonth();
 
 
 btnPrev?.addEventListener("click", async ()=>{
-  ensureViewDate();
-  viewDate = addMonths(viewDate, -1);
+  const vd = (viewDate instanceof Date && !isNaN(viewDate.getTime())) ? viewDate : new Date();
+  viewDate = addMonths(vd, -1);
   await loadAndRender();
 });
 
 btnNext?.addEventListener("click", async ()=>{
-  ensureViewDate();
-  viewDate = addMonths(viewDate, +1);
+  const vd = (viewDate instanceof Date && !isNaN(viewDate.getTime())) ? viewDate : new Date();
+  viewDate = addMonths(vd, +1);
   await loadAndRender();
 });
 
