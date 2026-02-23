@@ -1224,24 +1224,7 @@ if (el){
   }
 }
 
-  var hint = document.getElementById("statusHint");
-if (hint){
-  if (!sameMonth){
-    hint.textContent = "※今月以外はペース判定しません";
-    hint.classList.remove("ok","ng");
-  } else {
-    // remDays=0 なら月末（or 全休）なので、判定も簡素に
-    if (remDays === 0){
-      hint.textContent = onTrack ? "黒字ペース" : "赤字ペース";
-    } else {
-      hint.textContent = onTrack
-        ? "黒字ペース（営業日ベースで達成できそう）"
-        : "赤字ペース（営業日ベースだと未達の可能性）";
-    }
-    hint.classList.toggle("ok", onTrack);
-    hint.classList.toggle("ng", !onTrack);
-  }
-}
+  
 
 updateRings(sumSales, unitPrice);
 renderMonth();
