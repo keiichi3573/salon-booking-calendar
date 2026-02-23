@@ -295,10 +295,23 @@ body{
 .storeBoard{ margin-top: 18px; }
 .boardHeader{
   display:flex;
-  justify-content: space-between;
   align-items: baseline;
-  gap: 10px;
+  gap: 12px;
   margin: 10px 2px;
+}
+
+/* タイトルは左固定 */
+.boardTitle{
+  white-space: nowrap;
+}
+
+/* サブ文言を「ボードの中央寄り」に寄せる */
+.boardSub{
+  margin-left: 14px;   /* タイトルから少し離す */
+  flex: 1;             /* 残り幅を使わせる */
+  text-align: center;  /* 中央寄り表示 */
+  color: var(--muted);
+  font-size: 13px;
 }
 .boardTitle{ font-size: 18px; font-weight: 900; }
 .boardSub{ color: var(--muted); font-size: 13px; }
