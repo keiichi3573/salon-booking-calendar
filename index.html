@@ -119,57 +119,64 @@
       </div>
     </section>
 
-    <!-- ===== 店舗ボード（メモ＋写真を1つに統合） ===== -->
-    <section class="storeBoard" id="storeBoard" aria-label="店舗ボード">
-      <div class="boardHeader">
-        <div class="boardTitle">店舗ボード（メモ・共有写真）</div>
-        <div class="boardSub">日付を選んでメモ追加 → 完了チェック</div>
+<!-- ===== 店舗ボード（左半分だけ使用・右は空白） ===== -->
+<section class="storeBoard" id="storeBoard" aria-label="店舗ボード">
+  <div class="boardHeader">
+    <div class="boardTitle">店舗ボード（メモ・共有写真）</div>
+    <div class="boardSub">日付を選んでメモ追加 → 完了チェック</div>
+  </div>
+
+  <div class="boardGrid">
+    <!-- 左：使う -->
+    <div class="boardCard boardCardHalf">
+      <div class="cardTitle">メモ ＋ 写真（共有）</div>
+
+      <div class="row">
+        <label class="label" for="memoDateSelect">日付</label>
+        <select id="memoDateSelect" class="input"></select>
       </div>
 
-      <div class="boardGrid">
-        <div class="boardCard">
-          <div class="cardTitle">メモ ＋ 写真（共有）</div>
+      <div class="row">
+        <label class="label" for="memoText">内容</label>
+        <textarea id="memoText" class="memoSmall" rows="4"
+          placeholder="例：やるべき事／指示／画像依頼 など"></textarea>
+      </div>
 
-          <div class="row">
-            <label class="label" for="memoDateSelect">日付</label>
-            <select id="memoDateSelect" class="input"></select>
+      <div class="cardRow">
+        <button id="memoAddBtn" class="btn primary" type="button">追加</button>
+        <button id="memoClearInputBtn" class="btn" type="button">入力クリア</button>
+      </div>
+
+      <div class="hint" id="memoHint">※ 完了したメモはチェックで薄く表示します</div>
+
+      <!-- ★ここを大きく見せる -->
+      <div class="taskList taskListBig" id="taskList"></div>
+
+      <hr class="salesHr" />
+
+      <div class="row">
+        <div class="label">写真（共有）</div>
+
+        <!-- 写真は小さめ -->
+        <div class="photoRowCompact">
+          <div class="photoControls">
+            <input id="photoFile" type="file" accept="image/*" />
+            <button id="photoUploadBtn" class="btn" type="button">アップロード</button>
+            <button id="photoDeleteBtn" class="btn" type="button">写真削除</button>
+            <div class="hint">※ 日付と無関係でOK</div>
           </div>
 
-          <div class="row">
-            <label class="label" for="memoText">内容</label>
-            <textarea id="memoText" class="memoBig" rows="8" placeholder="例：やるべき事／指示／画像依頼 などまとめてOK"></textarea>
+          <div class="photoPreviewSide photoSmall" id="photoPreview">
+            <div class="hint">プレビュー</div>
           </div>
-
-          <div class="cardRow">
-            <button id="memoAddBtn" class="btn primary" type="button">追加</button>
-            <button id="memoClearInputBtn" class="btn" type="button">入力クリア</button>
-          </div>
-
-          <div class="hint" id="memoHint">※ 完了したメモはチェックで薄く表示します</div>
-          <div class="taskList" id="taskList"></div>
-
-          <hr class="salesHr" />
-
-          <div class="row">
-            <div class="label">写真（共有）</div>
-
-            <div class="photoRowInline">
-              <div class="photoControls">
-                <input id="photoFile" type="file" accept="image/*" />
-                <button id="photoUploadBtn" class="btn" type="button">アップロード</button>
-                <button id="photoDeleteBtn" class="btn" type="button">写真削除</button>
-                <div class="hint">※ 日付と無関係でOK</div>
-              </div>
-
-              <div class="photoPreviewSide" id="photoPreview">
-                <div class="hint">プレビュー</div>
-              </div>
-            </div>
-          </div>
-
         </div>
       </div>
-    </section>
+    </div>
+
+    <!-- 右：空白（見せるだけ） -->
+    <div class="boardSpacer" aria-hidden="true"></div>
+  </div>
+</section>
 
   </main>
 
