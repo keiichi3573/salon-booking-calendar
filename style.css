@@ -1,3 +1,5 @@
+/* 既存CSSは基本そのまま使い、storeBoard統合に必要な部分だけ整理 */
+
 :root{
   --bg: #efe9df;
   --card: rgba(255,255,255,.92);
@@ -5,6 +7,14 @@
   --text: rgba(0,0,0,.86);
   --muted: rgba(0,0,0,.55);
   --accent: #b38a4b;
+
+  --closed-bg: #fff2f2;
+  --closed-text: #d94848;
+  --closed-border: #f3b4b4;
+
+  --ring-base: #e6e6e6;
+  --ring-orange: #ff7a00;
+  --ring-teal:   #12b5b0;
 }
 
 *{ box-sizing: border-box; }
@@ -15,7 +25,7 @@ body{
   background: radial-gradient(1200px 500px at 50% 20%, #fff 0%, var(--bg) 55%, #e8e1d6 100%);
 }
 
-/* ===== header ===== */
+/* header */
 .topbar{
   position: sticky;
   top:0;
@@ -32,31 +42,37 @@ body{
 .brandLogo{ height: 34px; object-fit: contain; }
 .left,.right{ width: 120px; }
 
-/* ===== wrap ===== */
+/* wrap */
 .wrap{
   max-width: 1100px;
   margin: 0 auto;
   padding: 14px 14px 28px;
 }
 
-/* ===== legend ===== */
+/* legend */
 .legend{
-  display:flex;
-  align-items:center;
-  gap: 12px;
   background: var(--card);
   border: 1px solid var(--line);
   border-radius: 18px;
   padding: 12px;
   box-shadow: 0 10px 30px rgba(0,0,0,.06);
+
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 12px;
+}
+.legendLeft{ justify-self: start; min-width:0; }
+.legendCenter{ justify-self: center; min-width:0; }
+.legendRight{
+  justify-self: end;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width:0;
 }
 
-.monthNav{
-  display:flex;
-  align-items:center;
-  gap: 10px;
-  flex: 1;
-}
+.monthNav{ display:flex; align-items:center; gap: 10px; }
 .navBtn{
   border: 1px solid var(--line);
   background: #fff;
@@ -74,13 +90,15 @@ body{
   font-size: 13px;
   white-space: nowrap;
 }
-.chip.closed{ background: #f5efe5; }
+.legend .chip.closed{
+  color: var(--closed-text);
+  border-color: var(--closed-border);
+  background: color-mix(in srgb, var(--closed-bg) 60%, #ffffff);
+}
 .chip.note{ background: #eef3ff; }
 
-.legendActions{
-  display:flex;
-  gap: 10px;
-}
+.legendActions{ display:flex; gap: 10px; }
+
 .btn{
   border: 1px solid var(--line);
   background:#fff;
@@ -95,7 +113,28 @@ body{
   border-color: rgba(0,0,0,.08);
 }
 
-/* ===== top grid (calendar + sales) ===== */
+/* month summary */
+.monthSummaryBar{
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 10px;
+  padding: 10px 12px;
+  margin-top: 10px;
+  background: #fff;
+  border: 1px solid #eee;
+  border-radius: 14px;
+}
+.msItem{ display:flex; flex-direction: column; gap: 4px; min-width:0; }
+.msItem span{
+  font-size: 12px; color:#666;
+  white-space: nowrap; overflow:hidden; text-overflow: ellipsis;
+}
+.msItem b{
+  font-size: 16px; font-weight: 900;
+  white-space: nowrap; overflow:hidden; text-overflow: ellipsis;
+}
+
+/* top grid */
 .topGrid{
   display:grid;
   grid-template-columns: 1fr 360px;
@@ -103,16 +142,13 @@ body{
   margin-top: 14px;
   align-items: start;
 }
+.calBody{ min-width:0; overflow:hidden; }
+.rightSide{ display:flex; flex-direction: column; gap: 12px; }
 
-.calBody{ min-width:0; }
+.futureBox{ display:none !important; }
+.rightSide .futureTop, .rightSide .futureBottom{ height:0 !important; margin:0 !important; padding:0 !important; }
 
-.rightSide{
-  display:grid;
-  grid-template-rows: auto auto 1fr;
-  gap: 12px;
-  min-width:0;
-}
-
+/* sales panel */
 .salesPanel{
   background: var(--card);
   border: 1px solid var(--line);
@@ -128,32 +164,77 @@ body{
   border-bottom: 1px dashed rgba(0,0,0,.08);
 }
 .salesRow:last-child{ border-bottom: none; }
-.salesHr{
-  border: none;
-  border-top: 1px solid rgba(0,0,0,.08);
-  margin: 10px 0;
-}
-.futurePlaceholder{
-  border: 2px dashed rgba(0,0,0,.14);
-  border-radius: 18px;
-  padding: 18px;
-  text-align:center;
-  background: rgba(255,255,255,.55);
-  color: var(--muted);
+.salesHr{ border: none; border-top: 1px solid rgba(0,0,0,.08); margin: 10px 0; }
+
+.salesInputs{ display:grid; gap: 10px; }
+.fieldRow{ display:grid; grid-template-columns: 130px 1fr; gap: 10px; align-items: center; }
+.fieldLabel{ font-size: 13px; font-weight: 700; opacity: 0.9; }
+.fieldInput,.fieldSelect{
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid #e5e7eb;
+  background: #fff;
 }
 
-/* ===== calendar ===== */
+.mDailyGoalLine{
+  margin-top: 10px;
+  display:flex;
+  justify-content: space-between;
+  align-items:center;
+  padding-top: 8px;
+  border-top: 1px dashed #e5e7eb;
+}
+#mDailyGoal{ font-weight: 900; }
+
+/* ring */
+.ringRow{ display:flex; gap: 12px; justify-content:space-between; margin: 8px 0 12px; }
+.ringBlock{ flex:1; display:flex; flex-direction:column; align-items:center; gap:6px; }
+.ringLabel{ font-size: 12px; opacity: .75; }
+
+.ringProgress{
+  --pct: 0;
+  --pctCut: 0;
+  --size: 110px;
+  --thickness: 12px;
+
+  width: var(--size);
+  height: var(--size);
+  border-radius: 999px;
+  position: relative;
+  display:grid;
+  place-items:center;
+
+  background: conic-gradient(
+    var(--ring-orange) 0 calc(var(--pctCut) * 1%),
+    var(--ring-teal)   calc(var(--pctCut) * 1%) calc(var(--pct) * 1%),
+    var(--ring-base)   calc(var(--pct) * 1%) 100%
+  );
+}
+.ringProgress::before{
+  content:"";
+  position:absolute;
+  inset: var(--thickness);
+  border-radius:999px;
+  background:#fff;
+}
+.ringInner{ position:relative; z-index:1; text-align:center; pointer-events:none; }
+.ringInner b{ font-size: 22px; line-height: 1; }
+.ringSub{ font-size: 12px; opacity:.75; margin-top: 6px; }
+
+/* calendar */
 .calendar{
   display:grid;
-  grid-template-columns: repeat(7, 1fr);
+  grid-template-columns: repeat(7, minmax(0, 1fr));
   gap: 10px;
   background: var(--card);
   border: 1px solid var(--line);
   border-radius: 18px;
   padding: 12px;
   box-shadow: 0 10px 30px rgba(0,0,0,.06);
+  width:100%;
+  max-width:100%;
 }
-
 .weekHeader{
   font-weight: 900;
   text-align:center;
@@ -161,8 +242,9 @@ body{
   border-radius: 12px;
   background: rgba(255,255,255,.75);
   border: 1px solid rgba(0,0,0,.06);
+  min-width:0;
+  overflow:hidden;
 }
-
 .dayCell{
   border: 1px solid rgba(0,0,0,.08);
   border-radius: 16px;
@@ -171,44 +253,46 @@ body{
   min-height: 86px;
   position: relative;
   cursor: pointer;
+  min-width:0;
+  overflow:hidden;
 }
-.dayTop{
-  display:flex;
-  align-items:center;
-  justify-content: space-between;
-  gap: 8px;
+.dayCell.closed{ background: var(--closed-bg); }
+.dayCell.closed .dayNum{ color: var(--closed-text); font-weight: 900; }
+
+.dayTop{ display:flex; align-items:center; justify-content: space-between; gap: 8px; }
+.dayNum{ font-weight: 900; font-size: 14px; color: rgba(0,0,0,.70); }
+
+.reserveBadge{
+  background: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+  font-weight: 800;
+  color: #2563eb;
+  white-space: nowrap;
+  font-size: 16px;
+  line-height: 1;
 }
-.dayNum{
-  font-weight: 900;
-  font-size: 14px;
-  color: rgba(0,0,0,.70);
-}
-.badge{
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  min-width: 74px;
-  padding: 8px 10px;
-  border-radius: 999px;
-  border: 1px solid rgba(0,0,0,.12);
-  background: #f6f1e7;
-  font-weight: 900;
-}
+.dayCell.closed .reserveBadge{ color: var(--closed-text); }
+
 .badge.note{
   background: #eaf0ff;
-  min-width: 44px;
+  border: 1px solid rgba(0,0,0,.12);
+  border-radius:999px;
+  padding: 6px 10px;
 }
 
-.monthlyTotal{
-  text-align:center;
-  font-weight: 900;
-  margin: 10px 0 0;
+.daySales{
+  margin-top: 6px;
+  font-size: 12px;
+  font-weight: 800;
+  color: #111827;
+  opacity: .85;
+  white-space: nowrap;
 }
+.monthlyTotal{ text-align:center; font-weight: 900; margin: 10px 0 0; }
 
-/* ===== store board ===== */
-.storeBoard{
-  margin-top: 18px;
-}
+/* store board */
+.storeBoard{ margin-top: 18px; }
 .boardHeader{
   display:flex;
   justify-content: space-between;
@@ -221,7 +305,7 @@ body{
 
 .boardGrid{
   display:grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr; /* ★統合：1カラム */
   gap: 16px;
 }
 .boardCard{
@@ -231,10 +315,7 @@ body{
   padding: 14px;
   box-shadow: 0 10px 30px rgba(0,0,0,.06);
 }
-.cardTitle{
-  font-weight: 900;
-  margin-bottom: 10px;
-}
+.cardTitle{ font-weight: 900; margin-bottom: 10px; }
 .row{ margin: 10px 0; }
 .label{ display:block; font-weight: 800; font-size: 12px; color: var(--muted); margin-bottom: 6px; }
 .input, select, textarea{
@@ -265,19 +346,12 @@ body{
   justify-content:center;
   overflow:hidden;
 }
+.photoPreviewSide img{ max-width:100%; height:auto; display:block; }
 
-/* ===== modal (minimum) ===== */
+/* modal */
 .hidden{ display:none !important; }
-.modal{
-  position: fixed;
-  inset: 0;
-  z-index: 30;
-}
-.modalBackdrop{
-  position:absolute;
-  inset:0;
-  background: rgba(0,0,0,.35);
-}
+.modal{ position: fixed; inset: 0; z-index: 30; }
+.modalBackdrop{ position:absolute; inset:0; background: rgba(0,0,0,.35); }
 .modalCard{
   position: relative;
   width: min(640px, calc(100% - 28px));
@@ -287,13 +361,36 @@ body{
   border: 1px solid rgba(0,0,0,.12);
   box-shadow: 0 20px 60px rgba(0,0,0,.25);
   overflow:hidden;
+
+  max-height: min(92vh, 820px);
+  display:flex;
+  flex-direction:column;
 }
 .modalHeader{
+  flex:0 0 auto;
   display:flex;
   justify-content: space-between;
   align-items: start;
   padding: 14px 14px 10px;
   border-bottom: 1px solid rgba(0,0,0,.08);
+}
+.modalBody{
+  flex:1 1 auto;
+  overflow:auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 14px;
+  padding-bottom: 12px;
+}
+.modalFooter{
+  flex:0 0 auto;
+  position: sticky;
+  bottom: 0;
+  background: #fff;
+  padding: 12px 14px 14px;
+  padding-bottom: max(12px, env(safe-area-inset-bottom));
+  border-top: 1px solid rgba(0,0,0,.06);
+  display:flex;
+  justify-content:flex-end;
 }
 .modalTitle{ font-weight: 900; }
 .modalSubTitle{ color: var(--muted); font-size: 12px; }
@@ -304,658 +401,7 @@ body{
   padding: 8px 10px;
   cursor:pointer;
 }
-.modalBody{ padding: 14px; }
-.modalFooter{
-  padding: 12px 14px 14px;
-  border-top: 1px solid rgba(0,0,0,.08);
-  display:flex;
-  justify-content:flex-end;
-}
 
-.bigSelect{ font-size: 18px; padding: 10px 12px; }
-.staffBox{ margin-top: 10px; }
-#staffInputs{ display:grid; gap: 8px; margin-top: 6px; }
-.staffRow{ display:flex; align-items:center; justify-content: space-between; gap: 10px; }
-.staffName{ font-weight: 800; }
-#staffInputs .staffCountSelect{ width: 140px; }
-.memoArea{ resize: vertical; }
-
-/* ===== mobile ===== */
-@media (max-width: 860px){
-  .topGrid{ grid-template-columns: 1fr; }
-  .boardGrid{ grid-template-columns: 1fr; }
-  .left,.right{ width: 40px; }
-}
-@media (max-width: 520px){
-  .wrap{ padding: 10px 10px 20px; }
-  .legend{ flex-wrap: wrap; }
-  .calendar{ grid-template-columns: 1fr; }
-  .weekHeader{ display:none; }
-  .dayCell{ min-height: 74px; }
-  .photoRowInline{ grid-template-columns: 1fr; }
-}
-/* ===== FIX: カレンダーが右側に食い込むのを防ぐ ===== */
-.calBody{
-  overflow: hidden;     /* 左列からのはみ出しを見せない */
-  min-width: 0;         /* Gridで縮められるように */
-}
-
-/* 7列を「縮められる列」にする（これが重要） */
-.calendar{
-  width: 100%;
-  max-width: 100%;
-  grid-template-columns: repeat(7, minmax(0, 1fr));
-}
-
-/* 各セルも縮められるように＆中身がはみ出しても隠す */
-.dayCell,
-.weekHeader{
-  min-width: 0;
-  overflow: hidden;
-}
-
-/* バッジの最小幅が原因で押し広げるのを防ぐ */
-.badge{
-  min-width: 0;         /* ← これでセルが広がらない */
-  max-width: 100%;
-  white-space: nowrap;
-}
-.legend{
-  display: grid;
-  grid-template-columns: 1fr auto 1fr;
-  align-items: center;
-  gap: 12px;
-}
-
-.legendLeft{ justify-self: start; min-width:0; }
-.legendCenter{ justify-self: center; min-width:0; }
-.legendRight{
-  justify-self: end;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  min-width:0;
-}
-
-.totalMonthCount{
-  font-weight: 900;
-  white-space: nowrap;
-}
-/* カレンダー内：予約表示（予〇）を枠なし＆色変更 */
-.reserveBadge{
-  background: transparent !important;
-  border: none !important;
-  box-shadow: none !important;
-
-  padding: 0 !important;
-  border-radius: 0 !important;
-
-  font-weight: 800;
-  color: #2563eb;
-  white-space: nowrap;
-
-  font-size: 16px;   /* ←追加：大きくする */
-  line-height: 1;    /* ←追加：縦の余白を詰める（不要なら消してOK） */
-}
-/* =========================
-  定休日カラー（セル＋上部チップ共通）
-========================= */
-:root{
-  --closed-bg: #fff2f2;     /* 定休日セルの背景 */
-  --closed-text: #d94848;   /* 定休日文字（セル/チップ） */
-  --closed-border: #f3b4b4; /* チップの枠 */
-}
-
-/* カレンダー：定休日セル */
-.dayCell.closed{
-  background: var(--closed-bg);
-}
-
-/* カレンダー：定休日の「日付数字」 */
-.dayCell.closed .dayNum{
-  color: var(--closed-text);
-  font-weight: 900;
-}
-
-/* カレンダー：定休日の「予〇」も同色にしたい場合 */
-.dayCell.closed .reserveBadge{
-  color: var(--closed-text);
-}
-
-/* 上部：定休日チップ（凡例）も同じ色 */
-.legend .chip.closed{
-  color: var(--closed-text);
-  border-color: var(--closed-border);
-  background: color-mix(in srgb, var(--closed-bg) 60%, #ffffff);
-}
-/* 売上欄の上下「今後のアップデート」枠を非表示 */
-.futureBox{
-  display: none !important;
-}
-/* 右：売上枠を左：カレンダーと上辺揃えにする */
-.mainGrid{
-  align-items: start;
-}
-
-.salesWrap{
-  margin-top: 0 !important;
-  align-self: start;
-}
-
-.calWrap,
-.salesWrap{
-  align-self: start;
-  margin-top: 0;
-}
-/* 左右（カレンダー/売上）を上揃えに固定 */
-.topGrid{
-  align-items: start;     /* gridの場合に効く */
-}
-
-/* 右側カラム自体も上から詰める */
-.rightSide{
-  margin-top: 0 !important;
-  padding-top: 0 !important;
-  align-self: start;
-}
-
-/* 売上カードを右カラムの先頭に揃える */
-.rightSide .salesPanel{
-  margin-top: 0 !important;
-  align-self: start;
-}
-
-/* （今後枠を消したあとに余白だけ残る対策） */
-.rightSide .futureTop,
-.rightSide .futureBottom{
-  margin: 0 !important;
-  padding: 0 !important;
-  height: 0 !important;
-}
-/* 右側を縦並びのflexにして、売上カードを先頭へ */
-.rightSide{
-  display: flex;
-  flex-direction: column;
-}
-
-.rightSide .salesPanel{
-  order: -1;          /* 売上カードを一番上へ */
-  margin-top: 0 !important;
-}
-.salesInputs{
-  display: grid;
-  gap: 10px;
-}
-
-.fieldRow{
-  display: grid;
-  grid-template-columns: 130px 1fr;
-  gap: 10px;
-  align-items: center;
-}
-
-.fieldLabel{
-  font-size: 13px;
-  font-weight: 700;
-  opacity: 0.9;
-}
-
-.fieldInput,
-.fieldSelect{
-  width: 100%;
-  padding: 10px 12px;
-  border-radius: 10px;
-  border: 1px solid #e5e7eb;
-  background: #fff;
-}
-#statusHint.ok{ color: #111; font-weight: 800; }
-#statusHint.ng{ color: #dc2626; font-weight: 900; }
-/* ===== スマホは前のシンプル表示に戻す ===== */
-/* ===== スマホ：確認用（ヘッダー整形 + 売上非表示 + 一覧表示） ===== */
-@media (max-width: 520px){
-
-  /* ヘッダー全体（legend）を折り返して被り防止 */
-  .legend{
-    display: flex !important;
-    flex-wrap: wrap !important;
-    gap: 10px !important;
-    height: auto !important;
-    align-items: center !important;
-  }
-
-  /* 右側（定休日・メモあり・CSV・設定） */
-  .legendRight{
-    display: flex !important;
-    flex-wrap: wrap !important;
-    gap: 8px !important;
-    justify-content: flex-end !important;
-  }
-
-  .chip{
-    font-size: 12px !important;
-    padding: 6px 10px !important;
-  }
-
-  /* スマホはCSV/設定を非表示（確認専用） */
-  .legendActions{
-    display: none !important;
-  }
-
-  /* 上段は1カラム（カレンダーのみ） */
-  .topGrid{
-    display: block !important;
-  }
-
-  /* 売上パネル類は非表示 */
-  .rightSide,
-  .salesPanel,
-  .futureTop,
-  .futureBottom{
-    display: none !important;
-  }
-
-  /* カレンダーを横いっぱい */
-  .calBody,
-  .calendar{
-    width: 100% !important;
-    max-width: 100% !important;
-    margin: 0 !important;
-  }
-
-  /* スマホは“一覧表示” */
-  .calendar.mobileList{
-    display: flex !important;
-    flex-direction: column !important;
-    gap: 10px !important;
-  }
-  .calendar.mobileList .weekHeader{
-    display: none !important;
-  }
-
-  .mDayRow{
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 14px 14px;
-    border: 1px solid #eee;
-    border-radius: 14px;
-    background: #fff;
-  }
-  .mDayRow.closed{
-    background: #fdecec;
-    border-color: #f6cfcf;
-  }
-  .mDayLeft{
-    font-weight: 700;
-  }
-  .mDayRight{
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-  .mBadge{
-    font-weight: 900;
-    color: #2563eb;
-    white-space: nowrap;
-  }
-}
-
-/* ===== PC：カレンダー左 + 売上右 ===== */
-@media (min-width: 521px){
-  .topGrid{
-    display: grid !important;
-    grid-template-columns: minmax(0, 1fr) 360px !important;
-    gap: 18px !important;
-    align-items: start !important;
-  }
-
-  .calBody{ min-width: 0; }
-
-  .rightSide{
-    display: flex !important;
-    flex-direction: column !important;
-    gap: 14px !important;
-  }
-
-  .salesPanel{
-    width: 100% !important;
-    display: block !important;
-  }
-}
-/* 黒字/赤字ペース表示（右パネル内の一言） */
-#statusHint{
-  margin-top: 10px;
-  padding: 10px 12px;
-  border-radius: 12px;
-  font-weight: 800;
-  font-size: 13px;
-  line-height: 1.4;
-  background: #f3f4f6;
-  color: #374151;
-}
-
-#statusHint.ok{
-  background: #ecfdf5;
-  color: #065f46;
-  border: 1px solid #a7f3d0;
-}
-
-#statusHint.ng{
-  background: #fef2f2;
-  color: #991b1b;
-  border: 1px solid #fecaca;
-}
-.daySales{
-  margin-top: 6px;
-  font-size: 12px;
-  font-weight: 800;
-  color: #111827;
-  opacity: .85;
-  white-space: nowrap;
-}
-/* ===== 売上：進捗バー（月） ===== */
-.mProgressWrap{
-  margin: 10px 0 12px;
-  padding: 10px 12px;
-  border: 1px solid #eee;
-  border-radius: 14px;
-  background: #fff;
-}
-.mProgressTop{
-  display:flex;
-  justify-content: space-between;
-  align-items:center;
-  margin-bottom: 8px;
-}
-.mProgressLabel{ font-weight:700; }
-#mProgressPct{ font-weight:900; }
-
-.bar{
-  height: 10px;
-  border-radius: 999px;
-  background: #f1f5f9;
-  overflow:hidden;
-}
-.bar .fill{
-  height:100%;
-  width:0%;
-  border-radius: 999px;
-  background: #2563eb;
-  transition: width .25s ease;
-}
-
-.mProgressMeta{
-  display:grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: 8px;
-  margin-top: 10px;
-  font-size: 12px;
-}
-.mProgressMeta > div{
-  display:flex;
-  justify-content: space-between;
-  gap: 8px;
-  padding: 6px 8px;
-  border-radius: 10px;
-  background:#f8fafc;
-}
-.mDailyGoalLine{
-  margin-top: 10px;
-  display:flex;
-  justify-content: space-between;
-  align-items:center;
-  padding-top: 8px;
-  border-top: 1px dashed #e5e7eb;
-}
-#mDailyGoal{ font-weight: 900; }
-
-/* ===== 今日のモチベ表示（モーダル） ===== */
-.boostPanel{
-  margin-top: 12px;
-  padding: 12px 12px;
-  border: 2px solid #e5e7eb;
-  border-radius: 16px;
-  background: #fff;
-}
-.boostHead{
-  display:flex;
-  justify-content: space-between;
-  align-items: baseline;
-  gap: 10px;
-  margin-bottom: 10px;
-}
-.boostTitle{
-  font-weight: 900;
-  font-size: 14px;
-}
-.boostSub{
-  font-size: 12px;
-  color: #64748b;
-  white-space: nowrap;
-}
-
-.boostMain{
-  display:flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 10px;
-  margin-top: 10px;
-}
-.bigDelta{
-  font-size: 24px;
-  font-weight: 1000;
-  line-height: 1.1;
-}
-.bigDelta small{
-  font-size: 12px;
-  font-weight: 700;
-  color:#64748b;
-  display:block;
-  margin-top: 4px;
-}
-
-.badgeTone{
-  display:inline-flex;
-  align-items:center;
-  gap: 8px;
-  font-weight: 900;
-  padding: 6px 10px;
-  border-radius: 999px;
-  background: #f1f5f9;
-}
-.badgeTone.ok{
-  background:#ecfdf5;
-  border:1px solid #bbf7d0;
-}
-.badgeTone.ng{
-  background:#fff7ed;
-  border:1px solid #fed7aa;
-}
-
-.stepList{
-  margin-top: 12px;
-  display:flex;
-  flex-direction: column;
-  gap: 8px;
-}
-.stepRow{
-  display:flex;
-  justify-content: space-between;
-  align-items:center;
-  padding: 8px 10px;
-  border: 1px solid #eee;
-  border-radius: 12px;
-  background:#fff;
-}
-.stepRow .left{
-  font-weight: 800;
-}
-.stepRow .right{
-  display:flex;
-  align-items:center;
-  gap: 10px;
-  font-weight: 800;
-  white-space: nowrap;
-}
-.stepTag{
-  font-size: 12px;
-  padding: 4px 8px;
-  border-radius: 999px;
-  background: #f1f5f9;
-}
-.stepTag.ok{ background:#ecfdf5; border:1px solid #bbf7d0; }
-.stepTag.ng{ background:#fff7ed; border:1px solid #fed7aa; }
-/* ===== 月サマリー横並び ===== */
-.monthSummaryBar{
-  display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
-  gap: 10px;
-  padding: 10px 12px;
-  margin-top: 10px;
-  background: #fff;
-  border: 1px solid #eee;
-  border-radius: 14px;
-}
-
-.msItem{
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  min-width: 0;
-}
-
-.msItem span{
-  font-size: 12px;
-  color: #666;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.msItem b{
-  font-size: 16px;
-  font-weight: 900;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-/* スマホは2〜3列で折り返し */
-@media (max-width: 520px){
-  .monthSummaryBar{
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-/* ===== Ring Progress（円の達成度）===== */
-.ringWrap{
-  display:flex;
-  justify-content:center;
-  margin: 10px 0 12px;
-}
-
-.ringProgress{
-  --pct: 0;            /* 0〜100 */
-  --size: 110px;
-  --thickness: 12px;
-
-  width: var(--size);
-  height: var(--size);
-  border-radius: 999px;
-  position: relative;
-
-  /* 進捗リング */
-  background: conic-gradient(#111 calc(var(--pct) * 1%), #e7e7e7 0);
-}
-
-/* ===== Ring: center text perfectly ===== */
-.ringProgress{
-  position: relative;
-  display: grid;
-  place-items: center;
-}
-
-.ringInner{
-  position: absolute;
-  inset: var(--thickness); /* ←ここは残すのがポイント（内側の白円サイズ） */
-  background: #fff;
-  border-radius: 999px;
-
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  pointer-events: none;
-}
-
-.ringInner > b{
-  display: block;
-  line-height: 1;
-  margin: 0;
-}
-
-.ringInner > .ringSub{
-  margin-top: 6px;
-  line-height: 1.1;
-  opacity: .75;
-}
-.ringInner b{
-  font-size: 22px;
-  line-height: 1;
-}
-
-.ringSub{
-  font-size: 12px;
-  opacity: .75;
-  margin-top: 4px;
-}
-/* ===== Sales panel: title row ===== */
-.cardTitleRow{
-  display:flex;
-  align-items:baseline;
-  justify-content:space-between;
-  gap:10px;
-  margin-bottom: 8px;
-}
-.goalInline{
-  font-size: 13px;
-  opacity: .85;
-}
-.goalInline b{
-  font-size: 14px;
-}
-
-/* ===== Ring Row (2-up) ===== */
-.ringRow{
-  display:flex;
-  gap: 12px;
-  justify-content:space-between;
-  margin: 8px 0 12px;
-}
-.ringBlock{
-  flex: 1;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  gap: 6px;
-}
-.ringLabel{
-  font-size: 12px;
-  opacity: .75;
-}
-
-/* 既存リングのサイズを少し調整（好みでOK） */
-.ringProgress{
-  --size: 110px;
-  --thickness: 12px;
-}
-
-/* 画面が狭い時は縦並び */
-@media (max-width: 520px){
-  .ringRow{ flex-direction:column; align-items:center; }
-  .ringBlock{ width: 100%; }
-}
-/* ===== Day modal: total big display ===== */
 .totalHero{
   background:#fff;
   border:1px solid rgba(0,0,0,.06);
@@ -967,422 +413,67 @@ body{
   gap:6px;
   margin-bottom: 12px;
 }
+.totalHeroNum{ font-size: 44px; font-weight: 800; line-height: 1; letter-spacing:.02em; }
+.hiddenSelect{ display:none !important; }
 
-.totalHeroLabel{
-  font-size: 12px;
-  opacity: .7;
-}
-
-.totalHeroNum{
-  font-size: 44px;
-  font-weight: 800;
-  line-height: 1;
-  letter-spacing: .02em;
-}
-
-.totalHeroSub{
-  font-size: 12px;
-  opacity: .6;
-}
-
-.hiddenSelect{
-  display:none !important;
-}
-
-/* ===== Staff cards + steppers ===== */
 .staffCards{
   display:grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 10px;
+  gap: 12px;
   margin-top: 8px;
 }
-
 .staffCard{
   background:#fff;
   border:1px solid rgba(0,0,0,.06);
-  border-radius:16px;
-  padding:12px;
-  box-shadow: 0 6px 18px rgba(0,0,0,.06);
+  border-radius:18px;
+  padding:14px;
+  box-shadow: 0 10px 30px rgba(0,0,0,.07);
   display:flex;
   flex-direction:column;
-  gap: 10px;
+  gap:10px;
 }
-
 .staffCardTop{
   display:flex;
   align-items:center;
   justify-content:space-between;
-  gap: 10px;
-}
-
-.staffCardName{
-  font-weight:700;
-  font-size: 14px;
-}
-
-.staffCardCount{
-  font-weight:800;
-  font-size: 18px;
-  min-width: 24px;
-  text-align:right;
-}
-
-.stepper{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap: 10px;
-}
-
-.stepBtn{
-  width: 44px;
-  height: 40px;
-  border-radius: 12px;
-  border:1px solid rgba(0,0,0,.10);
-  background:#fafafa;
-  font-size: 20px;
-  font-weight: 800;
-  cursor:pointer;
-}
-
-.stepBtn:disabled{
-  opacity: .4;
-  cursor:not-allowed;
-}
-
-.stepValue{
-  flex:1;
-  text-align:center;
-  font-size: 22px;
-  font-weight: 800;
-  letter-spacing:.02em;
-}
-
-/* 画面が狭い時は1列 */
-@media (max-width: 520px){
-  .staffCards{ grid-template-columns: 1fr; }
-}
-/* ===== Modal scroll safety (iPad対策) ===== */
-.modalCard{
-  max-height: min(92vh, 820px);
-  display: flex;
-  flex-direction: column;
-}
-
-.modalHeader{
-  flex: 0 0 auto;
-}
-
-.modalBody{
-  flex: 1 1 auto;
-  overflow: auto;
-  -webkit-overflow-scrolling: touch;
-  padding-bottom: 12px;
-}
-
-.modalFooter{
-  flex: 0 0 auto;
-  position: sticky;
-  bottom: 0;
-  background: #fff;
-  padding-bottom: max(12px, env(safe-area-inset-bottom));
-  border-top: 1px solid rgba(0,0,0,.06);
-}
-/* ===== Polished UI: salon-like (override) ===== */
-
-/* 共通：少しだけ上品な文字と余白感 */
-.modalCard{
-  font-feature-settings: "palt" 1;
-}
-
-/* 合計表示：上品に（淡い背景＋細い枠＋控えめな影） */
-.totalHero{
-  background: linear-gradient(180deg, rgba(250,250,252,1) 0%, rgba(255,255,255,1) 100%);
-  border: 1px solid rgba(0,0,0,.05);
-  border-radius: 18px;
-  padding: 16px 14px 12px;
-  box-shadow: 0 10px 28px rgba(0,0,0,.06);
-  margin-bottom: 14px;
-}
-
-.totalHeroLabel{
-  font-size: 12px;
-  letter-spacing: .06em;
-  opacity: .70;
-}
-
-.totalHeroNum{
-  font-size: 48px;
-  font-weight: 800;
-  line-height: 1;
-  letter-spacing: .02em;
-}
-
-.totalHeroSub{
-  font-size: 12px;
-  opacity: .55;
-}
-
-/* スタッフカード：角丸/影/余白を統一して“サロンっぽく” */
-.staffCards{
-  gap: 12px;
-}
-
-.staffCard{
-  border-radius: 18px;
-  padding: 14px;
-  border: 1px solid rgba(0,0,0,.06);
-  box-shadow: 0 10px 30px rgba(0,0,0,.07);
-  transition: transform .14s ease, box-shadow .14s ease;
-}
-
-.staffCardTop{
   gap: 10px;
   padding-bottom: 6px;
   border-bottom: 1px solid rgba(0,0,0,.05);
 }
+.staffCardName{ font-weight: 800; font-size: 14px; letter-spacing:.03em; }
+.staffCardCount{ font-weight: 800; font-size: 16px; opacity:.75; }
 
-.staffCardName{
-  font-weight: 800;
-  font-size: 14px;
-  letter-spacing: .03em;
-}
-
-.staffCardCount{
-  font-weight: 800;
-  font-size: 16px;
-  opacity: .75;
-}
-
-/* ステッパー：中央数字を“主役”に */
-.stepper{
-  gap: 12px;
-  padding-top: 10px;
-}
-
-.stepValue{
-  font-size: 26px;
-  font-weight: 900;
-  letter-spacing: .03em;
-}
-
-/* ＋/−ボタン：押下アニメ（ぷにっ）＋上品な影 */
+.stepper{ display:flex; align-items:center; justify-content:space-between; gap: 12px; padding-top: 10px; }
 .stepBtn{
-  width: 46px;
-  height: 42px;
+  width: 46px; height: 42px;
   border-radius: 14px;
-  border: 1px solid rgba(0,0,0,.10);
+  border:1px solid rgba(0,0,0,.10);
   background: rgba(250,250,250,1);
   box-shadow: 0 6px 16px rgba(0,0,0,.10);
-  transition: transform .08s ease, box-shadow .08s ease, background-color .12s ease;
-  -webkit-tap-highlight-color: transparent;
-  user-select: none;
-}
-
-.stepBtn:hover{
-  box-shadow: 0 10px 22px rgba(0,0,0,.12);
-}
-
-.stepBtn:active{
-  transform: translateY(1px) scale(.97);
-  box-shadow: 0 4px 12px rgba(0,0,0,.10);
-  background: rgba(245,245,247,1);
-}
-
-.stepBtn:focus-visible{
-  outline: 2px solid rgba(0,0,0,.18);
-  outline-offset: 2px;
-}
-
-.stepBtn:disabled{
-  opacity: .35;
-  box-shadow: none;
-  background: rgba(250,250,250,1);
-}
-
-/* スタッフカードもタップで少し反応（気持ちよさ） */
-.staffCard:active{
-  transform: translateY(1px);
-  box-shadow: 0 8px 22px rgba(0,0,0,.07);
-}
-/* ===== Extra polish pack (all) ===== */
-
-/* 1) 売上ブロックの見出しを締める（境目を作る） */
-.memoBox .label{
+  font-size: 20px;
   font-weight: 800;
-  letter-spacing: .03em;
-  margin-top: 6px;
-  padding-top: 10px;
-  border-top: 1px solid rgba(0,0,0,.06);
+  cursor:pointer;
 }
+.stepBtn:disabled{ opacity:.35; box-shadow:none; cursor:not-allowed; }
+.stepValue{ flex:1; text-align:center; font-size: 26px; font-weight: 900; letter-spacing:.03em; }
 
-/* 2) スタッフカードの高さ＆中身の配置を揃える */
-.staffCard{
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  min-height: 132px;
+/* responsive */
+@media (max-width: 860px){
+  .topGrid{ grid-template-columns: 1fr; }
+  .left,.right{ width: 40px; }
 }
+@media (max-width: 520px){
+  .wrap{ padding: 10px 10px 20px; }
+  .legend{ display:flex; flex-wrap:wrap; }
+  .legendActions{ display:none; }
+  .monthSummaryBar{ grid-template-columns: repeat(2, minmax(0, 1fr)); }
 
-/* 3) 保存ボタンを“押したくなる”上品ボタンに */
-#daySaveBtn{
-  box-shadow: 0 10px 24px rgba(0,0,0,.12);
-  transition: transform .08s ease, box-shadow .08s ease;
-}
-#daySaveBtn:active{
-  transform: translateY(1px) scale(.99);
-  box-shadow: 0 6px 16px rgba(0,0,0,.10);
-}
-/* ===== Ring color: vivid (override) ===== */
-#mSalesRing{
-  background: conic-gradient(#ff9f1c calc(var(--pct) * 1%), #e9e9e9 0);
-}
-#mUnitRing{
-  background: conic-gradient(#2ec4b6 calc(var(--pct) * 1%), #e9e9e9 0);
-}
-/* ===== Ring color with 90% highlight ===== */
-#mSalesRing{
-  /* 0〜90%: オレンジ / 90〜達成%: レッド / 残り: グレー */
-  background: conic-gradient(
-    #ff9f1c 0 calc(var(--pctCut) * 1%),
-    #ff3b30 calc(var(--pctCut) * 1%) calc(var(--pct) * 1%),
-    #e9e9e9 calc(var(--pct) * 1%) 100%
-  );
-}
+  /* スマホは売上パネルは非表示（あなたの元仕様を踏襲） */
+  .rightSide, .salesPanel, .futureTop, .futureBottom{ display:none !important; }
 
-#mUnitRing{
-  /* 0〜90%: ティール / 90〜達成%: シアン / 残り: グレー */
-  background: conic-gradient(
-    #2ec4b6 0 calc(var(--pctCut) * 1%),
-    #00d1ff calc(var(--pctCut) * 1%) calc(var(--pct) * 1%),
-    #e9e9e9 calc(var(--pct) * 1%) 100%
-  );
-}
-/* ===== Ring color with 90% highlight (safe fallback) ===== */
-#mSalesRing{
-  background: conic-gradient(
-    #ff9f1c 0 calc(var(--pctCut, 0) * 1%),
-    #ff3b30 calc(var(--pctCut, 0) * 1%) calc(var(--pct, 0) * 1%),
-    #e9e9e9 calc(var(--pct, 0) * 1%) 100%
-  );
-}
-
-#mUnitRing{
-  background: conic-gradient(
-    #2ec4b6 0 calc(var(--pctCut, 0) * 1%),
-    #00d1ff calc(var(--pctCut, 0) * 1%) calc(var(--pct, 0) * 1%),
-    #e9e9e9 calc(var(--pct, 0) * 1%) 100%
-  );
-}
-/* ===== Ring Progress override (final) ===== */
-:root{
-  --ring-base: #e6e6e6;
-  --ring-orange: #ff7a00; /* 鮮やかオレンジ */
-  --ring-teal:   #12b5b0; /* ティール */
-}
-
-/* mSalesRing / mUnitRing を最優先で上書き */
-#mSalesRing,
-#mUnitRing{
-  /* JSが入れる値。念のため初期値も定義 */
-  --pct: 0;
-  --pctCut: 0;
-
-  border-radius: 999px;
-  position: relative;
-  display: grid;
-  place-items: center;
-
-  /* 90%まではオレンジ、90%超えはティール、残りはグレー */
-  background: conic-gradient(
-    var(--ring-orange) 0 calc(var(--pctCut) * 1%),
-    var(--ring-teal)   calc(var(--pctCut) * 1%) calc(var(--pct) * 1%),
-    var(--ring-base)   calc(var(--pct) * 1%) 100%
-  );
-}
-
-/* “ドーナツの穴” (内側) */
-#mSalesRing::before,
-#mUnitRing::before{
-  content: "";
-  position: absolute;
-  /* 太さ：ここを変えるとリングの太さが変わる */
-  inset: 12px;
-  border-radius: 999px;
-  /* 中央の背景色（売上パネルの背景に合わせたい場合は #fff を変える） */
-  background: #fff;
-}
-
-/* 中央の文字がリングの上に出るように */
-#mSalesRing > *,
-#mUnitRing > *{
-  position: relative;
-  z-index: 1;
-}
-/* ===== Ring center fix (force) ===== */
-.ringProgress{
-  position: relative !important;
-  display: grid !important;
-  place-items: center !important;
-}
-
-/* 重要：absolute + inset だとズレが残る事があるので、
-   grid中央配置 + 幅/高さを明示してセンターを固定する */
-.ringProgress .ringInner{
-  position: relative !important;      /* absolute を殺す */
-  inset: auto !important;             /* inset を殺す */
-  width: calc(100% - (var(--thickness) * 2)) !important;
-  height: calc(100% - (var(--thickness) * 2)) !important;
-
-  background: #fff !important;
-  border-radius: 999px !important;
-
-  display: flex !important;
-  flex-direction: column !important;
-  align-items: center !important;
-  justify-content: center !important;
-  text-align: center !important;
-
-  pointer-events: none !important;
-}
-
-.ringProgress .ringInner > b{
-  display: block !important;
-  margin: 0 !important;
-  line-height: 1 !important;
-}
-
-.ringProgress .ringInner > .ringSub{
-  margin-top: 6px !important;
-  line-height: 1.1 !important;
-}
-.goalInlineRow{
-  display:flex;
-  align-items:center;
-  gap:10px;
-  margin: 8px 0 12px;
-}
-
-.goalInlineLabel{
-  font-size: 12px;
-  opacity: .75;
-}
-
-#mGoalSalesInline{
-  margin-left:auto;
-  font-weight: 800;
-}
-
-.goalEditBtn{
-  border: 1px solid rgba(0,0,0,.12);
-  background: #fff;
-  border-radius: 999px;
-  padding: 6px 10px;
-  font-size: 12px;
-  cursor: pointer;
-  transition: transform .08s ease, box-shadow .15s ease;
-}
-
-.goalEditBtn:active{
-  transform: translateY(1px) scale(.98);
+  .calendar{ grid-template-columns: 1fr; }
+  .weekHeader{ display:none; }
+  .dayCell{ min-height: 74px; }
+  .staffCards{ grid-template-columns: 1fr; }
+  .photoRowInline{ grid-template-columns: 1fr; }
 }
