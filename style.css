@@ -530,3 +530,28 @@ body{
   .boardSpacer{ display:none; }
   .photoRowCompact{ grid-template-columns: 1fr; }
 }
+/* ===== store tasks (done style) ===== */
+.taskItem{
+  display: grid;
+  grid-template-columns: 28px 1fr auto;
+  gap: 10px;
+  align-items: center;
+  padding: 10px 10px;
+  border-bottom: 1px solid rgba(0,0,0,.06);
+}
+
+.taskItem:last-child{ border-bottom: none; }
+
+.taskText{
+  font-weight: 800;
+  line-height: 1.35;
+}
+
+/* 完了したメモは薄く＋取り消し線 */
+.taskItem.done{
+  opacity: .45;
+}
+
+.taskItem.done .taskText{
+  text-decoration: line-through;
+}
