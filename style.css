@@ -1356,3 +1356,33 @@ body{
   margin-top: 6px !important;
   line-height: 1.1 !important;
 }
+.goalInlineRow{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin: 8px 0 12px;
+}
+
+.goalInlineLabel{
+  font-size: 12px;
+  opacity: .75;
+}
+
+#mGoalSalesInline{
+  margin-left:auto;
+  font-weight: 800;
+}
+
+.goalEditBtn{
+  border: 1px solid rgba(0,0,0,.12);
+  background: #fff;
+  border-radius: 999px;
+  padding: 6px 10px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: transform .08s ease, box-shadow .15s ease;
+}
+
+.goalEditBtn:active{
+  transform: translateY(1px) scale(.98);
+}
