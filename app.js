@@ -99,11 +99,38 @@ const staffAddBtn   = document.getElementById("staffAddBtn");
 const staffList     = document.getElementById("staffList");
 const newPinInput   = document.getElementById("newPinInput");
 const pinChangeBtn  = document.getElementById("pinChangeBtn");
+// goal modal
+const goalEditBtn    = document.getElementById("goalEditBtn");
+const goalModal      = document.getElementById("goalModal");
+const goalCloseBtn   = document.getElementById("goalCloseBtn");
+const goalSaveBtn    = document.getElementById("goalSaveBtn");
+const goalSalesInput = document.getElementById("goalSalesInput");
 // ▼ここに追記（追加DOM）
 const totalCountDisplay = document.getElementById("totalCountDisplay");
 
 
 // ===== Modal open / close events =====
+goalEditBtn?.addEventListener("click", () => {
+  if (goalSalesInput) goalSalesInput.value = String(goalSales || 0);
+  openModal(goalModal);
+});
+
+goalCloseBtn?.addEventListener("click", () => closeModal(goalModal));
+
+goalSaveBtn?.addEventListener("click", async () => {
+  try{
+    const v = Number(goalSalesInput?.value || 0);
+    const saved = await saveGoalSales(currentMonthKey, v, "pc");
+    goalSales = saved;
+
+    closeModal(goalModal);
+    await loadAndRender();
+    alert("目標を保存しました");
+  }catch(e){
+    console.error(e);
+    alert("目標の保存で止まりました: " + (e?.message || e));
+  }
+});
 
 // 設定モーダルを開く
 btnSettings?.addEventListener('click', () => {
@@ -137,6 +164,7 @@ document.querySelectorAll('.modalBackdrop[data-close]').forEach(backdrop => {
 
 
 // ===== state =====
+let goalSales = 1500000; // 初期値（Supabaseから読めたら上書き）
 let viewDate = new Date();
 let currentMonthKey = ""; // YYYY-MM
 let monthData = {};       // { "YYYY-MM-DD": {count, memo} }
@@ -160,37 +188,26 @@ function ensureViewDate(){
   }
 }
 
-function updateRings(sumSales, unitPrice){
-  // 目標（あなたの設定に合わせて）
-  const GOAL_CUSTOMERS = 200;
+function updateRings(sumSales, unitPrice, goalSalesValue){
   const GOAL_UNIT_PRICE = 7500;
-  const GOAL_SALES = GOAL_CUSTOMERS * GOAL_UNIT_PRICE;
+  const GOAL_SALES = Math.max(0, Math.floor(Number(goalSalesValue || 0)));
 
   // URLテスト（?test=92）
-    // URLテスト（?test=92） ※testが「ある時だけ」上書きする
   const p = new URLSearchParams(location.search);
-  const raw = p.get("test"); // null か "92" など
+  const n = Number(p.get("test"));
+  const overridePct = Number.isFinite(n) ? Math.max(0, Math.min(100, Math.floor(n))) : null;
 
-  const overridePct =
-    (raw !== null && raw !== "") ? (() => {
-      const n = Number(raw);
-      return Number.isFinite(n) ? Math.max(0, Math.min(100, Math.floor(n))) : null;
-    })() : null;
-
-  // %計算（リング表示は 0〜100 に丸める）
   const pctSalesRaw = GOAL_SALES > 0 ? Math.floor((sumSales / GOAL_SALES) * 100) : 0;
   const pctSalesRing = Math.max(0, Math.min(100, pctSalesRaw));
 
   const pctUnitRaw = GOAL_UNIT_PRICE > 0 ? Math.floor((unitPrice / GOAL_UNIT_PRICE) * 100) : 0;
   const pctUnitRing = Math.max(0, Math.min(100, pctUnitRaw));
 
-  // 中央の%（100超えも表示OK）
   let el = document.getElementById("mSalesPct");
   if (el) el.textContent = pctSalesRaw + "%";
   el = document.getElementById("mUnitPct");
   if (el) el.textContent = pctUnitRaw + "%";
 
-  // リングに反映（テスト時は上書き）
   const vSales = (overridePct ?? pctSalesRing);
   const vUnit  = (overridePct ?? pctUnitRing);
 
@@ -205,8 +222,6 @@ function updateRings(sumSales, unitPrice){
     unitRing.style.setProperty("--pct", String(vUnit));
     unitRing.style.setProperty("--pctCut", String(Math.min(90, vUnit)));
   }
-   // ★ここを追加（updateRingsの最後・閉じカッコの直前）
-  console.log("[updateRings]", { sumSales, unitPrice, salesStyle: document.getElementById("mSalesRing")?.getAttribute("style") });
 }
 function isStoreLikeDevice(){
   const p = new URLSearchParams(location.search);
@@ -402,6 +417,33 @@ function elapsedBusinessDaysInViewedMonth(viewDate){
 
 
 // ===== Supabase helpers =====
+async function loadGoalSales(monthKey){
+  const res = await sb
+    .from("goals_monthly")
+    .select("goal_sales")
+    .eq("month_key", monthKey)
+    .maybeSingle();
+
+  if (res.error) {
+    console.warn("goals_monthly load error:", res.error);
+    return null;
+  }
+  return res.data?.goal_sales ?? null;
+}
+
+async function saveGoalSales(monthKey, value, updatedBy){
+  const v = Math.max(0, Math.floor(Number(value || 0)));
+  const res = await sb
+    .from("goals_monthly")
+    .upsert([{
+      month_key: monthKey,
+      goal_sales: v,
+      updated_by: updatedBy || "pc"
+    }], { onConflict: "month_key" });
+
+  if (res.error) throw res.error;
+  return v;
+}
 async function ensureTablesExistHint(){
   // テーブルが無いと以降が失敗するので、エラーを見やすくする
 }
@@ -1028,6 +1070,14 @@ async function loadAndRender(){
 const m = vd.getMonth();
 
   const start = new Date(y, m, 1);
+  const monthKey = toMonthKey(start);
+currentMonthKey = monthKey;
+
+// ★この月の目標をSupabaseから読む（なければ初期値のまま）
+const gs = await loadGoalSales(monthKey);
+if (Number.isFinite(Number(gs)) && Number(gs) >= 0) {
+  goalSales = Number(gs);
+}
   const end   = new Date(y, m + 1, 0);
 
   const startKey = toDateKey(start);
@@ -1121,7 +1171,7 @@ if (tEl){
   　// ===== 目標（固定）=====
 const GOAL_CUSTOMERS = 200;
 const GOAL_UNIT_PRICE = 7500;
-const GOAL_SALES = GOAL_CUSTOMERS * GOAL_UNIT_PRICE;
+const GOAL_SALES = goalSales; // ★ここが可変
  // ===== ここからパネル計算（営業日ベース） =====
 const lackSales = Math.max(0, GOAL_SALES - sumSales);
 const lackCustomers = Math.max(0, GOAL_CUSTOMERS - sumCustomers);
@@ -1226,7 +1276,7 @@ if (el){
 
   
 
-updateRings(sumSales, unitPrice);
+updateRings(sumSales, unitPrice, GOAL_SALES);
 renderMonth();
 }
 
