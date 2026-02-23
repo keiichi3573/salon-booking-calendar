@@ -477,3 +477,56 @@ body{
   .staffCards{ grid-template-columns: 1fr; }
   .photoRowInline{ grid-template-columns: 1fr; }
 }
+/* ===== store board: 左半分だけ使う（右は空白） ===== */
+.boardGrid{
+  display:grid;
+  grid-template-columns: 1fr 1fr; /* 左：カード / 右：空白 */
+  gap: 16px;
+  align-items: start;
+}
+
+.boardCardHalf{
+  width: 100%;
+  justify-self: start; /* 左寄せ */
+}
+
+.boardSpacer{
+  /* 右半分は空白でOK（背景も無し） */
+  min-height: 10px;
+}
+
+/* メモ入力欄を小さく */
+.memoSmall{
+  min-height: 110px; /* 小さめ */
+  resize: vertical;
+}
+
+/* 追加後のメモ表示を大きく（見やすく） */
+.taskListBig{
+  min-height: 320px;           /* ここで“表示エリア”を大きく */
+  max-height: 420px;           /* 必要なら制限 */
+  overflow: auto;              /* 件数が多い時にスクロール */
+  border: 1px solid rgba(0,0,0,.08);
+  border-radius: 14px;
+  padding: 10px;
+  background: rgba(255,255,255,.75);
+}
+
+/* 写真は小さめでOK（確認できる程度） */
+.photoRowCompact{
+  display:grid;
+  grid-template-columns: 1fr 220px; /* 右を小さめに固定 */
+  gap: 12px;
+  align-items: start;
+}
+
+.photoSmall{
+  min-height: 140px;
+}
+
+/* スマホでは1列に戻す（右の空白は消す） */
+@media (max-width: 520px){
+  .boardGrid{ grid-template-columns: 1fr; }
+  .boardSpacer{ display:none; }
+  .photoRowCompact{ grid-template-columns: 1fr; }
+}
