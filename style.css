@@ -585,3 +585,25 @@ body{
   flex: 0 0 auto;       /* 伸びない＝右に飛ばない */
   text-align: left;
 }
+/* 日モーダル：入力チェック表示 */
+.dayFormHint{
+  margin-top: 10px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 800;
+  background: #f3f4f6;
+  color: #374151;
+}
+
+.dayFormHint.ok{
+  background: #ecfdf5;
+  color: #065f46;
+  border: 1px solid #a7f3d0;
+}
+
+.dayFormHint.ng{
+  background: #fef2f2;
+  color: #991b1b;
+  border: 1px solid #fecaca;
+}
