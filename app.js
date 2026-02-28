@@ -755,9 +755,11 @@ function updateDayFormHint(){
 
   // 店舗モード（iPad）は売上欄非表示なので案内しない
   if (isStoreLikeDevice()){
-    dayFormHint.textContent = "予約数のみ入力モードです";
-    return;
-  }
+  dayFormHint.style.display = "none";
+  return;
+} else {
+  dayFormHint.style.display = "";
+}
 
   if (customerTotal === 0){
     dayFormHint.textContent = "客数を入力してください";
