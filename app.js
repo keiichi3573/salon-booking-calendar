@@ -108,7 +108,24 @@ function remainingBusinessDaysInMonthFromTomorrow(viewDate){
   }
   return count;
 }
+function remainingBusinessDaysIncludingToday(viewDate){
+  const now = new Date();
+  const sameMonth =
+    now.getFullYear() === viewDate.getFullYear() &&
+    now.getMonth() === viewDate.getMonth();
 
+  if (!sameMonth) return 0;
+
+  const lastDate = endOfMonth(viewDate).getDate();
+  const startDay = now.getDate(); // ← 今日を含む
+
+  let count = 0;
+  for (let day = startDay; day <= lastDate; day++){
+    const d = new Date(viewDate.getFullYear(), viewDate.getMonth(), day);
+    if (!isClosedDay(d)) count++;
+  }
+  return count;
+}
 function getNextBusinessDay(base){
   const baseDate = (base instanceof Date && !isNaN(base.getTime())) ? base : new Date();
   const d = new Date(baseDate.getFullYear(), baseDate.getMonth(), baseDate.getDate());
@@ -507,33 +524,90 @@ function renderSummaryAndPanel(){
   const dailyGoal = bizTotal > 0 ? Math.ceil(goalSales / bizTotal) : 0;
   if(elDailyGoal) elDailyGoal.textContent = dailyGoal ? fmtYen(dailyGoal) : "—";
 
-  const lackSales = Math.max(0, goalSales - sumSales);
-  const lackCustomers = Math.max(0, goalCustomers - sumCustomers);
+  const now = new Date();
+const sameMonth =
+  now.getFullYear() === viewDate.getFullYear() &&
+  now.getMonth() === viewDate.getMonth();
 
-  const remBiz = remainingBusinessDaysInMonthFromTomorrow(viewDate);
-  const needSalesPerDay = remBiz > 0 ? Math.ceil(lackSales / remBiz) : 0;
-  const needCustomersPerDay = remBiz > 0 ? Math.ceil(lackCustomers / remBiz) : 0;
+let needSalesPerDay = 0;
+let needCustomersPerDay = 0;
 
-  if(elNeedSales) elNeedSales.textContent = remBiz ? (fmtYen(needSalesPerDay) + "/日") : "—";
-  if(elNeedCustomers) elNeedCustomers.textContent = remBiz ? (fmtNum(needCustomersPerDay) + "名/日") : "—";
+if (sameMonth){
+  // 昨日までの実績だけ集計
+  let salesThroughYesterday = 0;
+  let customersThroughYesterday = 0;
 
-  // next business day unit price required = needSalesPerDay / next day bookings
-  if(elNeedUnitPrice){
-    const nextBiz = getNextBusinessDay(new Date());
-    const sameMonthNext = nextBiz.getFullYear() === viewDate.getFullYear() && nextBiz.getMonth() === viewDate.getMonth();
-    if(!sameMonthNext){
+  const todayDate = now.getDate();
+
+  for (let day = 1; day < todayDate; day++){
+    const d = new Date(viewDate.getFullYear(), viewDate.getMonth(), day);
+    const key = toDateKey(d);
+    const row = bookingsDailyMap.get(key);
+    if (!row) continue;
+
+    salesThroughYesterday += Number(row.tech_sales || 0) + Number(row.retail_sales || 0);
+    customersThroughYesterday += Number(row.new_customers || 0) + Number(row.repeat_customers || 0);
+  }
+
+  const lackSales = Math.max(0, goalSales - salesThroughYesterday);
+  const lackCustomers = Math.max(0, goalCustomers - customersThroughYesterday);
+
+  // 今日を含む残り営業日
+  const remBiz = remainingBusinessDaysIncludingToday(viewDate);
+
+  needSalesPerDay = remBiz > 0 ? Math.ceil(lackSales / remBiz) : 0;
+  needCustomersPerDay = remBiz > 0 ? Math.ceil(lackCustomers / remBiz) : 0;
+
+  if (elNeedSales) {
+    elNeedSales.textContent = remBiz ? (fmtYen(needSalesPerDay) + "/日") : "—";
+  }
+
+  if (elNeedCustomers) {
+    elNeedCustomers.textContent = remBiz ? (fmtNum(needCustomersPerDay) + "名/日") : "—";
+  }
+
+  // 必要客単価：今日は営業日なら「本日」、休みなら「次回営業日」
+  const today = new Date(viewDate.getFullYear(), viewDate.getMonth(), todayDate);
+  let targetDate = null;
+
+  if (!isClosedDay(today)) {
+    targetDate = today;
+    const label = document.getElementById("needUnitLabel");
+    if (label) label.textContent = "本日 必要客単価";
+  } else {
+    targetDate = getNextBusinessDay(today);
+    const label = document.getElementById("needUnitLabel");
+    if (label) label.textContent = "次回営業日 必要客単価";
+  }
+
+  if (elNeedUnitPrice){
+    const sameMonthTarget =
+      targetDate &&
+      targetDate.getFullYear() === viewDate.getFullYear() &&
+      targetDate.getMonth() === viewDate.getMonth();
+
+    if (!sameMonthTarget){
       elNeedUnitPrice.textContent = "—";
-    }else{
-      const nextKey = toDateKey(nextBiz);
-      const nextBookings = Number(bookingsDailyMap.get(nextKey)?.total || 0);
-      if(nextBookings > 0 && needSalesPerDay > 0){
-        const needUnit = Math.ceil(needSalesPerDay / nextBookings);
+    } else {
+      const targetKey = toDateKey(targetDate);
+      const targetBookings = Number(bookingsDailyMap.get(targetKey)?.total || 0);
+
+      if (targetBookings > 0 && needSalesPerDay > 0){
+        const needUnit = Math.ceil(needSalesPerDay / targetBookings);
         elNeedUnitPrice.textContent = fmtNum(needUnit) + "円";
-      }else{
+      } else {
         elNeedUnitPrice.textContent = "—";
       }
     }
   }
+} else {
+  if (elNeedSales) elNeedSales.textContent = "—";
+  if (elNeedCustomers) elNeedCustomers.textContent = "—";
+  if (elNeedUnitPrice) elNeedUnitPrice.textContent = "—";
+
+  const label = document.getElementById("needUnitLabel");
+  if (label) label.textContent = "本日 / 次回営業日 必要客単価";
+}
 
   updateRings(sumSales, unitPrice, goalSales, goalUnitPrice);
 }
