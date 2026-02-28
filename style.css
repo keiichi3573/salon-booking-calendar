@@ -609,10 +609,9 @@ body{
 }
 /* 日モーダル：客数チェック表示の余白調整 */
 .salesInputs > #dayFormHint{
-  margin-top: -2px;
+  margin-top: -6px;
   margin-bottom: 2px;
 }
-
 /* 必要ならさらに詰める */
 .dayFormHint{
   padding: 8px 12px;
