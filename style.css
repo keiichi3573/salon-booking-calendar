@@ -607,3 +607,13 @@ body{
   color: #991b1b;
   border: 1px solid #fecaca;
 }
+/* 日モーダル：客数チェック表示の余白調整 */
+.salesInputs > #dayFormHint{
+  margin-top: -2px;
+  margin-bottom: 2px;
+}
+
+/* 必要ならさらに詰める */
+.dayFormHint{
+  padding: 8px 12px;
+}
