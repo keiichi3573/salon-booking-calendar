@@ -8,10 +8,14 @@
 ========================= */
 
 /* ===== Supabase ===== */
-const SUPABASE_URL = "https://ujfgmuhwmaauioeueyep.supabase.co";
-const SUPABASE_ANON_KEY = "sb_publishable_8xbjrHfOxAzaidTzX7S6fA_mxEE0pFD";
-const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const SUPABASE_URL = window.APP_CONFIG?.SUPABASE_URL;
+const SUPABASE_ANON_KEY = window.APP_CONFIG?.SUPABASE_ANON_KEY;
 
+if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
+  throw new Error("Supabase設定が読み込めていません（config.js を確認してください）");
+}
+
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 /* ===== Config ===== */
 const MAX_COUNT = 20;
 const DEFAULT_GOAL_CUSTOMERS = 200;
