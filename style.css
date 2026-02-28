@@ -616,3 +616,14 @@ body{
 .dayFormHint{
   padding: 8px 12px;
 }
+/* 日モーダル：客数チェック表示の位置調整 */
+.salesInputs > #dayFormHint{
+  margin-top: -10px;
+  margin-bottom: 0;
+  padding: 8px 12px;
+}
+
+/* 客数チェック表示の直後の行も少し詰める */
+.salesInputs > #dayFormHint + .fieldRow{
+  margin-top: -6px;
+}
