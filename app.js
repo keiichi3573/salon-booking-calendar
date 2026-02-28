@@ -204,6 +204,8 @@ const daySaveBtn  = document.getElementById("daySaveBtn");
 const dayTitle    = document.getElementById("dayModalTitle");
 const staffInputs = document.getElementById("staffInputs");
 const totalCountDisplay = document.getElementById("totalCountDisplay");
+const daySaveNextBtn = document.getElementById("daySaveNextBtn");
+const dayFormHint = document.getElementById("dayFormHint");
 
 // Hidden select (kept for compatibility)
 const totalCountSelect = document.getElementById("totalCountSelect");
@@ -737,10 +739,46 @@ async function openDayEditor(date){
   if(repeatCustomersSelect) repeatCustomersSelect.value = String(Number(daily?.repeat_customers||0));
 
   renderTotal();
+  updateDayFormHint();
   openModal(dayModal);
 }
 
-async function saveDay(){
+function updateDayFormHint(){
+  if (!dayFormHint) return;
+
+  const total = Number(totalCountDisplay?.textContent || 0);
+  const newCus = Number(newCustomersSelect?.value || 0);
+  const repeatCus = Number(repeatCustomersSelect?.value || 0);
+  const customerTotal = newCus + repeatCus;
+
+  dayFormHint.classList.remove("ok", "ng");
+
+  // 店舗モード（iPad）は売上欄非表示なので案内しない
+  if (isStoreLikeDevice()){
+    dayFormHint.textContent = "予約数のみ入力モードです";
+    return;
+  }
+
+  if (customerTotal === 0){
+    dayFormHint.textContent = "客数を入力してください";
+    return;
+  }
+
+  if (customerTotal > total){
+    dayFormHint.textContent = `客数合計（${customerTotal}名）が予約数（${total}）を超えています`;
+    dayFormHint.classList.add("ng");
+    return;
+  }
+
+  if (customerTotal < total){
+    dayFormHint.textContent = `客数合計 ${customerTotal}名 / 予約数 ${total}（未入力があります）`;
+    return;
+  }
+
+  dayFormHint.textContent = `客数合計 ${customerTotal}名 / 予約数 ${total} で一致しています`;
+  dayFormHint.classList.add("ok");
+}
+async function saveDay(goNext = false){
   if(!editingDayKey) return;
 
   try{
@@ -804,8 +842,30 @@ async function saveDay(){
     }
 
     closeModal(dayModal);
-    await loadAndRender();
+await loadAndRender();
+
+if (goNext){
+  const current = editingDayKey ? new Date(editingDayKey + "T00:00:00") : new Date();
+  const next = new Date(current.getFullYear(), current.getMonth(), current.getDate());
+
+  // 次の営業日を探す
+  for (let i = 0; i < 40; i++){
+    next.setDate(next.getDate() + 1);
+    if (!isClosedDay(next)) break;
+  }
+
+  // 同じ月内ならそのまま開く
+  if (
+    next.getFullYear() === viewDate.getFullYear() &&
+    next.getMonth() === viewDate.getMonth()
+  ){
+    await openDayEditor(next);
+  } else {
     alert("保存しました");
+  }
+} else {
+  alert("保存しました");
+}
   }catch(e){
     console.error(e);
     alert("保存で止まりました: " + (e?.message || e));
@@ -1259,7 +1319,24 @@ staffAddBtn?.addEventListener("click", addStaff);
 pinChangeBtn?.addEventListener("click", changePin);
 
 dayCloseBtn?.addEventListener("click", ()=> closeModal(dayModal));
-daySaveBtn?.addEventListener("click", saveDay);
+daySaveBtn?.addEventListener("click", ()=> saveDay(false));
+daySaveNextBtn?.addEventListener("click", ()=> saveDay(true));
+
+dayModal?.addEventListener("keydown", (e)=>{
+  if (e.key === "Escape"){
+    e.preventDefault();
+    closeModal(dayModal);
+    return;
+  }
+
+  // Ctrl+Enter または Cmd+Enter で保存
+  if ((e.ctrlKey || e.metaKey) && e.key === "Enter"){
+    e.preventDefault();
+    saveDay(false);
+  }
+});
+newCustomersSelect?.addEventListener("change", updateDayFormHint);
+repeatCustomersSelect?.addEventListener("change", updateDayFormHint);
 
 // backdrop close
 document.querySelectorAll('.modalBackdrop[data-close]').forEach(backdrop=>{
