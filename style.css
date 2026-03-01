@@ -627,3 +627,53 @@ body{
 .salesInputs > #dayFormHint + .fieldRow{
   margin-top: -6px;
 }
+/* 右側をカレンダーの縦幅に近づける */
+.topGrid{
+  align-items: stretch;
+}
+
+.rightSide{
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-self: stretch;
+  height: 100%;
+}
+
+/* 今の売上パネル：枠色を少し暖色に */
+.salesPanel{
+  border: 2px solid rgba(179,138,75,.45);
+  background: rgba(255,255,255,.92);
+}
+
+/* 新しい分析パネル：別色 */
+.analysisPanel{
+  border: 2px solid rgba(59,130,246,.28);
+  background: rgba(239,246,255,.78);
+  border-radius: 18px;
+  padding: 14px;
+  box-shadow: 0 10px 30px rgba(0,0,0,.06);
+
+  flex: 1 1 auto;      /* 下パネルを伸ばす */
+  min-height: 260px;   /* 最低高さ */
+  overflow: auto;      /* 項目が増えても見える */
+}
+
+.analysisHead{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  margin-bottom: 8px;
+}
+
+.analysisTitle{
+  font-weight: 900;
+  font-size: 16px;
+  color: #1d4ed8;
+}
+
+/* iPad/店舗モードでは pcOnly が消える想定 */
+.pcOnly{
+  display: block;
+}
