@@ -677,3 +677,11 @@ body{
 .pcOnly{
   display: block;
 }
+/* 右側パネルの順番固定 */
+.rightSide .salesPanel{
+  order: 1;
+}
+
+.rightSide .analysisPanel{
+  order: 2;
+}
