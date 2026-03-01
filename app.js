@@ -643,23 +643,29 @@ if (sameMonth){
   if (label) label.textContent = "本日 / 次回営業日 必要客単価";
 }
   /* ===== 新しい分析項目（PCのみ）===== */
-  
-  const bizTotal = businessDaysInMonth(viewDate);
+  const analysisNow = new Date();
+  const analysisSameMonth =
+    analysisNow.getFullYear() === viewDate.getFullYear() &&
+    analysisNow.getMonth() === viewDate.getMonth();
+
+  const analysisBizTotal = businessDaysInMonth(viewDate);
 
   // 今月なら「今日までの営業日数」、それ以外はその月の営業日総数
-  const elapsedBiz = sameMonth ? businessDaysElapsedInMonth(viewDate) : bizTotal;
+  const analysisElapsedBiz = analysisSameMonth
+    ? businessDaysElapsedInMonth(viewDate)
+    : analysisBizTotal;
 
   // 1日の平均（営業日ベース）
-  const avgDaySales = elapsedBiz > 0 ? Math.floor(sumSales / elapsedBiz) : 0;
-  const avgDayCustomers = elapsedBiz > 0 ? Math.floor(sumCustomers / elapsedBiz) : 0;
+  const avgDaySales = analysisElapsedBiz > 0 ? Math.floor(sumSales / analysisElapsedBiz) : 0;
+  const avgDayCustomers = analysisElapsedBiz > 0 ? Math.floor(sumCustomers / analysisElapsedBiz) : 0;
 
   // 前半・後半の売上合計
   let firstHalfSales = 0;
   let secondHalfSales = 0;
 
-  const lastDay = endOfMonth(viewDate).getDate();
+  const analysisLastDay = endOfMonth(viewDate).getDate();
 
-  for (let day = 1; day <= lastDay; day++){
+  for (let day = 1; day <= analysisLastDay; day++){
     const d = new Date(viewDate.getFullYear(), viewDate.getMonth(), day);
     const key = toDateKey(d);
     const row = bookingsDailyMap.get(key);
@@ -676,14 +682,14 @@ if (sameMonth){
 
   // 前半・後半の営業日数
   const firstHalfBizTotal = businessDaysInRange(viewDate, 1, 15);
-  const secondHalfBizTotal = businessDaysInRange(viewDate, 16, lastDay);
+  const secondHalfBizTotal = businessDaysInRange(viewDate, 16, analysisLastDay);
 
   let firstHalfDiv = firstHalfBizTotal;
   let secondHalfDiv = secondHalfBizTotal;
 
   // 今月表示中は「経過した営業日」で平均を出す
-  if (sameMonth){
-    const todayDate = now.getDate();
+  if (analysisSameMonth){
+    const todayDate = analysisNow.getDate();
 
     if (todayDate <= 15){
       firstHalfDiv = businessDaysInRange(viewDate, 1, todayDate);
@@ -698,8 +704,8 @@ if (sameMonth){
   const secondHalfAvgSales = secondHalfDiv > 0 ? Math.floor(secondHalfSales / secondHalfDiv) : 0;
 
   // 月の予想
-  const projectedSales = avgDaySales * bizTotal;
-  const projectedCustomers = avgDayCustomers * bizTotal;
+  const projectedSales = avgDaySales * analysisBizTotal;
+  const projectedCustomers = avgDayCustomers * analysisBizTotal;
 
   // DOM反映
   if (elAvgDaySales) elAvgDaySales.textContent = avgDaySales ? fmtYen(avgDaySales) : "—";
