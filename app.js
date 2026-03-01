@@ -178,15 +178,24 @@ function openModal(modal){
 
 function closeModal(modal){
   if(!modal) return;
+
   const card = modal.querySelector(".modalCard");
 
-  if(__lastFocusedEl && typeof __lastFocusedEl.focus === "function"){
+  // モーダル内にフォーカスが残っていたら先に外す
+  const active = document.activeElement;
+  if (active && modal.contains(active) && typeof active.blur === "function"){
+    active.blur();
+  }
+
+  // 元の要素へフォーカスを戻す
+  if (__lastFocusedEl && typeof __lastFocusedEl.focus === "function"){
     __lastFocusedEl.focus();
-  }else{
+  } else {
     document.body.focus?.();
   }
 
-  if(card) card.setAttribute("aria-hidden","true");
+  // その後に aria-hidden / 非表示
+  if (card) card.setAttribute("aria-hidden", "true");
   modal.classList.add("hidden");
 }
 
