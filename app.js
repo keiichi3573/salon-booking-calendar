@@ -57,7 +57,13 @@ function isStoreLikeDevice(){
   // iPad / tablet-ish: coarse pointer and <= 1024px
   return window.matchMedia("(pointer: coarse) and (max-width: 1024px)").matches;
 }
+function applyDeviceVisibility(){
+  const storeMode = isStoreLikeDevice();
 
+  document.querySelectorAll(".pcOnly").forEach(el => {
+    el.style.display = storeMode ? "none" : "";
+  });
+}
 /* ===== Closed days =====
   - Every Monday
   - 1st Tuesday
@@ -82,7 +88,20 @@ function businessDaysInMonth(viewDate){
   }
   return count;
 }
+function businessDaysInRange(viewDate, startDay, endDay){
+  const lastDay = endOfMonth(viewDate).getDate();
+  const safeStart = Math.max(1, startDay);
+  const safeEnd = Math.min(lastDay, endDay);
 
+  if (safeEnd < safeStart) return 0;
+
+  let count = 0;
+  for (let day = safeStart; day <= safeEnd; day++){
+    const d = new Date(viewDate.getFullYear(), viewDate.getMonth(), day);
+    if (!isClosedDay(d)) count++;
+  }
+  return count;
+}
 function businessDaysElapsedInMonth(viewDate){
   const now = new Date();
   const sameMonth = now.getFullYear() === viewDate.getFullYear() && now.getMonth() === viewDate.getMonth();
@@ -200,6 +219,15 @@ const elSalesPct = document.getElementById("mSalesPct");
 const elUnitPct  = document.getElementById("mUnitPct");
 const elSalesRing = document.getElementById("mSalesRing");
 const elUnitRing  = document.getElementById("mUnitRing");
+
+const elAvgDaySales = document.getElementById("avgDaySales");
+const elAvgDayCustomers = document.getElementById("avgDayCustomers");
+const elFirstHalfSales = document.getElementById("firstHalfSales");
+const elSecondHalfSales = document.getElementById("secondHalfSales");
+const elFirstHalfAvgSales = document.getElementById("firstHalfAvgSales");
+const elSecondHalfAvgSales = document.getElementById("secondHalfAvgSales");
+const elProjectedSales = document.getElementById("projectedSales");
+const elProjectedCustomers = document.getElementById("projectedCustomers");
 
 // Day modal
 const dayModal = document.getElementById("dayModal");
@@ -614,7 +642,82 @@ if (sameMonth){
   const label = document.getElementById("needUnitLabel");
   if (label) label.textContent = "本日 / 次回営業日 必要客単価";
 }
+  /* ===== 新しい分析項目（PCのみ）===== */
+  const now = new Date();
+  const sameMonth =
+    now.getFullYear() === viewDate.getFullYear() &&
+    now.getMonth() === viewDate.getMonth();
 
+  const bizTotal = businessDaysInMonth(viewDate);
+
+  // 今月なら「今日までの営業日数」、それ以外はその月の営業日総数
+  const elapsedBiz = sameMonth ? businessDaysElapsedInMonth(viewDate) : bizTotal;
+
+  // 1日の平均（営業日ベース）
+  const avgDaySales = elapsedBiz > 0 ? Math.floor(sumSales / elapsedBiz) : 0;
+  const avgDayCustomers = elapsedBiz > 0 ? Math.floor(sumCustomers / elapsedBiz) : 0;
+
+  // 前半・後半の売上合計
+  let firstHalfSales = 0;
+  let secondHalfSales = 0;
+
+  const lastDay = endOfMonth(viewDate).getDate();
+
+  for (let day = 1; day <= lastDay; day++){
+    const d = new Date(viewDate.getFullYear(), viewDate.getMonth(), day);
+    const key = toDateKey(d);
+    const row = bookingsDailyMap.get(key);
+    if (!row) continue;
+
+    const daySales = Number(row.tech_sales || 0) + Number(row.retail_sales || 0);
+
+    if (day <= 15){
+      firstHalfSales += daySales;
+    } else {
+      secondHalfSales += daySales;
+    }
+  }
+
+  // 前半・後半の営業日数
+  const firstHalfBizTotal = businessDaysInRange(viewDate, 1, 15);
+  const secondHalfBizTotal = businessDaysInRange(viewDate, 16, lastDay);
+
+  let firstHalfDiv = firstHalfBizTotal;
+  let secondHalfDiv = secondHalfBizTotal;
+
+  // 今月表示中は「経過した営業日」で平均を出す
+  if (sameMonth){
+    const todayDate = now.getDate();
+
+    if (todayDate <= 15){
+      firstHalfDiv = businessDaysInRange(viewDate, 1, todayDate);
+      secondHalfDiv = 0; // 後半未開始
+    } else {
+      firstHalfDiv = firstHalfBizTotal;
+      secondHalfDiv = businessDaysInRange(viewDate, 16, todayDate);
+    }
+  }
+
+  const firstHalfAvgSales = firstHalfDiv > 0 ? Math.floor(firstHalfSales / firstHalfDiv) : 0;
+  const secondHalfAvgSales = secondHalfDiv > 0 ? Math.floor(secondHalfSales / secondHalfDiv) : 0;
+
+  // 月の予想
+  const projectedSales = avgDaySales * bizTotal;
+  const projectedCustomers = avgDayCustomers * bizTotal;
+
+  // DOM反映
+  if (elAvgDaySales) elAvgDaySales.textContent = avgDaySales ? fmtYen(avgDaySales) : "—";
+  if (elAvgDayCustomers) elAvgDayCustomers.textContent = avgDayCustomers ? (fmtNum(avgDayCustomers) + "名") : "—";
+
+  if (elFirstHalfSales) elFirstHalfSales.textContent = firstHalfSales ? fmtYen(firstHalfSales) : "—";
+  if (elSecondHalfSales) elSecondHalfSales.textContent = secondHalfSales ? fmtYen(secondHalfSales) : "—";
+
+  if (elFirstHalfAvgSales) elFirstHalfAvgSales.textContent = firstHalfAvgSales ? fmtYen(firstHalfAvgSales) : "—";
+  if (elSecondHalfAvgSales) elSecondHalfAvgSales.textContent = secondHalfAvgSales ? fmtYen(secondHalfAvgSales) : "—";
+
+  if (elProjectedSales) elProjectedSales.textContent = projectedSales ? fmtYen(projectedSales) : "—";
+  if (elProjectedCustomers) elProjectedCustomers.textContent = projectedCustomers ? (fmtNum(projectedCustomers) + "名") : "—";
+  
   updateRings(sumSales, unitPrice, goalSales, goalUnitPrice);
 }
 
@@ -1302,6 +1405,7 @@ async function loadAndRender(){
 
   renderCalendar();
   renderSummaryAndPanel();
+  applyDeviceVisibility();
 }
 
 /* ===== Events ===== */
