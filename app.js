@@ -643,11 +643,7 @@ if (sameMonth){
   if (label) label.textContent = "本日 / 次回営業日 必要客単価";
 }
   /* ===== 新しい分析項目（PCのみ）===== */
-  const now = new Date();
-  const sameMonth =
-    now.getFullYear() === viewDate.getFullYear() &&
-    now.getMonth() === viewDate.getMonth();
-
+  
   const bizTotal = businessDaysInMonth(viewDate);
 
   // 今月なら「今日までの営業日数」、それ以外はその月の営業日総数
