@@ -685,3 +685,24 @@ body{
 .rightSide .analysisPanel{
   order: 2;
 }
+/* 右側パネルの並びを強制固定 */
+.rightSide{
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+.rightSide .futureTop{
+  order: 0 !important;
+}
+
+.rightSide .salesPanel{
+  order: 1 !important;
+}
+
+.rightSide .analysisPanel{
+  order: 2 !important;
+}
+
+.rightSide .futureBottom{
+  order: 3 !important;
+}
