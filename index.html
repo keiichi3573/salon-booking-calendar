@@ -53,92 +53,95 @@
       <div class="msItem"><span>客単価</span><b id="mUnitPrice">—</b></div>
     </div>
 
-    <!-- ===== 上段：左=カレンダー / 右=売上 ===== -->
-    <section class="topGrid">
-      <div class="calBody">
-        <div class="calendar" id="calendar"></div>
-        <div id="monthlyTotalBookings" class="monthlyTotal"></div>
-      </div>
-
-      <div class="rightSide">
-        <div class="futureTop">
-          <div class="futureBox">（今後のアップデート用）</div>
-        </div>
-
-        <aside class="salesPanel" aria-label="売上サマリー">
-          <aside class="analysisPanel pcOnly" aria-label="分析パネル">
-  <div class="analysisHead">
-    <div class="analysisTitle">分析</div>
+<!-- ===== 上段：左=カレンダー / 右=売上 ===== -->
+<section class="topGrid">
+  <div class="calBody">
+    <div class="calendar" id="calendar"></div>
+    <div id="monthlyTotalBookings" class="monthlyTotal"></div>
   </div>
 
-  <div class="salesRow"><span>1日の平均売上</span><b id="avgDaySales">—</b></div>
-  <div class="salesRow"><span>1日の平均客数</span><b id="avgDayCustomers">—</b></div>
+  <div class="rightSide">
+    <div class="futureTop">
+      <div class="futureBox">（今後のアップデート用）</div>
+    </div>
 
-  <hr class="salesHr" />
+    <!-- 売上パネル -->
+    <aside class="salesPanel" aria-label="売上サマリー">
+      <div class="salesHead">
+        <div class="salesTitle">売上</div>
 
-  <div class="salesRow"><span>前半売上（1〜15日）</span><b id="firstHalfSales">—</b></div>
-  <div class="salesRow"><span>後半売上（16日〜末）</span><b id="secondHalfSales">—</b></div>
-
-  <div class="salesRow"><span>前半売上の平均</span><b id="firstHalfAvgSales">—</b></div>
-  <div class="salesRow"><span>後半売上の平均</span><b id="secondHalfAvgSales">—</b></div>
-
-  <hr class="salesHr" />
-
-  <div class="salesRow"><span>月の予想売上</span><b id="projectedSales">—</b></div>
-  <div class="salesRow"><span>月の予想客数</span><b id="projectedCustomers">—</b></div>
-</aside>
-          <div class="salesHead">
-            <div class="salesTitle">売上</div>
-
-            <div class="salesGoalInline">
-              <span class="goalLabel">目標</span>
-              <b id="mGoalSalesInline">—</b>
-              <button id="goalEditBtn" class="goalEditBtn" type="button">変更✏</button>
-            </div>
-          </div>
-
-          <div class="ringRow">
-            <div class="ringBlock">
-              <div class="ringLabel">月 達成度</div>
-              <div class="ringProgress" id="mSalesRing" style="--pct:0;--pctCut:0;">
-                <div class="ringInner">
-                  <b id="mSalesPct">—</b>
-                  <div class="ringSub">売上</div>
-                </div>
-              </div>
-            </div>
-
-            <div class="ringBlock">
-              <div class="ringLabel">単価 達成度</div>
-              <div class="ringProgress" id="mUnitRing" style="--pct:0;--pctCut:0;">
-                <div class="ringInner">
-                  <b id="mUnitPct">—</b>
-                  <div class="ringSub">客単価</div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="mDailyGoalLine">
-            <span>営業日割 1日目標</span>
-            <b id="mDailyGoal">—</b>
-          </div>
-
-          <hr class="salesHr" />
-
-          <div class="salesRow"><span>残り営業日あたり必要（売上）</span><b id="needSales">—</b></div>
-          <div class="salesRow"><span>残り営業日あたり必要（客数）</span><b id="needCustomers">—</b></div>
-          <div class="salesRow">
-            <span id="needUnitLabel">次回又は本日 必要客単価</span>
-            <b id="needUnitPrice">—</b>
-          </div>
-        </aside>
-
-        <div class="futureBottom">
-          <div class="futureBox">（空白：今後用）</div>
+        <div class="salesGoalInline">
+          <span class="goalLabel">目標</span>
+          <b id="mGoalSalesInline">—</b>
+          <button id="goalEditBtn" class="goalEditBtn" type="button">変更✏</button>
         </div>
       </div>
-    </section>
+
+      <div class="ringRow">
+        <div class="ringBlock">
+          <div class="ringLabel">月 達成度</div>
+          <div class="ringProgress" id="mSalesRing" style="--pct:0;--pctCut:0;">
+            <div class="ringInner">
+              <b id="mSalesPct">—</b>
+              <div class="ringSub">売上</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="ringBlock">
+          <div class="ringLabel">単価 達成度</div>
+          <div class="ringProgress" id="mUnitRing" style="--pct:0;--pctCut:0;">
+            <div class="ringInner">
+              <b id="mUnitPct">—</b>
+              <div class="ringSub">客単価</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mDailyGoalLine">
+        <span>営業日割 1日目標</span>
+        <b id="mDailyGoal">—</b>
+      </div>
+
+      <hr class="salesHr" />
+
+      <div class="salesRow"><span>残り営業日あたり必要（売上）</span><b id="needSales">—</b></div>
+      <div class="salesRow"><span>残り営業日あたり必要（客数）</span><b id="needCustomers">—</b></div>
+      <div class="salesRow">
+        <span id="needUnitLabel">次回又は本日 必要客単価</span>
+        <b id="needUnitPrice">—</b>
+      </div>
+    </aside>
+
+    <!-- 分析パネル（PCのみ） -->
+    <aside class="analysisPanel pcOnly" aria-label="分析パネル">
+      <div class="analysisHead">
+        <div class="analysisTitle">分析</div>
+      </div>
+
+      <div class="salesRow"><span>1日の平均売上</span><b id="avgDaySales">—</b></div>
+      <div class="salesRow"><span>1日の平均客数</span><b id="avgDayCustomers">—</b></div>
+
+      <hr class="salesHr" />
+
+      <div class="salesRow"><span>前半売上（1〜15日）</span><b id="firstHalfSales">—</b></div>
+      <div class="salesRow"><span>後半売上（16日〜末）</span><b id="secondHalfSales">—</b></div>
+
+      <div class="salesRow"><span>前半売上の平均</span><b id="firstHalfAvgSales">—</b></div>
+      <div class="salesRow"><span>後半売上の平均</span><b id="secondHalfAvgSales">—</b></div>
+
+      <hr class="salesHr" />
+
+      <div class="salesRow"><span>月の予想売上</span><b id="projectedSales">—</b></div>
+      <div class="salesRow"><span>月の予想客数</span><b id="projectedCustomers">—</b></div>
+    </aside>
+
+    <div class="futureBottom">
+      <div class="futureBox">（空白：今後用）</div>
+    </div>
+  </div>
+</section>
 
 <!-- ===== 店舗ボード（左半分だけ使用・右は空白） ===== -->
 <section class="storeBoard" id="storeBoard" aria-label="店舗ボード">
