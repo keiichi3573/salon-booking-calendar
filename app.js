@@ -43,7 +43,21 @@ function fmtNum(n){
   const v = Math.max(0, Math.floor(Number(n || 0)));
   return v.toLocaleString("ja-JP");
 }
+function fmtYen1(n){
+  const v = Number(n || 0);
+  return v.toLocaleString("ja-JP", {
+    minimumFractionDigits: 1,
+    maximumFractionDigits: 1
+  }) + "円";
+}
 
+function fmtNum1(n){
+  const v = Number(n || 0);
+  return v.toLocaleString("ja-JP", {
+    minimumFractionDigits: 1,
+    maximumFractionDigits: 1
+  });
+}
 /* ===== Device mode =====
   - PC: sales inputs visible
   - iPad(store-like): sales inputs hidden
@@ -599,15 +613,15 @@ if (sameMonth){
   const remBiz = remainingBusinessDaysIncludingToday(viewDate);
 
   needSalesPerDay = remBiz > 0 ? Math.ceil(lackSales / remBiz) : 0;
-  needCustomersPerDay = remBiz > 0 ? Math.ceil(lackCustomers / remBiz) : 0;
+  needCustomersPerDay = remBiz > 0 ? (lackCustomers / remBiz) : 0;
 
   if (elNeedSales) {
     elNeedSales.textContent = remBiz ? (fmtYen(needSalesPerDay) + "/日") : "—";
   }
 
-  if (elNeedCustomers) {
-    elNeedCustomers.textContent = remBiz ? (fmtNum(needCustomersPerDay) + "名/日") : "—";
-  }
+if (elNeedCustomers) {
+  elNeedCustomers.textContent = remBiz ? (fmtNum1(needCustomersPerDay) + "名/日") : "—";
+}
 
   // 必要客単価：今日は営業日なら「本日」、休みなら「次回営業日」
   const today = new Date(viewDate.getFullYear(), viewDate.getMonth(), todayDate);
@@ -657,22 +671,50 @@ if (sameMonth){
     analysisNow.getFullYear() === viewDate.getFullYear() &&
     analysisNow.getMonth() === viewDate.getMonth();
 
-  const analysisBizTotal = businessDaysInMonth(viewDate);
+  const analysisMonthBizTotal = businessDaysInMonth(viewDate);
+  const analysisLastDay = endOfMonth(viewDate).getDate();
 
-  // 今月なら「今日までの営業日数」、それ以外はその月の営業日総数
-  const analysisElapsedBiz = analysisSameMonth
-    ? businessDaysElapsedInMonth(viewDate)
-    : analysisBizTotal;
+  // 今日のデータ（今月表示中のみ）
+  let analysisTodaySales = 0;
+  let analysisTodayCustomers = 0;
+  let analysisTodayDate = 0;
+
+  if (analysisSameMonth){
+    analysisTodayDate = analysisNow.getDate();
+    const analysisTodayKey = toDateKey(
+      new Date(viewDate.getFullYear(), viewDate.getMonth(), analysisTodayDate)
+    );
+    const analysisTodayRow = bookingsDailyMap.get(analysisTodayKey);
+
+    analysisTodaySales =
+      Number(analysisTodayRow?.tech_sales || 0) +
+      Number(analysisTodayRow?.retail_sales || 0);
+
+    analysisTodayCustomers =
+      Number(analysisTodayRow?.new_customers || 0) +
+      Number(analysisTodayRow?.repeat_customers || 0);
+  }
 
   // 1日の平均（営業日ベース）
-  const avgDaySales = analysisElapsedBiz > 0 ? Math.floor(sumSales / analysisElapsedBiz) : 0;
-  const avgDayCustomers = analysisElapsedBiz > 0 ? Math.floor(sumCustomers / analysisElapsedBiz) : 0;
+  // 売上：本日の売上が入った時だけ今日を分母に含める
+  // 客数：本日の客数が入った時だけ今日を分母に含める
+  const analysisSalesEndDay = analysisSameMonth
+    ? (analysisTodaySales > 0 ? analysisTodayDate : analysisTodayDate - 1)
+    : analysisLastDay;
+
+  const analysisCustomersEndDay = analysisSameMonth
+    ? (analysisTodayCustomers > 0 ? analysisTodayDate : analysisTodayDate - 1)
+    : analysisLastDay;
+
+  const analysisElapsedBizSales = businessDaysInRange(viewDate, 1, analysisSalesEndDay);
+  const analysisElapsedBizCustomers = businessDaysInRange(viewDate, 1, analysisCustomersEndDay);
+
+  const avgDaySales = analysisElapsedBizSales > 0 ? (sumSales / analysisElapsedBizSales) : 0;
+  const avgDayCustomers = analysisElapsedBizCustomers > 0 ? (sumCustomers / analysisElapsedBizCustomers) : 0;
 
   // 前半・後半の売上合計
   let firstHalfSales = 0;
   let secondHalfSales = 0;
-
-  const analysisLastDay = endOfMonth(viewDate).getDate();
 
   for (let day = 1; day <= analysisLastDay; day++){
     const d = new Date(viewDate.getFullYear(), viewDate.getMonth(), day);
@@ -689,45 +731,46 @@ if (sameMonth){
     }
   }
 
-  // 前半・後半の営業日数
+  // 前半・後半の営業日数（平均用）
   const firstHalfBizTotal = businessDaysInRange(viewDate, 1, 15);
   const secondHalfBizTotal = businessDaysInRange(viewDate, 16, analysisLastDay);
 
   let firstHalfDiv = firstHalfBizTotal;
   let secondHalfDiv = secondHalfBizTotal;
 
-  // 今月表示中は「経過した営業日」で平均を出す
   if (analysisSameMonth){
-    const todayDate = analysisNow.getDate();
-
-    if (todayDate <= 15){
-      firstHalfDiv = businessDaysInRange(viewDate, 1, todayDate);
-      secondHalfDiv = 0; // 後半未開始
+    if (analysisTodayDate <= 15){
+      // 前半の途中
+      const firstHalfEndDay = analysisTodaySales > 0 ? analysisTodayDate : analysisTodayDate - 1;
+      firstHalfDiv = businessDaysInRange(viewDate, 1, firstHalfEndDay);
+      secondHalfDiv = 0;
     } else {
+      // 後半の途中
       firstHalfDiv = firstHalfBizTotal;
-      secondHalfDiv = businessDaysInRange(viewDate, 16, todayDate);
+      const secondHalfEndDay = analysisTodaySales > 0 ? analysisTodayDate : analysisTodayDate - 1;
+      secondHalfDiv = businessDaysInRange(viewDate, 16, secondHalfEndDay);
     }
   }
 
-  const firstHalfAvgSales = firstHalfDiv > 0 ? Math.floor(firstHalfSales / firstHalfDiv) : 0;
-  const secondHalfAvgSales = secondHalfDiv > 0 ? Math.floor(secondHalfSales / secondHalfDiv) : 0;
+  const firstHalfAvgSales = firstHalfDiv > 0 ? (firstHalfSales / firstHalfDiv) : 0;
+  const secondHalfAvgSales = secondHalfDiv > 0 ? (secondHalfSales / secondHalfDiv) : 0;
 
   // 月の予想
-  const projectedSales = avgDaySales * analysisBizTotal;
-  const projectedCustomers = avgDayCustomers * analysisBizTotal;
+  const projectedSales = avgDaySales * analysisMonthBizTotal;
+  const projectedCustomers = avgDayCustomers * analysisMonthBizTotal;
 
-  // DOM反映
-  if (elAvgDaySales) elAvgDaySales.textContent = avgDaySales ? fmtYen(avgDaySales) : "—";
-  if (elAvgDayCustomers) elAvgDayCustomers.textContent = avgDayCustomers ? (fmtNum(avgDayCustomers) + "名") : "—";
+  // DOM反映（分析パネルは小数点第1位まで）
+  if (elAvgDaySales) elAvgDaySales.textContent = avgDaySales ? fmtYen1(avgDaySales) : "—";
+  if (elAvgDayCustomers) elAvgDayCustomers.textContent = avgDayCustomers ? (fmtNum1(avgDayCustomers) + "名") : "—";
 
-  if (elFirstHalfSales) elFirstHalfSales.textContent = firstHalfSales ? fmtYen(firstHalfSales) : "—";
-  if (elSecondHalfSales) elSecondHalfSales.textContent = secondHalfSales ? fmtYen(secondHalfSales) : "—";
+  if (elFirstHalfSales) elFirstHalfSales.textContent = firstHalfSales ? fmtYen1(firstHalfSales) : "—";
+  if (elSecondHalfSales) elSecondHalfSales.textContent = secondHalfSales ? fmtYen1(secondHalfSales) : "—";
 
-  if (elFirstHalfAvgSales) elFirstHalfAvgSales.textContent = firstHalfAvgSales ? fmtYen(firstHalfAvgSales) : "—";
-  if (elSecondHalfAvgSales) elSecondHalfAvgSales.textContent = secondHalfAvgSales ? fmtYen(secondHalfAvgSales) : "—";
+  if (elFirstHalfAvgSales) elFirstHalfAvgSales.textContent = firstHalfAvgSales ? fmtYen1(firstHalfAvgSales) : "—";
+  if (elSecondHalfAvgSales) elSecondHalfAvgSales.textContent = secondHalfAvgSales ? fmtYen1(secondHalfAvgSales) : "—";
 
-  if (elProjectedSales) elProjectedSales.textContent = projectedSales ? fmtYen(projectedSales) : "—";
-  if (elProjectedCustomers) elProjectedCustomers.textContent = projectedCustomers ? (fmtNum(projectedCustomers) + "名") : "—";
+  if (elProjectedSales) elProjectedSales.textContent = projectedSales ? fmtYen1(projectedSales) : "—";
+  if (elProjectedCustomers) elProjectedCustomers.textContent = projectedCustomers ? (fmtNum1(projectedCustomers) + "名") : "—";
   
   updateRings(sumSales, unitPrice, goalSales, goalUnitPrice);
 }
