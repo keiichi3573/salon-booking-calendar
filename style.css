@@ -739,3 +739,12 @@ body{
     display: none !important;
   }
 }
+.salesActionRow {
+  margin-top: 12px;
+  display: flex;
+  justify-content: center;
+}
+
+.salesActionRow .btn {
+  width: 100%;
+}
