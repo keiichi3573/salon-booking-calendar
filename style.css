@@ -706,3 +706,36 @@ body{
 .rightSide .futureBottom{
   order: 3 !important;
 }
+/* ===== ① 分析パネルを店舗ボード右側に移動した時の調整 ===== */
+
+/* boardGridの右側に入っても高さ・幅が馴染むようにする */
+.storeBoard .boardGrid > .analysisPanel {
+  min-width: 0;
+  height: 100%;
+  box-sizing: border-box;
+}
+
+/* もともと右側空白(boardSpacer)が持っていた見た目に寄せる */
+.storeBoard .boardGrid > .analysisPanel.pcOnly {
+  border: 1px dashed #d7dbe3;   /* 空白枠っぽさを残したい場合。不要なら削除OK */
+  border-radius: 16px;
+  background: #fff;
+  padding: 14px;
+}
+
+/* 分析パネル内の見出し余白調整 */
+.storeBoard .analysisHead {
+  margin-bottom: 10px;
+}
+
+/* 店舗ボード内では分析パネルの行間を少し詰める（必要なら） */
+.storeBoard .analysisPanel .salesRow {
+  min-height: 32px;
+}
+
+/* iPad以下は今まで通り非表示 */
+@media (max-width: 1024px) {
+  .storeBoard .analysisPanel.pcOnly {
+    display: none !important;
+  }
+}
