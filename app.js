@@ -1494,20 +1494,20 @@ daySaveBtn?.addEventListener("click", ()=> saveDay(false));
 daySaveNextBtn?.addEventListener("click", ()=> saveDay(true));
 
 // ===== 売上入力モーダル：閉じる（× / 閉じる / 背景） =====
-const salesEntryModal = document.getElementById("salesEntryModal");
-const salesEntryCloseBtn = document.getElementById("salesEntryCloseBtn");
+const salesEntryModalEl = document.getElementById("salesEntryModal");
+const salesEntryCloseBtnEl = document.getElementById("salesEntryCloseBtn");
 
 // ×ボタン
-salesEntryCloseBtn?.addEventListener("click", () => {
-  if (!salesEntryModal) return;
-  closeModal(salesEntryModal);
+salesEntryCloseBtnEl?.addEventListener("click", () => {
+  if (!salesEntryModalEl) return;
+  closeModal(salesEntryModalEl);
 });
 
-// 「閉じる」ボタン＆背景クリック（data-close="salesEntryModal" で閉じる）
+// 「閉じる」ボタン＆背景クリック（data-close="salesEntryModal"）
 document.querySelectorAll('[data-close="salesEntryModal"]').forEach(el => {
   el.addEventListener("click", () => {
-    if (!salesEntryModal) return;
-    closeModal(salesEntryModal);
+    if (!salesEntryModalEl) return;
+    closeModal(salesEntryModalEl);
   });
 });
 
