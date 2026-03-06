@@ -259,7 +259,7 @@
       </div>
 
       <div class="modalFooter">
-        <button id="openSalesEntryFromDayBtn" class="btn" type="button">売上入力</button>
+        <button id="openSalesEntryFromDayBtn" class="btn salesEntryBtn" type="button">売上入力</button>
         <button id="daySaveNextBtn" class="btn" type="button">保存して次の営業日へ</button>
         <button id="daySaveBtn" class="btn primary" type="button">保存</button>
       </div>
@@ -348,6 +348,57 @@
     </div>
   </div>
 
+  <!-- 売上入力モーダル -->
+  <div class="modal hidden" id="salesEntryModal">
+    <div class="modalBackdrop" data-close="salesEntryModal"></div>
+
+    <div class="modalCard" role="dialog" aria-modal="true" aria-hidden="true" tabindex="-1">
+      <div class="modalHeader">
+        <div>
+          <div class="modalTitle" id="salesEntryTitle">売上入力</div>
+          <div class="modalSubTitle" id="salesEntrySubTitle">日付：—</div>
+        </div>
+        <button class="x" id="salesEntryCloseBtn" type="button">✕</button>
+      </div>
+
+      <div class="modalBody">
+        <!-- 日付は日付モーダルから引き継ぐので、ここでは表示のみ（選択はしない） -->
+        <input id="salesEntryDate" type="hidden" />
+
+        <div class="memoBox" id="salesEntrySection">
+          <div class="label">売上入力（税抜）</div>
+
+          <div class="salesInputs">
+            <div class="fieldRow">
+              <label class="fieldLabel">技術売上</label>
+              <input id="salesTechInput" class="fieldInput" type="number" inputmode="numeric" min="0" step="1" placeholder="例：35000" />
+            </div>
+
+            <div class="fieldRow">
+              <label class="fieldLabel">店販売上</label>
+              <input id="salesRetailInput" class="fieldInput" type="number" inputmode="numeric" min="0" step="1" placeholder="例：8000" />
+            </div>
+
+            <div class="fieldRow">
+              <label class="fieldLabel">客数（新規）</label>
+              <select id="salesNewCustomersSelect" class="fieldSelect"></select>
+            </div>
+
+            <div class="fieldRow">
+              <label class="fieldLabel">客数（既存）</label>
+              <select id="salesRepeatCustomersSelect" class="fieldSelect"></select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modalFooter">
+        <button id="salesEntrySaveBtn" class="btn primary" type="button">保存</button>
+        <button class="btn" data-close="salesEntryModal" type="button">閉じる</button>
+      </div>
+    </div>
+  </div>
+    
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 　<script src="config.js"></script>
 　<script src="app.js"></script>
