@@ -268,6 +268,14 @@ const salesEntrySubTitle = document.getElementById("salesEntrySubTitle");
 const salesEntryDateHidden = document.getElementById("salesEntryDate");
 const salesNewCustomersSelect = document.getElementById("salesNewCustomersSelect");
 const salesRepeatCustomersSelect = document.getElementById("salesRepeatCustomersSelect");
+const salesTechInput = document.getElementById("salesTechInput");
+const salesRetailInput = document.getElementById("salesRetailInput");
+const salesNewCustomersSelect = document.getElementById("salesNewCustomersSelect");
+const salesEntrySaveBtn = document.getElementById("salesEntrySaveBtn");
+
+salesEntrySaveBtn?.addEventListener("click", () => {
+  saveSalesOnly();
+});
 
 // Hidden select (kept for compatibility)
 const totalCountSelect = document.getElementById("totalCountSelect");
@@ -1047,6 +1055,43 @@ if (goNext){
     daySaveBtn.disabled = false;
     daySaveBtn.textContent = "保存";
   }
+}
+async function saveSalesOnly(){
+  const dateStr = document.getElementById("salesEntryDate")?.value?.trim();
+  if (!dateStr) return;
+
+  const tech = Number(salesTechInput?.value || 0);
+  const retail = Number(salesRetailInput?.value || 0);
+  const newCus = Number(salesNewCustomersSelect?.value || 0);
+  const repeatCus = Number(salesRepeatCustomersSelect?.value || 0);
+
+  // Supabase保存（既存の daily テーブル/保存形式に合わせる）
+  // ※ここはあなたの既存saveDayの保存先に合わせる必要があります。
+  // 典型例：daily テーブルに date(キー) で upsert
+  const payload = {
+    date: dateStr,
+    tech_sales: tech,
+    retail_sales: retail,
+    new_customers: newCus,
+    repeat_customers: repeatCus,
+  };
+
+  const { error } = await supabase
+    .from("daily")
+    .upsert(payload, { onConflict: "date" });
+
+  if (error){
+    console.error(error);
+    alert("保存に失敗しました");
+    return;
+  }
+
+  // 画面反映（あなたの既存更新関数に合わせる）
+  await sync();                 // すでにあるなら
+  renderSummaryAndPanel?.();    // すでにあるなら
+
+  // 閉じる
+  closeModal(document.getElementById("salesEntryModal"));
 }
 
 /* ===== CSV ===== */
