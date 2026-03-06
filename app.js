@@ -270,7 +270,6 @@ const salesNewCustomersSelect = document.getElementById("salesNewCustomersSelect
 const salesRepeatCustomersSelect = document.getElementById("salesRepeatCustomersSelect");
 const salesTechInput = document.getElementById("salesTechInput");
 const salesRetailInput = document.getElementById("salesRetailInput");
-const salesNewCustomersSelect = document.getElementById("salesNewCustomersSelect");
 const salesEntrySaveBtn = document.getElementById("salesEntrySaveBtn");
 
 salesEntrySaveBtn?.addEventListener("click", () => {
