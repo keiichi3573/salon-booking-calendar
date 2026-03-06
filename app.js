@@ -264,6 +264,10 @@ const dayFormHint = document.getElementById("dayFormHint");
 const openSalesEntryFromDayBtn = document.getElementById("openSalesEntryFromDayBtn");
 const salesEntryModal = document.getElementById("salesEntryModal");
 const salesEntryDateSelect = document.getElementById("salesEntryDateSelect");
+const salesEntrySubTitle = document.getElementById("salesEntrySubTitle");
+const salesEntryDateHidden = document.getElementById("salesEntryDate");
+const salesNewCustomersSelect = document.getElementById("salesNewCustomersSelect");
+const salesRepeatCustomersSelect = document.getElementById("salesRepeatCustomersSelect");
 
 // Hidden select (kept for compatibility)
 const totalCountSelect = document.getElementById("totalCountSelect");
@@ -1515,14 +1519,26 @@ openSalesEntryFromDayBtn?.addEventListener("click", () => {
   const dateStr = dayModal?.dataset?.date;
   if (!dateStr) return;
 
-  // 売上入力モーダルの日付を合わせる（セレクトを残す場合）
-  if (salesEntryDateSelect) {
-    salesEntryDateSelect.value = dateStr;
-  }
+  // 日付表示＆保持（売上入力モーダル側）
+  const salesEntrySubTitleEl = document.getElementById("salesEntrySubTitle");
+  const salesEntryDateHiddenEl = document.getElementById("salesEntryDate");
+
+  if (salesEntrySubTitleEl) salesEntrySubTitleEl.textContent = `日付：${dateStr}`;
+  if (salesEntryDateHiddenEl) salesEntryDateHiddenEl.value = dateStr;
+
+  // 新規/既存セレクト初期化（0〜MAX）
+  const salesNewCustomersSelectEl = document.getElementById("salesNewCustomersSelect");
+  const salesRepeatCustomersSelectEl = document.getElementById("salesRepeatCustomersSelect");
+
+  fill0toMaxSelect(salesNewCustomersSelectEl, MAX_COUNT);
+  fill0toMaxSelect(salesRepeatCustomersSelectEl, MAX_COUNT);
+
+  if (salesNewCustomersSelectEl && !salesNewCustomersSelectEl.value) salesNewCustomersSelectEl.value = "0";
+  if (salesRepeatCustomersSelectEl && !salesRepeatCustomersSelectEl.value) salesRepeatCustomersSelectEl.value = "0";
 
   // 日付モーダルを閉じて、売上入力モーダルを開く
   closeModal(dayModal);
-  openModal(salesEntryModal);
+  openModal(document.getElementById("salesEntryModal"));
 });
 
 dayModal?.addEventListener("keydown", (e)=>{
