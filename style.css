@@ -760,18 +760,20 @@ body{
   border: none;
 }
 
-/* フッターボタンの並び調整（売上入力を上段、保存系を下段） */
 #dayModal .modalFooter{
   display: flex;
   gap: 10px;
   flex-wrap: wrap;
 }
 
-#dayModal .modalFooter .salesEntryBtn{
-  flex: 0 0 100%;
-}
-
+/* 保存系は横並び */
 #dayModal #daySaveNextBtn,
 #dayModal #daySaveBtn{
   flex: 1 1 200px;
+}
+
+/* 売上入力は“最後に100%幅” */
+#dayModal .modalFooter .salesEntryBtn{
+  flex: 0 0 100%;
+  order: 99;
 }
