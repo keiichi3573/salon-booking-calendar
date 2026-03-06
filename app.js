@@ -261,6 +261,9 @@ const staffInputs = document.getElementById("staffInputs");
 const totalCountDisplay = document.getElementById("totalCountDisplay");
 const daySaveNextBtn = document.getElementById("daySaveNextBtn");
 const dayFormHint = document.getElementById("dayFormHint");
+const openSalesEntryFromDayBtn = document.getElementById("openSalesEntryFromDayBtn");
+const salesEntryModal = document.getElementById("salesEntryModal");
+const salesEntryDateSelect = document.getElementById("salesEntryDateSelect");
 
 // Hidden select (kept for compatibility)
 const totalCountSelect = document.getElementById("totalCountSelect");
@@ -901,6 +904,10 @@ async function openDayEditor(date){
 
   renderTotal();
   updateDayFormHint();
+
+  // ★追加：dayModalTitle の表示文字列を日付キーとして保持
+dayModal.dataset.date = (dayModalTitle?.textContent || "").trim();
+  
   openModal(dayModal);
 }
 
@@ -1485,6 +1492,20 @@ pinChangeBtn?.addEventListener("click", changePin);
 dayCloseBtn?.addEventListener("click", ()=> closeModal(dayModal));
 daySaveBtn?.addEventListener("click", ()=> saveDay(false));
 daySaveNextBtn?.addEventListener("click", ()=> saveDay(true));
+
+openSalesEntryFromDayBtn?.addEventListener("click", () => {
+  const dateStr = dayModal?.dataset?.date;
+  if (!dateStr) return;
+
+  // 売上入力モーダルの日付を合わせる（セレクトを残す場合）
+  if (salesEntryDateSelect) {
+    salesEntryDateSelect.value = dateStr;
+  }
+
+  // 日付モーダルを閉じて、売上入力モーダルを開く
+  closeModal(dayModal);
+  openModal(salesEntryModal);
+});
 
 dayModal?.addEventListener("keydown", (e)=>{
   if (e.key === "Escape"){
