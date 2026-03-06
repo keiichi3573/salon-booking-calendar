@@ -1056,6 +1056,42 @@ if (goNext){
   }
 }
 async function saveSalesOnly(){
+  try{
+    const dayKey = document.getElementById("salesEntryDate")?.value?.trim();
+    if (!dayKey) {
+      alert("日付が取得できません");
+      return;
+    }
+
+    const tech = Number(document.getElementById("salesTechInput")?.value || 0);
+    const retail = Number(document.getElementById("salesRetailInput")?.value || 0);
+    const nCus = Number(document.getElementById("salesNewCustomersSelect")?.value || 0);
+    const rCus = Number(document.getElementById("salesRepeatCustomersSelect")?.value || 0);
+
+    const total = nCus + rCus;
+
+    const payload = {
+      day: dayKey,
+      total,
+      tech_sales: tech,
+      retail_sales: retail,
+      new_customers: nCus,
+      repeat_customers: rCus,
+      updated_by: "pc"
+    };
+
+    const r2 = await sb.from("bookings_daily").upsert([payload], { onConflict: "day" });
+    if (r2.error) throw r2.error;
+
+    closeModal(document.getElementById("salesEntryModal"));
+    await loadAndRender();
+
+  }catch(err){
+    console.error(err);
+    alert("保存に失敗しました");
+  }
+}
+async function saveSalesOnly(){
   const dateStr = document.getElementById("salesEntryDate")?.value?.trim();
   if (!dateStr) return;
 
@@ -1558,7 +1594,11 @@ document.querySelectorAll('[data-close="salesEntryModal"]').forEach(el => {
     closeModal(salesEntryModalEl);
   });
 });
-
+// ===== 売上入力モーダル：保存ボタン =====
+const salesEntrySaveBtnEl = document.getElementById("salesEntrySaveBtn");
+salesEntrySaveBtnEl?.addEventListener("click", () => {
+  saveSalesOnly();
+});
 openSalesEntryFromDayBtn?.addEventListener("click", () => {
   const dateStr = dayModal?.dataset?.date;
   if (!dateStr) return;
