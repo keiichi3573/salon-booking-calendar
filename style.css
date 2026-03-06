@@ -748,3 +748,30 @@ body{
 .salesActionRow .btn {
   width: 100%;
 }
+/* 日付モーダル内：売上入力ボタンを目立たせる */
+.salesEntryBtn{
+  width: 100%;
+  padding: 14px 16px;
+  font-size: 18px;
+  font-weight: 800;
+  border-radius: 14px;
+  background: #ffb000; /* 目立つ色（好みで変更OK） */
+  color: #111;
+  border: none;
+}
+
+/* フッターボタンの並び調整（売上入力を上段、保存系を下段） */
+#dayModal .modalFooter{
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+#dayModal .modalFooter .salesEntryBtn{
+  flex: 0 0 100%;
+}
+
+#dayModal #daySaveNextBtn,
+#dayModal #daySaveBtn{
+  flex: 1 1 200px;
+}
