@@ -1649,7 +1649,7 @@ openSalesEntryFromDayBtn?.addEventListener("click", () => {
 
   // 日付モーダルを閉じて、売上入力モーダルを開く
   closeModal(dayModal);
-  renderSalesStaffCards(staffRows);
+  renderSalesStaffCards(editingStaffRows || []);
   openModal(document.getElementById("salesEntryModal"));
 });
 
