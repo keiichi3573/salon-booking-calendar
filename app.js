@@ -270,6 +270,7 @@ const salesNewCustomersSelect = document.getElementById("salesNewCustomersSelect
 const salesRepeatCustomersSelect = document.getElementById("salesRepeatCustomersSelect");
 const salesTechInput = document.getElementById("salesTechInput");
 const salesRetailInput = document.getElementById("salesRetailInput");
+const salesStaffInputs = document.getElementById("salesStaffInputs");
 
 
 // Hidden select (kept for compatibility)
@@ -319,6 +320,7 @@ let monthGoalUnitPrice = DEFAULT_GOAL_UNIT_PRICE;
 let editingDayKey = null;
 let editingStaffRows = [];
 let editingStaffCountMap = new Map();
+let editingStaffSalesMap = new Map(); // staff_id -> { tech, retail, customers, menus? }
 
 /* ===== Data access ===== */
 async function loadGoals(monthKey){
@@ -784,6 +786,72 @@ if (elProjectedCustomers) elProjectedCustomers.textContent = projectedCustomers 
   
   updateRings(sumSales, unitPrice, goalSales, goalUnitPrice);
 }
+
+function renderSalesStaffCards(staffRows){
+  const salesStaffInputs = document.getElementById("salesStaffInputs");
+  if(!salesStaffInputs) return;
+
+  salesStaffInputs.innerHTML = "";
+
+  const makeSalesCard = (s) => {
+    const card = document.createElement("div");
+    card.className = "staffCard";
+    card.dataset.staff = String(s.id);
+
+    const top = document.createElement("div");
+    top.className = "staffCardTop";
+
+    const name = document.createElement("div");
+    name.className = "staffCardName";
+    name.textContent = s.name;
+
+    top.appendChild(name);
+    card.appendChild(top);
+
+    // 初期値（無ければ0）
+    const cur = editingStaffSalesMap.get(s.id) || { tech: 0, retail: 0, customers: 0 };
+    editingStaffSalesMap.set(s.id, cur);
+
+    const wrap = document.createElement("div");
+    wrap.className = "salesInputs";
+
+    const mkRow = (labelText, initial, onChange) => {
+      const row = document.createElement("div");
+      row.className = "fieldRow";
+
+      const label = document.createElement("label");
+      label.className = "fieldLabel";
+      label.textContent = labelText;
+
+      const input = document.createElement("input");
+      input.className = "fieldInput";
+      input.type = "number";
+      input.inputMode = "numeric";
+      input.min = "0";
+      input.step = "1";
+      input.value = String(Number(initial || 0));
+
+      input.addEventListener("input", () => {
+        const v = Math.max(0, Number(input.value || 0));
+        onChange(v);
+      });
+
+      row.appendChild(label);
+      row.appendChild(input);
+      return row;
+    };
+
+    wrap.appendChild(mkRow("技術売上", cur.tech, (v)=>{ cur.tech = v; }));
+    wrap.appendChild(mkRow("店販売上", cur.retail, (v)=>{ cur.retail = v; }));
+    wrap.appendChild(mkRow("客数（合計）", cur.customers, (v)=>{ cur.customers = v; }));
+
+    card.appendChild(wrap);
+    return card;
+  };
+
+  staffRows.forEach(s => salesStaffInputs.appendChild(makeSalesCard(s)));
+}
+
 
 /* ===== Day Editor ===== */
 function fill0toMaxSelect(sel, max){
@@ -1581,6 +1649,7 @@ openSalesEntryFromDayBtn?.addEventListener("click", () => {
 
   // 日付モーダルを閉じて、売上入力モーダルを開く
   closeModal(dayModal);
+  renderSalesStaffCards(staffRows);
   openModal(document.getElementById("salesEntryModal"));
 });
 
