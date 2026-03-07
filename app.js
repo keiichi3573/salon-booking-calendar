@@ -910,12 +910,12 @@ async function openDayEditor(date){
   if(repeatCustomersSelect) repeatCustomersSelect.value = String(Number(daily?.repeat_customers||0));
 
   renderTotal();
-  updateDayFormHint();
+updateDayFormHint();
 
-  // ★追加：dayModalTitle の表示文字列を日付キーとして保持
-dayModal.dataset.date = (dayModalTitle?.textContent || "").trim();
-  
-  openModal(dayModal);
+// ★追加：売上入力に渡す日付キーは editingDayKey を使う（YYYY-MM-DDで確実）
+dayModal.dataset.date = editingDayKey;
+
+openModal(dayModal);
 }
 
 function updateDayFormHint(){
@@ -1082,10 +1082,10 @@ async function saveSalesOnly(){
     closeModal(document.getElementById("salesEntryModal"));
     await loadAndRender();
 
-  }catch(err){
-    console.error(err);
-    alert("保存に失敗しました");
-  }
+ }catch(err){
+  console.error(err);
+  alert("保存に失敗しました: " + (err?.message || JSON.stringify(err)));
+}
 }
 
 /* ===== CSV ===== */
