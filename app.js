@@ -1185,33 +1185,69 @@ async function saveSalesOnly(){
       return;
     }
 
-    const tech = Number(document.getElementById("salesTechInput")?.value || 0);
-    const retail = Number(document.getElementById("salesRetailInput")?.value || 0);
-    const nCus = Number(document.getElementById("salesNewCustomersSelect")?.value || 0);
-    const rCus = Number(document.getElementById("salesRepeatCustomersSelect")?.value || 0);
+    // 店舗合計の新規（スタッフ別では持たない）
+    const newCus = Number(document.getElementById("salesNewCustomersSelect")?.value || 0);
 
-    const total = nCus + rCus;
+    // 1) スタッフ別 payloads を作る（day × staff）
+    const staffList = (editingStaffRows || []);
+    const staffPayloads = staffList.map(s => {
+      const v = editingStaffSalesMap.get(s.id) || { tech: 0, retail: 0, customers: 0 };
+      return {
+        day: dayKey,
+        staff_id: s.id,
+        staff_name: s.name,
+        tech_sales: Math.round(Number(v.tech || 0)),
+        retail_sales: Math.round(Number(v.retail || 0)),
+        customers: Math.round(Number(v.customers || 0)),
+        updated_by: "pc"
+      };
+    });
 
-    const payload = {
+    // 2) スタッフ別テーブルへ保存（複数行 upsert）
+    const rStaff = await sb
+      .from("sales_staff_daily")
+      .upsert(staffPayloads, { onConflict: "day,staff_id" });
+
+    if (rStaff.error) throw rStaff.error;
+
+    // 3) 合計を集計して bookings_daily を更新（表示・分析は従来通り）
+    let sumTech = 0, sumRetail = 0, sumCustomers = 0;
+    for (const p of staffPayloads){
+      sumTech += Number(p.tech_sales || 0);
+      sumRetail += Number(p.retail_sales || 0);
+      sumCustomers += Number(p.customers || 0);
+    }
+
+    const repeatCus = Math.max(0, sumCustomers - newCus);
+
+    // 予約数 total は既存値を維持（予約入力は日付モーダル側が正）
+    const prev = bookingsDailyMap.get(dayKey);
+    const totalBookings = Number(prev?.total || 0);
+
+    const payloadDaily = {
       day: dayKey,
-      total,
-      tech_sales: tech,
-      retail_sales: retail,
-      new_customers: nCus,
-      repeat_customers: rCus,
+      total: totalBookings,
+      tech_sales: sumTech,
+      retail_sales: sumRetail,
+      new_customers: newCus,
+      repeat_customers: repeatCus,
       updated_by: "pc"
     };
 
-    const r2 = await sb.from("bookings_daily").upsert([payload], { onConflict: "day" });
-    if (r2.error) throw r2.error;
+    const rDaily = await sb
+      .from("bookings_daily")
+      .upsert([payloadDaily], { onConflict: "day" });
+
+    if (rDaily.error) throw rDaily.error;
 
     closeModal(document.getElementById("salesEntryModal"));
     await loadAndRender();
+    alert("保存しました");
 
- }catch(err){
-  console.error(err);
-  alert("保存に失敗しました: " + (err?.message || JSON.stringify(err)));
-}
+  }catch(err){
+    console.error(err);
+    alert("保存に失敗しました: " + (err?.message || JSON.stringify(err)));
+  }
 }
 
 /* ===== CSV ===== */
