@@ -769,18 +769,18 @@ if (elNeedCustomers) {
   const projectedSales = avgDaySales * analysisMonthBizTotal;
   const projectedCustomers = avgDayCustomers * analysisMonthBizTotal;
 
-  // DOM反映（分析パネルは小数点第1位まで）
-  if (elAvgDaySales) elAvgDaySales.textContent = avgDaySales ? fmtYen1(avgDaySales) : "—";
-  if (elAvgDayCustomers) elAvgDayCustomers.textContent = avgDayCustomers ? (fmtNum1(avgDayCustomers) + "名") : "—";
+ // DOM反映（分析パネル）※売上は小数点なし、客数は小数第1位
+if (elAvgDaySales) elAvgDaySales.textContent = avgDaySales ? fmtYen(Math.round(avgDaySales)) : "—";
+if (elAvgDayCustomers) elAvgDayCustomers.textContent = avgDayCustomers ? (fmtNum1(avgDayCustomers) + "名") : "—";
 
-  if (elFirstHalfSales) elFirstHalfSales.textContent = firstHalfSales ? fmtYen1(firstHalfSales) : "—";
-  if (elSecondHalfSales) elSecondHalfSales.textContent = secondHalfSales ? fmtYen1(secondHalfSales) : "—";
+if (elFirstHalfSales) elFirstHalfSales.textContent = firstHalfSales ? fmtYen(Math.round(firstHalfSales)) : "—";
+if (elSecondHalfSales) elSecondHalfSales.textContent = secondHalfSales ? fmtYen(Math.round(secondHalfSales)) : "—";
 
-  if (elFirstHalfAvgSales) elFirstHalfAvgSales.textContent = firstHalfAvgSales ? fmtYen1(firstHalfAvgSales) : "—";
-  if (elSecondHalfAvgSales) elSecondHalfAvgSales.textContent = secondHalfAvgSales ? fmtYen1(secondHalfAvgSales) : "—";
+if (elFirstHalfAvgSales) elFirstHalfAvgSales.textContent = firstHalfAvgSales ? fmtYen(Math.round(firstHalfAvgSales)) : "—";
+if (elSecondHalfAvgSales) elSecondHalfAvgSales.textContent = secondHalfAvgSales ? fmtYen(Math.round(secondHalfAvgSales)) : "—";
 
-  if (elProjectedSales) elProjectedSales.textContent = projectedSales ? fmtYen1(projectedSales) : "—";
-  if (elProjectedCustomers) elProjectedCustomers.textContent = projectedCustomers ? (fmtNum1(projectedCustomers) + "名") : "—";
+if (elProjectedSales) elProjectedSales.textContent = projectedSales ? fmtYen(Math.round(projectedSales)) : "—";
+if (elProjectedCustomers) elProjectedCustomers.textContent = projectedCustomers ? (fmtNum1(projectedCustomers) + "名") : "—";
   
   updateRings(sumSales, unitPrice, goalSales, goalUnitPrice);
 }
