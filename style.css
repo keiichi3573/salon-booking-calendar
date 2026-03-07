@@ -777,3 +777,36 @@ body{
   flex: 0 0 100%;
   order: 99;
 }
+/* スタッフ別分析（分析パネル内の下部） */
+.staffAnalysisBox{
+  display: grid;
+  gap: 10px;
+}
+
+.staffBlock{
+  border: 1px solid rgba(0,0,0,0.08);
+  border-radius: 12px;
+  padding: 10px;
+  background: #fff;
+}
+
+.staffBlockHead{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin-bottom: 6px;
+}
+
+.staffName{
+  font-weight: 800;
+}
+
+.staffMini{
+  font-size: 12px;
+  opacity: 0.7;
+}
+
+.staffRows{
+  display: grid;
+  gap: 6px;
+}
