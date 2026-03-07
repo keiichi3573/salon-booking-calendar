@@ -315,6 +315,7 @@ let monthStaffs = [];
 
 let monthGoalCustomers = DEFAULT_GOAL_CUSTOMERS;
 let monthGoalUnitPrice = DEFAULT_GOAL_UNIT_PRICE;
+let monthStaffSalesMap = new Map(); // staff_name -> { tech, retail, customers }
 
 // day editor state
 let editingDayKey = null;
@@ -783,6 +784,9 @@ if (elSecondHalfAvgSales) elSecondHalfAvgSales.textContent = secondHalfAvgSales 
 
 if (elProjectedSales) elProjectedSales.textContent = projectedSales ? fmtYen(Math.round(projectedSales)) : "—";
 if (elProjectedCustomers) elProjectedCustomers.textContent = projectedCustomers ? (fmtNum1(projectedCustomers) + "名") : "—";
+
+  // ★追加：スタッフ別（月合計）枠の表示
+renderStaffAnalysisPlaceholder();
   
   updateRings(sumSales, unitPrice, goalSales, goalUnitPrice);
 }
@@ -852,6 +856,60 @@ function renderSalesStaffCards(staffRows){
   staffRows.forEach(s => salesStaffInputs.appendChild(makeSalesCard(s)));
 }
 
+function renderStaffAnalysisPlaceholder(){
+  const box = document.getElementById("staffAnalysisBox");
+  if(!box) return;
+
+  const order = ["北村","山崎","竹内"];
+  box.innerHTML = "";
+
+  const makeRow = (label, value) => {
+    const row = document.createElement("div");
+    row.className = "salesRow";
+    const s = document.createElement("span");
+    s.textContent = label;
+    const b = document.createElement("b");
+    b.textContent = value;
+    row.appendChild(s);
+    row.appendChild(b);
+    return row;
+  };
+
+  order.forEach(name => {
+    const block = document.createElement("div");
+    block.className = "staffBlock";
+
+    const head = document.createElement("div");
+    head.className = "staffBlockHead";
+
+    const n = document.createElement("div");
+    n.className = "staffName";
+    n.textContent = name;
+
+    const mini = document.createElement("div");
+    mini.className = "staffMini";
+    mini.textContent = "月合計";
+
+    head.appendChild(n);
+    head.appendChild(mini);
+    block.appendChild(head);
+
+    const rows = document.createElement("div");
+    rows.className = "staffRows";
+
+    rows.appendChild(makeRow("技術売上", "—"));
+    rows.appendChild(makeRow("店販売上", "—"));
+    rows.appendChild(makeRow("客数", "—"));
+
+    if (name === "北村" || name === "山崎"){
+      rows.appendChild(makeRow("客単価", "—"));
+      rows.appendChild(makeRow("メニュー比率", "—")); // 今後追加予定
+    }
+
+    block.appendChild(rows);
+    box.appendChild(block);
+  });
+}
 
 /* ===== Day Editor ===== */
 function fill0toMaxSelect(sel, max){
