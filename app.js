@@ -2007,6 +2007,20 @@ const salesEntrySaveBtnEl = document.getElementById("salesEntrySaveBtn");
 salesEntrySaveBtnEl?.addEventListener("click", () => {
   saveSalesOnly();
 });
+
+// ★ここに追加：クリアボタン
+const newSourceClearBtn = document.getElementById("newSourceClearBtn");
+newSourceClearBtn?.addEventListener("click", () => {
+  editingNewSourceMap = new Map([
+    ["storefront", 0],
+    ["referral", 0],
+    ["hotpepper", 0],
+    ["web", 0],
+    ["ticket", 0],
+  ]);
+  renderNewSourceCards();
+});
+
 openSalesEntryFromDayBtn?.addEventListener("click", async () => {
   const dateStr = dayModal?.dataset?.date;
   if (!dateStr) return;
