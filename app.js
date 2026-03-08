@@ -322,6 +322,8 @@ let editingDayKey = null;
 let editingStaffRows = [];
 let editingStaffCountMap = new Map();
 let editingStaffSalesMap = new Map(); // staff_id -> { tech, retail, customers, menus? }
+let editingNewSourceMap = new Map(); 
+// key: storefront/referral/hotpepper/web/ticket  value: number
 
 /* ===== Data access ===== */
 async function loadGoals(monthKey){
@@ -856,6 +858,101 @@ editingStaffSalesMap.set(String(s.id), cur);
   };
 
   staffRows.forEach(s => salesStaffInputs.appendChild(makeSalesCard(s)));
+}
+
+function renderNewSourceCards(){
+  const wrap = document.getElementById("newSourceInputs");
+  if(!wrap) return;
+
+  wrap.innerHTML = "";
+
+  const sources = [
+    { key:"storefront", label:"店頭" },
+    { key:"referral", label:"紹介" },
+    { key:"hotpepper", label:"ホットペッパー" },
+    { key:"web", label:"ネット（HP/SNS等）" },
+    { key:"ticket", label:"チケット" },
+  ];
+
+  const makeCard = (item) => {
+    const card = document.createElement("div");
+    card.className = "staffCard";
+    card.dataset.source = item.key;
+
+    const top = document.createElement("div");
+    top.className = "staffCardTop";
+
+    const name = document.createElement("div");
+    name.className = "staffCardName";
+    name.textContent = item.label;
+
+    const small = document.createElement("div");
+    small.className = "staffCardCount";
+
+    top.appendChild(name);
+    top.appendChild(small);
+
+    const stepper = document.createElement("div");
+    stepper.className = "stepper";
+
+    const minus = document.createElement("button");
+    minus.type = "button";
+    minus.className = "stepBtn";
+    minus.textContent = "−";
+
+    const val = document.createElement("div");
+    val.className = "stepValue";
+
+    const plus = document.createElement("button");
+    plus.type = "button";
+    plus.className = "stepBtn";
+    plus.textContent = "＋";
+
+    const sync = () => {
+      const v = Number(editingNewSourceMap.get(item.key) || 0);
+      minus.disabled = (v <= 0);
+      small.textContent = String(v);
+      val.textContent = String(v);
+    };
+
+    minus.addEventListener("click", ()=>{
+      const v = Number(editingNewSourceMap.get(item.key) || 0);
+      editingNewSourceMap.set(item.key, Math.max(0, v - 1));
+      sync();
+    });
+
+    plus.addEventListener("click", ()=>{
+      const v = Number(editingNewSourceMap.get(item.key) || 0);
+      editingNewSourceMap.set(item.key, v + 1);
+      sync();
+    });
+
+    stepper.appendChild(minus);
+    stepper.appendChild(val);
+    stepper.appendChild(plus);
+
+    card.appendChild(top);
+    card.appendChild(stepper);
+
+    sync();
+    return card;
+  };
+
+  sources.forEach(s => wrap.appendChild(makeCard(s)));
+}
+
+function getNewSourcesObj(){
+  return {
+    storefront: Number(editingNewSourceMap.get("storefront") || 0),
+    referral: Number(editingNewSourceMap.get("referral") || 0),
+    hotpepper: Number(editingNewSourceMap.get("hotpepper") || 0),
+    web: Number(editingNewSourceMap.get("web") || 0),
+    ticket: Number(editingNewSourceMap.get("ticket") || 0),
+  };
+}
+
+function sumNewSources(obj){
+  return Number(obj.storefront||0) + Number(obj.referral||0) + Number(obj.hotpepper||0) + Number(obj.web||0) + Number(obj.ticket||0);
 }
 
 async function loadStaffSalesForMonth(){
@@ -1906,6 +2003,11 @@ openSalesEntryFromDayBtn?.addEventListener("click", async () => {
 
   // ★描画（読み込んだ値が各スタッフカードに反映される）
   renderSalesStaffCards(editingStaffRows || []);
+  // 新規経路：保存済みを復元して描画
+const row = bookingsDailyMap.get(dateStr);
+const savedSources = row?.new_sources || {};
+editingNewSourceMap = new Map(Object.entries(savedSources));
+renderNewSourceCards();
 
   // 日付モーダルを閉じて、売上入力モーダルを開く
   closeModal(dayModal);
