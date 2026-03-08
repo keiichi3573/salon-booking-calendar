@@ -1433,8 +1433,10 @@ async function saveSalesOnly(){
       return;
     }
 
+    const newSources = getNewSourcesObj();
+const newCus = sumNewSources(newSources);
+    
     // 店舗合計の新規（スタッフ別では持たない）
-    const newCus = Number(document.getElementById("salesNewCustomersSelect")?.value || 0);
 
     // 1) スタッフ別 payloads を作る（day × staff）
     const staffList = (editingStaffRows || []);
@@ -1473,14 +1475,15 @@ async function saveSalesOnly(){
     const totalBookings = Number(prev?.total || 0);
 
     const payloadDaily = {
-      day: dayKey,
-      total: totalBookings,
-      tech_sales: sumTech,
-      retail_sales: sumRetail,
-      new_customers: newCus,
-      repeat_customers: repeatCus,
-      updated_by: "pc"
-    };
+  day: dayKey,
+  total: totalBookings,
+  tech_sales: sumTech,
+  retail_sales: sumRetail,
+  new_customers: newCus,      // ★ここを newCus に
+  repeat_customers: repeatCus,
+  new_sources: newSources,    // ★これを追加
+  updated_by: "pc"
+};
 
     const rDaily = await sb
       .from("bookings_daily")
