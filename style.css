@@ -810,3 +810,14 @@ body{
   display: grid;
   gap: 6px;
 }
+/* 売上パネル：新規経路表示の文字崩れ対策 */
+.salesPanel .sourceRow span{
+  white-space: nowrap;     /* 1文字改行を防ぐ */
+  word-break: keep-all;    /* break-all を上書き */
+  overflow: hidden;
+  text-overflow: ellipsis; /* どうしても長い場合は…にする */
+}
+
+.salesPanel .sourceRow b{
+  white-space: nowrap;
+}
