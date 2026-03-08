@@ -920,7 +920,7 @@ function renderStaffAnalysisPlaceholder(){
   const box = document.getElementById("staffAnalysisBox");
   if(!box) return;
 
-  const order = ["北村","山崎","竹内"];
+  const order = ["北村美穂","山崎錦子","竹内いずみ"];
   box.innerHTML = "";
 
   const makeRow = (label, value) => {
@@ -961,7 +961,7 @@ function renderStaffAnalysisPlaceholder(){
     rows.appendChild(makeRow("店販売上", "—"));
     rows.appendChild(makeRow("客数", "—"));
 
-    if (name === "北村" || name === "山崎"){
+    if (name.startsWith("北村") || name.startsWith("山崎")){
       rows.appendChild(makeRow("客単価", "—"));
       rows.appendChild(makeRow("メニュー比率", "—")); // 今後追加予定
     }
