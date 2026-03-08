@@ -940,6 +940,65 @@ function renderStaffAnalysisPlaceholder(){
   });
 }
 
+function renderStaffAnalysis(){
+  const box = document.getElementById("staffAnalysisBox");
+  if(!box) return;
+
+  const order = ["北村","山崎","竹内"];
+  box.innerHTML = "";
+
+  const makeRow = (label, value) => {
+    const row = document.createElement("div");
+    row.className = "salesRow";
+    const s = document.createElement("span");
+    s.textContent = label;
+    const b = document.createElement("b");
+    b.textContent = value;
+    row.appendChild(s);
+    row.appendChild(b);
+    return row;
+  };
+
+  order.forEach(name => {
+    const v = monthStaffSalesMap.get(name) || { tech: 0, retail: 0, customers: 0 };
+    const sumSales = v.tech + v.retail;
+    const unit = v.customers > 0 ? Math.floor(sumSales / v.customers) : 0;
+
+    const block = document.createElement("div");
+    block.className = "staffBlock";
+
+    const head = document.createElement("div");
+    head.className = "staffBlockHead";
+
+    const n = document.createElement("div");
+    n.className = "staffName";
+    n.textContent = name;
+
+    const mini = document.createElement("div");
+    mini.className = "staffMini";
+    mini.textContent = "月合計";
+
+    head.appendChild(n);
+    head.appendChild(mini);
+    block.appendChild(head);
+
+    const rows = document.createElement("div");
+    rows.className = "staffRows";
+
+    rows.appendChild(makeRow("技術売上", v.tech ? fmtYen(v.tech) : "—"));
+    rows.appendChild(makeRow("店販売上", v.retail ? fmtYen(v.retail) : "—"));
+    rows.appendChild(makeRow("客数", v.customers ? (fmtNum(v.customers) + "名") : "—"));
+
+    if (name === "北村" || name === "山崎"){
+      rows.appendChild(makeRow("客単価", unit ? (fmtNum(unit) + "円") : "—"));
+      rows.appendChild(makeRow("メニュー比率", "—")); // 今後追加予定
+    }
+
+    block.appendChild(rows);
+    box.appendChild(block);
+  });
+}
+
 /* ===== Day Editor ===== */
 function fill0toMaxSelect(sel, max){
   if(!sel) return;
