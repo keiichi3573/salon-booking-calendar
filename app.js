@@ -885,6 +885,8 @@ async function loadStaffSalesForMonth(){
     cur.customers += Number(r.customers || 0);
     monthStaffSalesMap.set(name, cur);
   }
+  console.log("[staff-month] rows:", (res.data || []).length, "keys:", [...monthStaffSalesMap.keys()]);
+window.__staffMonthDebug = { count: (res.data || []).length, keys: [...monthStaffSalesMap.keys()] };
 }
 async function loadStaffSalesForDay(dayKey){
   // 前の日の入力が残らないように毎回初期化
@@ -922,7 +924,11 @@ function renderStaffAnalysisPlaceholder(){
 
   const order = ["北村美穂","山崎錦子","竹内いずみ"];
   box.innerHTML = "";
-
+　const dbg = window.__staffMonthDebug;
+const info = document.createElement("div");
+info.className = "hint";
+info.textContent = `debug: staff rows=${dbg?.count ?? "?"} / keys=${(dbg?.keys||[]).join(", ")}`;
+box.appendChild(info);
   const makeRow = (label, value) => {
     const row = document.createElement("div");
     row.className = "salesRow";
