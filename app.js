@@ -786,7 +786,7 @@ if (elProjectedSales) elProjectedSales.textContent = projectedSales ? fmtYen(Mat
 if (elProjectedCustomers) elProjectedCustomers.textContent = projectedCustomers ? (fmtNum1(projectedCustomers) + "名") : "—";
 
   // ★追加：スタッフ別（月合計）枠の表示
-renderStaffAnalysisPlaceholder();
+renderStaffAnalysis();
   
   updateRings(sumSales, unitPrice, goalSales, goalUnitPrice);
 }
@@ -854,6 +854,35 @@ function renderSalesStaffCards(staffRows){
   };
 
   staffRows.forEach(s => salesStaffInputs.appendChild(makeSalesCard(s)));
+}
+
+async function loadStaffSalesForMonth(){
+  monthStaffSalesMap = new Map();
+
+  const first = startOfMonth(viewDate);
+  const last  = endOfMonth(viewDate);
+  const fromKey = toDateKey(first);
+  const toKey   = toDateKey(last);
+
+  const res = await sb
+    .from("sales_staff_daily")
+    .select("day, staff_name, tech_sales, retail_sales, customers")
+    .gte("day", fromKey)
+    .lte("day", toKey);
+
+  if (res.error){
+    console.warn("sales_staff_daily load error:", res.error);
+    return;
+  }
+
+  for (const r of (res.data || [])){
+    const name = r.staff_name || "—";
+    const cur = monthStaffSalesMap.get(name) || { tech: 0, retail: 0, customers: 0 };
+    cur.tech += Number(r.tech_sales || 0);
+    cur.retail += Number(r.retail_sales || 0);
+    cur.customers += Number(r.customers || 0);
+    monthStaffSalesMap.set(name, cur);
+  }
 }
 
 function renderStaffAnalysisPlaceholder(){
@@ -1678,6 +1707,7 @@ async function loadAndRender(){
   }
 
   renderCalendar();
+  await loadStaffSalesForMonth();   // ★追加（renderSummaryAndPanelの前）
   renderSummaryAndPanel();
   applyDeviceVisibility();
 }
