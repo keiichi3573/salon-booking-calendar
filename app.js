@@ -787,7 +787,9 @@ if (elProjectedCustomers) elProjectedCustomers.textContent = projectedCustomers 
 
   // ★追加：スタッフ別（月合計）枠の表示
 renderStaffAnalysis();
-  
+  const __box = document.getElementById("staffAnalysisBox");
+if (__box) __box.prepend(Object.assign(document.createElement("div"), { className: "hint", textContent: "TEST: staffAnalysisBox is updating" }));
+renderStaffAnalysis();
   updateRings(sumSales, unitPrice, goalSales, goalUnitPrice);
 }
 
