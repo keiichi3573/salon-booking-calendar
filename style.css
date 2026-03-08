@@ -839,3 +839,9 @@ body{
   white-space: nowrap;
   flex: 0 0 auto;
 }
+.newSourceHead{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap: 10px;
+}
