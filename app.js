@@ -1240,6 +1240,14 @@ async function saveSalesOnly(){
 
     if (rDaily.error) throw rDaily.error;
 
+    // ローカルMapも更新（再読み込みしなくても即表示を更新するため）
+const prevRow = bookingsDailyMap.get(dayKey) || {};
+bookingsDailyMap.set(dayKey, { ...prevRow, ...payloadDaily });
+
+// 画面を即更新
+renderSummaryAndPanel();
+renderCalendar?.(); // もしカレンダー再描画関数があるなら（無ければこの行は削除OK）
+
     closeModal(document.getElementById("salesEntryModal"));
     await loadAndRender();
     alert("保存しました");
