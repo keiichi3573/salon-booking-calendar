@@ -876,7 +876,7 @@ async function loadStaffSalesForMonth(){
   }
 
   for (const r of (res.data || [])){
-    const name = r.staff_name || "—";
+    const name = (r.staff_name || "—").trim();
     const cur = monthStaffSalesMap.get(name) || { tech: 0, retail: 0, customers: 0 };
     cur.tech += Number(r.tech_sales || 0);
     cur.retail += Number(r.retail_sales || 0);
@@ -1366,6 +1366,11 @@ renderSummaryAndPanel();
 renderCalendar?.(); // もしカレンダー再描画関数があるなら（無ければこの行は削除OK）
 
     closeModal(document.getElementById("salesEntryModal"));
+
+    // ★追加：スタッフ枠（月合計）を即更新
+await loadStaffSalesForMonth();
+renderSummaryAndPanel();
+
     await loadAndRender();
     alert("保存しました");
 
