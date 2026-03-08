@@ -813,8 +813,8 @@ function renderSalesStaffCards(staffRows){
     card.appendChild(top);
 
     // 初期値（無ければ0）
-    const cur = editingStaffSalesMap.get(s.id) || { tech: 0, retail: 0, customers: 0 };
-    editingStaffSalesMap.set(s.id, cur);
+    const cur = editingStaffSalesMap.get(String(s.id)) || { tech: 0, retail: 0, customers: 0 };
+editingStaffSalesMap.set(String(s.id), cur);
 
     const wrap = document.createElement("div");
     wrap.className = "salesInputs";
@@ -884,7 +884,36 @@ async function loadStaffSalesForMonth(){
     monthStaffSalesMap.set(name, cur);
   }
 }
+async function loadStaffSalesForDay(dayKey){
+  // 前の日の入力が残らないように毎回初期化
+  editingStaffSalesMap = new Map();
 
+  const res = await sb
+    .from("sales_staff_daily")
+    .select("staff_id, tech_sales, retail_sales, customers")
+    .eq("day", dayKey);
+
+  if (res.error){
+    console.warn("sales_staff_daily day load error:", res.error);
+    return;
+  }
+
+  for (const r of (res.data || [])){
+    editingStaffSalesMap.set(String(r.staff_id), {
+      tech: Number(r.tech_sales || 0),
+      retail: Number(r.retail_sales || 0),
+      customers: Number(r.customers || 0),
+    });
+  }
+
+  // データが無いスタッフも0で補完
+  (editingStaffRows || []).forEach(s => {
+    const k = String(s.id);
+    if (!editingStaffSalesMap.has(k)){
+      editingStaffSalesMap.set(k, { tech: 0, retail: 0, customers: 0 });
+    }
+  });
+}
 function renderStaffAnalysisPlaceholder(){
   const box = document.getElementById("staffAnalysisBox");
   if(!box) return;
@@ -1817,7 +1846,7 @@ const salesEntrySaveBtnEl = document.getElementById("salesEntrySaveBtn");
 salesEntrySaveBtnEl?.addEventListener("click", () => {
   saveSalesOnly();
 });
-openSalesEntryFromDayBtn?.addEventListener("click", () => {
+openSalesEntryFromDayBtn?.addEventListener("click", async () => {
   const dateStr = dayModal?.dataset?.date;
   if (!dateStr) return;
 
@@ -1828,19 +1857,19 @@ openSalesEntryFromDayBtn?.addEventListener("click", () => {
   if (salesEntrySubTitleEl) salesEntrySubTitleEl.textContent = `日付：${dateStr}`;
   if (salesEntryDateHiddenEl) salesEntryDateHiddenEl.value = dateStr;
 
-  // 新規/既存セレクト初期化（0〜MAX）
+  // 新規（店舗合計）のセレクト初期化（0〜MAX）
   const salesNewCustomersSelectEl = document.getElementById("salesNewCustomersSelect");
-  const salesRepeatCustomersSelectEl = document.getElementById("salesRepeatCustomersSelect");
-
   fill0toMaxSelect(salesNewCustomersSelectEl, MAX_COUNT);
-  fill0toMaxSelect(salesRepeatCustomersSelectEl, MAX_COUNT);
-
   if (salesNewCustomersSelectEl && !salesNewCustomersSelectEl.value) salesNewCustomersSelectEl.value = "0";
-  if (salesRepeatCustomersSelectEl && !salesRepeatCustomersSelectEl.value) salesRepeatCustomersSelectEl.value = "0";
+
+  // ★追加：その日付のスタッフ別売上を読み込む（前日の値が残らない）
+  await loadStaffSalesForDay(dateStr);
+
+  // ★描画（読み込んだ値が各スタッフカードに反映される）
+  renderSalesStaffCards(editingStaffRows || []);
 
   // 日付モーダルを閉じて、売上入力モーダルを開く
   closeModal(dayModal);
-  renderSalesStaffCards(editingStaffRows || []);
   openModal(document.getElementById("salesEntryModal"));
 });
 
