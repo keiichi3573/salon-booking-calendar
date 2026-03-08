@@ -412,7 +412,7 @@ async function updateStaff(id, patch){
 async function fetchBookingsDailyRange(startKey, endKey){
   const res = await sb
     .from("bookings_daily")
-    .select("day,total,tech_sales,retail_sales,new_customers,repeat_customers")
+    .select("day,total,tech_sales,retail_sales,new_customers,repeat_customers,new_sources")
     .gte("day", startKey)
     .lte("day", endKey);
 
@@ -541,11 +541,22 @@ function renderSummaryAndPanel(){
   let sumNew = 0;
   let sumRepeat = 0;
 
+  // ★新規経路（月合計）
+let srcStorefront = 0, srcReferral = 0, srcHotpepper = 0, srcWeb = 0, srcTicket = 0;
+
   for(let day=1; day<=last.getDate(); day++){
     const d = new Date(first.getFullYear(), first.getMonth(), day);
     const key = toDateKey(d);
     const row = bookingsDailyMap.get(key);
     if(!row) continue;
+
+    // 新規経路（その日分）を加算
+const src = row.new_sources || {};
+srcStorefront += Number(src.storefront || 0);
+srcReferral   += Number(src.referral || 0);
+srcHotpepper  += Number(src.hotpepper || 0);
+srcWeb        += Number(src.web || 0);
+srcTicket     += Number(src.ticket || 0);
 
     monthTotalBookings += Number(row.total||0);
 
@@ -792,6 +803,17 @@ renderStaffAnalysis();
   const __box = document.getElementById("staffAnalysisBox");
 if (__box) __box.prepend(Object.assign(document.createElement("div"), { className: "hint", textContent: "TEST: staffAnalysisBox is updating" }));
 renderStaffAnalysis();
+  const setSrc = (id, n) => {
+  const el = document.getElementById(id);
+  if(!el) return;
+  el.textContent = n ? (fmtNum(n) + "名") : "—";
+};
+
+setSrc("srcStorefront", srcStorefront);
+setSrc("srcReferral",   srcReferral);
+setSrc("srcHotpepper",  srcHotpepper);
+setSrc("srcWeb",        srcWeb);
+setSrc("srcTicket",     srcTicket);
   updateRings(sumSales, unitPrice, goalSales, goalUnitPrice);
 }
 
@@ -1930,6 +1952,7 @@ async function loadAndRender(){
       retail_sales: Number(r.retail_sales||0),
       new_customers: Number(r.new_customers||0),
       repeat_customers: Number(r.repeat_customers||0),
+      new_sources: r.new_sources || {},              // ★追加
     });
   }
 
