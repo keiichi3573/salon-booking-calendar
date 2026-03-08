@@ -433,14 +433,13 @@ async function fetchBookingsStaffDay(dayKey){
 async function fetchBookingsDailyDay(dayKey){
   const res = await sb
     .from("bookings_daily")
-    .select("day,total,tech_sales,retail_sales,new_customers,repeat_customers")
+    .select("day,total,tech_sales,retail_sales,new_customers,repeat_customers,new_sources")
     .eq("day", dayKey)
     .maybeSingle();
 
   if(res.error) throw res.error;
   return res.data || null;
 }
-
 /* ===== Render (calendar) ===== */
 function renderCalendar(){
   const first = startOfMonth(viewDate);
