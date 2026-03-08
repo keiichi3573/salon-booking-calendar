@@ -878,15 +878,21 @@ async function loadStaffSalesForMonth(){
   }
 
   for (const r of (res.data || [])){
-    const normName = (r.staff_name || "—")
-  .replace(/[ 　]/g, "")  // 半角/全角スペース除去
-  .trim();
-    const cur = monthStaffSalesMap.get(normName) || { tech: 0, retail: 0, customers: 0 };
-    cur.tech += Number(r.tech_sales || 0);
-    cur.retail += Number(r.retail_sales || 0);
-    cur.customers += Number(r.customers || 0);
-    monthStaffSalesMap.set(name, cur);
+  // 念のため両方対応（staff_name / staffName）
+  const rawName = (r.staff_name ?? r.staffName ?? "");
+  const name = String(rawName).replace(/[ 　]/g, "").trim(); // 空白除去
+
+  if (!name){
+    console.warn("[staff-month] empty name row:", r);
+    continue;
   }
+
+  const cur = monthStaffSalesMap.get(name) || { tech: 0, retail: 0, customers: 0 };
+  cur.tech += Number(r.tech_sales || 0);
+  cur.retail += Number(r.retail_sales || 0);
+  cur.customers += Number(r.customers || 0);
+  monthStaffSalesMap.set(name, cur);
+}
   console.log("[staff-month] rows:", (res.data || []).length, "keys:", [...monthStaffSalesMap.keys()]);
 window.__staffMonthDebug = { count: (res.data || []).length, keys: [...monthStaffSalesMap.keys()] };
 }
