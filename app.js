@@ -876,8 +876,10 @@ async function loadStaffSalesForMonth(){
   }
 
   for (const r of (res.data || [])){
-    const name = (r.staff_name || "—").trim();
-    const cur = monthStaffSalesMap.get(name) || { tech: 0, retail: 0, customers: 0 };
+    const normName = (r.staff_name || "—")
+  .replace(/[ 　]/g, "")  // 半角/全角スペース除去
+  .trim();
+    const cur = monthStaffSalesMap.get(normName) || { tech: 0, retail: 0, customers: 0 };
     cur.tech += Number(r.tech_sales || 0);
     cur.retail += Number(r.retail_sales || 0);
     cur.customers += Number(r.customers || 0);
@@ -975,6 +977,24 @@ function renderStaffAnalysis(){
 
   const order = ["北村","山崎","竹内"];
   box.innerHTML = "";
+    const normalize = (s) => String(s || "").replace(/[ 　]/g, "").trim();
+
+  function pickStaffMonthSum(displayName){
+    const target = normalize(displayName);
+
+    // まず完全一致
+    if (monthStaffSalesMap.has(target)) return monthStaffSalesMap.get(target);
+
+    // 次に「含む/前方一致」で拾う（例：北村太郎、北村（店長）など）
+    for (const [k, v] of monthStaffSalesMap.entries()){
+      const kk = normalize(k);
+      if (!kk) continue;
+      if (kk === target) return v;
+      if (kk.startsWith(target)) return v;
+      if (kk.includes(target)) return v;
+    }
+    return { tech: 0, retail: 0, customers: 0 };
+  }
 
   const makeRow = (label, value) => {
     const row = document.createElement("div");
@@ -989,7 +1009,7 @@ function renderStaffAnalysis(){
   };
 
   order.forEach(name => {
-    const v = monthStaffSalesMap.get(name) || { tech: 0, retail: 0, customers: 0 };
+    const v = pickStaffMonthSum(name);
     const sumSales = v.tech + v.retail;
     const unit = v.customers > 0 ? Math.floor(sumSales / v.customers) : 0;
 
