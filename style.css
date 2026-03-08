@@ -821,3 +821,21 @@ body{
 .salesPanel .sourceRow b{
   white-space: nowrap;
 }
+.salesPanel .sourceRow{
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.salesPanel .sourceRow span{
+  white-space: nowrap;
+  word-break: keep-all;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+}
+
+.salesPanel .sourceRow b{
+  white-space: nowrap;
+  flex: 0 0 auto;
+}
