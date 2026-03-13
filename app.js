@@ -1915,6 +1915,8 @@ function initStoreBoardSafe(){
   loadPhoto();
 }
 
+}
+  
 /* ===== Main load ===== */
 async function loadAndRender(){
   // Repair viewDate safety
