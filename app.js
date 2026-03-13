@@ -1910,6 +1910,7 @@ function initStoreBoardSafe(){
   photoUploadBtn?.addEventListener("click", uploadPhoto);
   photoDeleteBtn?.addEventListener("click", deletePhoto);
 
+  if (document.getElementById("storeBoard")){
   renderTasks();
   loadPhoto();
 }
