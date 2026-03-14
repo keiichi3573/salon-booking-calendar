@@ -306,6 +306,7 @@ const goalUnitPriceInput = document.getElementById("goalUnitPriceInput");
 /* ===== State ===== */
 let viewDate = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
 let currentMonthKey = toMonthKey(viewDate);
+let dailyMenuMap = new Map(); // day -> { soda, ptreat, spa }
 
 // Month data maps keyed by YYYY-MM-DD
 // bookingsDailyMap: { day -> { total, tech_sales, retail_sales, new_customers, repeat_customers } }
@@ -502,6 +503,32 @@ function renderCalendar(){
       salesEl.textContent = sales.toLocaleString("ja-JP");
       cell.appendChild(salesEl);
     }
+
+    const customers = Number(row.new_customers || 0) + Number(row.repeat_customers || 0);
+if (customers > 0){
+  const cusEl = document.createElement("div");
+  cusEl.className = "dayMeta";
+  cusEl.textContent = `客 ${customers}`;
+  cell.appendChild(cusEl);
+}
+
+const menuDay = dailyMenuMap.get(key) || { soda: 0, ptreat: 0, spa: 0 };
+const soda = Number(menuDay.soda || 0);
+const pt   = Number(menuDay.ptreat || 0);
+const spa  = Number(menuDay.spa || 0);
+
+if (soda > 0 || pt > 0 || spa > 0){
+  const menuEl = document.createElement("div");
+  menuEl.className = "dayMeta dayMenuMeta";
+
+  const parts = [];
+  if (soda > 0) parts.push(`炭${soda}`);
+  if (pt > 0)   parts.push(`PT${pt}`);
+  if (spa > 0)  parts.push(`ス${spa}`);
+
+  menuEl.textContent = parts.join(" ");
+  cell.appendChild(menuEl);
+}
 
     cell.addEventListener("click", () => openDayEditor(d));
     elCalendar.appendChild(cell);
@@ -1077,6 +1104,33 @@ function getNewSourcesObj(){
 
 function sumNewSources(obj){
   return Number(obj.storefront||0) + Number(obj.referral||0) + Number(obj.hotpepper||0) + Number(obj.web||0) + Number(obj.ticket||0);
+}
+
+async function loadDailyMenuMapForMonth(){
+  dailyMenuMap = new Map();
+
+  const monthPrefix = toMonthKey(viewDate); // "2026-03"
+  const res = await sb
+    .from("sales_staff_daily")
+    .select("day, menus")
+    .like("day", `${monthPrefix}-%`);
+
+  if (res.error){
+    console.warn("sales_staff_daily daily menu load error:", res.error);
+    return;
+  }
+
+  for (const r of (res.data || [])){
+    const dayKey = r.day;
+    const cur = dailyMenuMap.get(dayKey) || { soda: 0, ptreat: 0, spa: 0 };
+    const m = r.menus || {};
+
+    cur.soda   += Number(m.soda || 0);
+    cur.ptreat += Number(m.ptreat || 0);
+    cur.spa    += Number(m.spa || 0);
+
+    dailyMenuMap.set(dayKey, cur);
+  }
 }
 
 async function loadStaffSalesForMonth(){
@@ -2180,6 +2234,7 @@ async function loadAndRender(){
   }
 
   renderCalendar();
+  await loadDailyMenuMapForMonth();
   await loadStaffSalesForMonth();   // ★追加（renderSummaryAndPanelの前）
   renderSummaryAndPanel();
   applyDeviceVisibility();
