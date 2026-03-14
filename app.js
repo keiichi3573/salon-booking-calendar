@@ -1565,17 +1565,19 @@ const newCus = sumNewSources(newSources);
     // 1) スタッフ別 payloads を作る（day × staff）
     const staffList = (editingStaffRows || []);
     const staffPayloads = staffList.map(s => {
-      const v = editingStaffSalesMap.get(s.id) || { tech: 0, retail: 0, customers: 0 };
-      return {
-        day: dayKey,
-        staff_id: s.id,
-        staff_name: s.name,
-        tech_sales: Math.round(Number(v.tech || 0)),
-        retail_sales: Math.round(Number(v.retail || 0)),
-        customers: Math.round(Number(v.customers || 0)),
-        updated_by: "pc"
-      };
-    });
+  const v = editingStaffSalesMap.get(String(s.id)) || { tech: 0, retail: 0, customers: 0, menus: {} };
+
+  return {
+    day: dayKey,
+    staff_id: s.id,
+    staff_name: s.name,
+    tech_sales: Math.round(Number(v.tech || 0)),
+    retail_sales: Math.round(Number(v.retail || 0)),
+    customers: Math.round(Number(v.customers || 0)),
+    menus: v.menus || {},   // ★追加
+    updated_by: "pc"
+  };
+});
 
     // 2) スタッフ別テーブルへ保存（複数行 upsert）
     const rStaff = await sb
