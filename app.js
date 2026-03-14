@@ -875,6 +875,12 @@ if (!cur.menus) cur.menus = {};
     wrap.appendChild(mkRow("店販売上", cur.retail, (v)=>{ cur.retail = v; }));
     wrap.appendChild(mkRow("客数（合計）", cur.customers, (v)=>{ cur.customers = v; }));
 
+    const showMenuInputs =
+  String(s.name || "").startsWith("北村") ||
+  String(s.name || "").startsWith("山崎");
+
+if (showMenuInputs) {
+
     // ===== メニュー人数（客数ベース） =====
 const menuKeys = [
   { key: "color",  label: "カラー" },
@@ -883,7 +889,7 @@ const menuKeys = [
   { key: "treat",  label: "Tトリ" },
   { key: "spa",    label: "スパ" },
 ];
-
+}
 let selectedMenuKey = menuKeys[0].key;
 
 const menuRow = document.createElement("div");
