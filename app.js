@@ -1121,10 +1121,10 @@ async function loadStaffSalesForDay(dayKey){
   // 前の日の入力が残らないように毎回初期化
   editingStaffSalesMap = new Map();
 
-  const res = await sb
-    .from("sales_staff_daily")
-    .select("staff_id, tech_sales, retail_sales, customers")
-    .eq("day", dayKey);
+ const res = await sb
+  .from("sales_staff_daily")
+  .select("staff_id, tech_sales, retail_sales, customers, menus")
+  .eq("day", dayKey);
 
   if (res.error){
     console.warn("sales_staff_daily day load error:", res.error);
@@ -1133,18 +1133,19 @@ async function loadStaffSalesForDay(dayKey){
 
   for (const r of (res.data || [])){
     editingStaffSalesMap.set(String(r.staff_id), {
-      tech: Number(r.tech_sales || 0),
-      retail: Number(r.retail_sales || 0),
-      customers: Number(r.customers || 0),
-    });
+  tech: Number(r.tech_sales || 0),
+  retail: Number(r.retail_sales || 0),
+  customers: Number(r.customers || 0),
+  menus: r.menus || {},   // ★追加
+});
   }
 
   // データが無いスタッフも0で補完
   (editingStaffRows || []).forEach(s => {
     const k = String(s.id);
-    if (!editingStaffSalesMap.has(k)){
-      editingStaffSalesMap.set(k, { tech: 0, retail: 0, customers: 0 });
-    }
+   if (!editingStaffSalesMap.has(k)){
+  editingStaffSalesMap.set(k, { tech: 0, retail: 0, customers: 0, menus: {} });
+}
   });
 }
 function renderStaffAnalysisPlaceholder(){
