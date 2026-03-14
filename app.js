@@ -838,9 +838,10 @@ function renderSalesStaffCards(staffRows){
     card.appendChild(top);
 
     // 初期値（無ければ0）
-    const cur = editingStaffSalesMap.get(String(s.id)) || { tech: 0, retail: 0, customers: 0 };
+    const cur = editingStaffSalesMap.get(String(s.id)) || { tech: 0, retail: 0, customers: 0, menus: {} };
 editingStaffSalesMap.set(String(s.id), cur);
-
+if (!cur.menus) cur.menus = {};
+    
     const wrap = document.createElement("div");
     wrap.className = "salesInputs";
 
@@ -873,6 +874,107 @@ editingStaffSalesMap.set(String(s.id), cur);
     wrap.appendChild(mkRow("技術売上", cur.tech, (v)=>{ cur.tech = v; }));
     wrap.appendChild(mkRow("店販売上", cur.retail, (v)=>{ cur.retail = v; }));
     wrap.appendChild(mkRow("客数（合計）", cur.customers, (v)=>{ cur.customers = v; }));
+
+    // ===== メニュー人数（客数ベース） =====
+const menuKeys = [
+  { key: "color",  label: "カラー" },
+  { key: "soda",   label: "炭酸" },
+  { key: "ptreat", label: "Pトリ" },
+  { key: "treat",  label: "Tトリ" },
+  { key: "spa",    label: "スパ" },
+];
+
+let selectedMenuKey = menuKeys[0].key;
+
+const menuRow = document.createElement("div");
+menuRow.className = "fieldRow";
+
+const menuLabel = document.createElement("label");
+menuLabel.className = "fieldLabel";
+menuLabel.textContent = "メニュー人数";
+
+const menuSelect = document.createElement("select");
+menuSelect.className = "fieldSelect";
+menuKeys.forEach(m => {
+  const opt = document.createElement("option");
+  opt.value = m.key;
+  opt.textContent = m.label;
+  menuSelect.appendChild(opt);
+});
+
+const menuStepper = document.createElement("div");
+menuStepper.className = "stepper";
+
+const minus = document.createElement("button");
+minus.type = "button";
+minus.className = "stepBtn";
+minus.textContent = "−";
+
+const val = document.createElement("div");
+val.className = "stepValue";
+
+const plus = document.createElement("button");
+plus.type = "button";
+plus.className = "stepBtn";
+plus.textContent = "＋";
+
+const hint = document.createElement("div");
+hint.className = "hint";
+
+const getMenuVal = (k) => Number(cur.menus?.[k] || 0);
+const setMenuVal = (k, v) => {
+  cur.menus[k] = Math.max(0, Math.floor(Number(v || 0)));
+};
+
+const syncMenu = () => {
+  const v = getMenuVal(selectedMenuKey);
+  val.textContent = String(v);
+  minus.disabled = (v <= 0);
+
+  const cus = Number(cur.customers || 0);
+
+  // 各メニュー単体チェック：メニュー人数 > 客数 はNG（合計は見ない）
+  if (cus > 0 && v > cus){
+    hint.textContent = `⚠ ${v}人は客数（${cus}）を超えています`;
+    hint.classList.add("ng");
+    hint.classList.remove("ok");
+  } else {
+    hint.textContent = cus > 0 ? `${v} / 客数${cus}（${Math.round((v/cus)*100)}%）` : `${v}（客数を先に入力）`;
+    hint.classList.remove("ng");
+    hint.classList.add("ok");
+  }
+};
+
+menuSelect.addEventListener("change", () => {
+  selectedMenuKey = menuSelect.value;
+  syncMenu();
+});
+
+minus.addEventListener("click", () => {
+  const v = getMenuVal(selectedMenuKey);
+  setMenuVal(selectedMenuKey, v - 1);
+  syncMenu();
+});
+
+plus.addEventListener("click", () => {
+  const v = getMenuVal(selectedMenuKey);
+  setMenuVal(selectedMenuKey, v + 1);
+  syncMenu();
+});
+
+// レイアウト
+menuRow.appendChild(menuLabel);
+menuRow.appendChild(menuSelect);
+wrap.appendChild(menuRow);
+
+menuStepper.appendChild(minus);
+menuStepper.appendChild(val);
+menuStepper.appendChild(plus);
+wrap.appendChild(menuStepper);
+wrap.appendChild(hint);
+
+// 初期表示
+syncMenu();
 
     card.appendChild(wrap);
     return card;
