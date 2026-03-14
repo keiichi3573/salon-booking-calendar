@@ -1221,6 +1221,28 @@ box.appendChild(info);
   });
 }
 
+function getMenuRate(menuCount, customers){
+  const c = Number(customers || 0);
+  const m = Number(menuCount || 0);
+  if (c <= 0) return 0;
+  return Math.round((m / c) * 100);
+}
+
+function getStaffMenuRates(staffData){
+  const v = staffData || {
+    customers: 0,
+    menus: { color: 0, soda: 0, ptreat: 0, treat: 0, spa: 0 }
+  };
+
+  return {
+    color:  getMenuRate(v.menus?.color,  v.customers),
+    soda:   getMenuRate(v.menus?.soda,   v.customers),
+    ptreat: getMenuRate(v.menus?.ptreat, v.customers),
+    treat:  getMenuRate(v.menus?.treat,  v.customers),
+    spa:    getMenuRate(v.menus?.spa,    v.customers),
+  };
+}
+
 function renderStaffAnalysis(){
   const box = document.getElementById("staffAnalysisBox");
   if(!box) return;
