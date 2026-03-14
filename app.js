@@ -1243,6 +1243,33 @@ function getStaffMenuRates(staffData){
   };
 }
 
+function normalizeStaffName(s){
+  return String(s || "").replace(/[ 　]/g, "").trim();
+}
+
+function pickStaffMonthSum(displayName){
+  const target = normalizeStaffName(displayName);
+
+  // まず完全一致
+  if (monthStaffSalesMap.has(target)) return monthStaffSalesMap.get(target);
+
+  // 含む/前方一致
+  for (const [k, v] of monthStaffSalesMap.entries()){
+    const kk = normalizeStaffName(k);
+    if (!kk) continue;
+    if (kk === target) return v;
+    if (kk.startsWith(target)) return v;
+    if (kk.includes(target)) return v;
+  }
+
+  return {
+    tech: 0,
+    retail: 0,
+    customers: 0,
+    menus: { color: 0, soda: 0, ptreat: 0, treat: 0, spa: 0 }
+  };
+}
+
 function renderStaffAnalysis(){
   const box = document.getElementById("staffAnalysisBox");
   if(!box) return;
