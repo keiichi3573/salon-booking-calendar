@@ -1089,7 +1089,7 @@ async function loadStaffSalesForMonth(){
 
   const res = await sb
     .from("sales_staff_daily")
-    .select("day, staff_name, tech_sales, retail_sales, customers")
+    .select("day, staff_name, tech_sales, retail_sales, customers, menus")
     .gte("day", fromKey)
     .lte("day", toKey);
 
@@ -1108,11 +1108,25 @@ async function loadStaffSalesForMonth(){
     continue;
   }
 
-  const cur = monthStaffSalesMap.get(name) || { tech: 0, retail: 0, customers: 0 };
-  cur.tech += Number(r.tech_sales || 0);
-  cur.retail += Number(r.retail_sales || 0);
-  cur.customers += Number(r.customers || 0);
-  monthStaffSalesMap.set(name, cur);
+  const cur = monthStaffSalesMap.get(name) || {
+  tech: 0,
+  retail: 0,
+  customers: 0,
+  menus: { color: 0, soda: 0, ptreat: 0, treat: 0, spa: 0 }
+};
+
+cur.tech += Number(r.tech_sales || 0);
+cur.retail += Number(r.retail_sales || 0);
+cur.customers += Number(r.customers || 0);
+
+const m = r.menus || {};
+cur.menus.color  += Number(m.color || 0);
+cur.menus.soda   += Number(m.soda || 0);
+cur.menus.ptreat += Number(m.ptreat || 0);
+cur.menus.treat  += Number(m.treat || 0);
+cur.menus.spa    += Number(m.spa || 0);
+
+monthStaffSalesMap.set(name, cur);
 }
   console.log("[staff-month] rows:", (res.data || []).length, "keys:", [...monthStaffSalesMap.keys()]);
 window.__staffMonthDebug = { count: (res.data || []).length, keys: [...monthStaffSalesMap.keys()] };
