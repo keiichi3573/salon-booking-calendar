@@ -1247,26 +1247,8 @@ function renderStaffAnalysis(){
   const box = document.getElementById("staffAnalysisBox");
   if(!box) return;
 
-  const order = ["北村","山崎","竹内"];
+  const order = ["北村美穂","山崎錦子","竹内いずみ"];
   box.innerHTML = "";
-    const normalize = (s) => String(s || "").replace(/[ 　]/g, "").trim();
-
-  function pickStaffMonthSum(displayName){
-    const target = normalize(displayName);
-
-    // まず完全一致
-    if (monthStaffSalesMap.has(target)) return monthStaffSalesMap.get(target);
-
-    // 次に「含む/前方一致」で拾う（例：北村太郎、北村（店長）など）
-    for (const [k, v] of monthStaffSalesMap.entries()){
-      const kk = normalize(k);
-      if (!kk) continue;
-      if (kk === target) return v;
-      if (kk.startsWith(target)) return v;
-      if (kk.includes(target)) return v;
-    }
-    return { tech: 0, retail: 0, customers: 0 };
-  }
 
   const makeRow = (label, value) => {
     const row = document.createElement("div");
@@ -1280,10 +1262,36 @@ function renderStaffAnalysis(){
     return row;
   };
 
-  order.forEach(name => {
-    const v = pickStaffMonthSum(name);
-    const sumSales = v.tech + v.retail;
-    const unit = v.customers > 0 ? Math.floor(sumSales / v.customers) : 0;
+  const makeRingItem = (label, pct) => {
+    const item = document.createElement("div");
+    item.className = "menuRateItem";
+
+    const ring = document.createElement("div");
+    ring.className = "ringProgress";
+    ring.style.setProperty("--pct", pct || 0);
+    ring.style.setProperty("--pctCut", pct || 0);
+
+    const inner = document.createElement("div");
+    inner.className = "ringInner";
+
+    const b = document.createElement("b");
+    b.textContent = `${pct || 0}%`;
+
+    inner.appendChild(b);
+    ring.appendChild(inner);
+
+    const lbl = document.createElement("div");
+    lbl.className = "menuRateLabel";
+    lbl.textContent = label;
+
+    item.appendChild(ring);
+    item.appendChild(lbl);
+    return item;
+  };
+
+  const buildBlock = (name, v, withRates) => {
+    const sumSales = Number(v.tech || 0) + Number(v.retail || 0);
+    const unit = Number(v.customers || 0) > 0 ? Math.floor(sumSales / v.customers) : 0;
 
     const block = document.createElement("div");
     block.className = "staffBlock";
@@ -1293,7 +1301,9 @@ function renderStaffAnalysis(){
 
     const n = document.createElement("div");
     n.className = "staffName";
-    n.textContent = name;
+    n.textContent = name.startsWith("北村") ? "北村" :
+                    name.startsWith("山崎") ? "山崎" :
+                    name.startsWith("竹内") ? "竹内" : name;
 
     const mini = document.createElement("div");
     mini.className = "staffMini";
@@ -1310,14 +1320,56 @@ function renderStaffAnalysis(){
     rows.appendChild(makeRow("店販売上", v.retail ? fmtYen(v.retail) : "—"));
     rows.appendChild(makeRow("客数", v.customers ? (fmtNum(v.customers) + "名") : "—"));
 
-    if (name === "北村" || name === "山崎"){
+    if (withRates){
       rows.appendChild(makeRow("客単価", unit ? (fmtNum(unit) + "円") : "—"));
-      rows.appendChild(makeRow("メニュー比率", "—")); // 今後追加予定
     }
 
     block.appendChild(rows);
-    box.appendChild(block);
+
+    if (withRates){
+      const rates = getStaffMenuRates(v);
+
+      const grid = document.createElement("div");
+      grid.className = "menuRateGrid";
+      grid.appendChild(makeRingItem("カラー率", rates.color));
+      grid.appendChild(makeRingItem("炭酸率", rates.soda));
+      grid.appendChild(makeRingItem("Pトリ率", rates.ptreat));
+      grid.appendChild(makeRingItem("Tトリ率", rates.treat));
+      grid.appendChild(makeRingItem("スパ率", rates.spa));
+
+      block.appendChild(grid);
+    }
+
+    return block;
+  };
+
+  // 個人別
+  order.forEach(name => {
+    const v = pickStaffMonthSum(name);
+    const withRates = name.startsWith("北村") || name.startsWith("山崎");
+    box.appendChild(buildBlock(name, v, withRates));
   });
+
+  // 店舗全体
+  const total = {
+    tech: 0,
+    retail: 0,
+    customers: 0,
+    menus: { color: 0, soda: 0, ptreat: 0, treat: 0, spa: 0 }
+  };
+
+  for (const v of monthStaffSalesMap.values()){
+    total.tech += Number(v.tech || 0);
+    total.retail += Number(v.retail || 0);
+    total.customers += Number(v.customers || 0);
+    total.menus.color  += Number(v.menus?.color || 0);
+    total.menus.soda   += Number(v.menus?.soda || 0);
+    total.menus.ptreat += Number(v.menus?.ptreat || 0);
+    total.menus.treat  += Number(v.menus?.treat || 0);
+    total.menus.spa    += Number(v.menus?.spa || 0);
+  }
+
+  box.appendChild(buildBlock("店舗全体", total, true));
 }
 
 /* ===== Day Editor ===== */
