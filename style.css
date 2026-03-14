@@ -904,3 +904,13 @@ body{
   font-size: 12px;
   font-weight: 700;
 }
+.dayMeta{
+  font-size: 11px;
+  line-height: 1.2;
+  margin-top: 2px;
+  opacity: 0.9;
+}
+
+.dayMenuMeta{
+  font-weight: 700;
+}
