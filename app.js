@@ -1343,34 +1343,42 @@ function renderStaffAnalysis(){
     return row;
   };
 
-  const makeRingItem = (label, pct) => {
-    const item = document.createElement("div");
-    item.className = "menuRateItem";
+const makeRingItem = (label, pct, count = null, showCount = false) => {
+  const item = document.createElement("div");
+  item.className = "menuRateItem";
 
-    const ring = document.createElement("div");
-    ring.className = "ringProgress";
-    ring.style.setProperty("--pct", pct || 0);
-    ring.style.setProperty("--pctCut", pct || 0);
+  const ring = document.createElement("div");
+  ring.className = "ringProgress";
+  ring.style.setProperty("--pct", pct || 0);
+  ring.style.setProperty("--pctCut", pct || 0);
 
-    const inner = document.createElement("div");
-    inner.className = "ringInner";
+  const inner = document.createElement("div");
+  inner.className = "ringInner";
 
-    const b = document.createElement("b");
-    b.textContent = `${pct || 0}%`;
+  const pctEl = document.createElement("b");
+  pctEl.textContent = `${pct || 0}%`;
 
-    inner.appendChild(b);
-    ring.appendChild(inner);
+  inner.appendChild(pctEl);
 
-    const lbl = document.createElement("div");
-    lbl.className = "menuRateLabel";
-    lbl.textContent = label;
+  if (showCount) {
+    const countEl = document.createElement("div");
+    countEl.className = "ringCount";
+    countEl.textContent = `${Number(count || 0)}件`;
+    inner.appendChild(countEl);
+  }
 
-    item.appendChild(ring);
-    item.appendChild(lbl);
-    return item;
-  };
+  ring.appendChild(inner);
 
-  const buildBlock = (name, v, withRates) => {
+  const lbl = document.createElement("div");
+  lbl.className = "menuRateLabel";
+  lbl.textContent = label;
+
+  item.appendChild(ring);
+  item.appendChild(lbl);
+  return item;
+};
+
+  const buildBlock = (name, v, withRates, showRingCounts = false) => {
     const sumSales = Number(v.tech || 0) + Number(v.retail || 0);
     const unit = Number(v.customers || 0) > 0 ? Math.floor(sumSales / v.customers) : 0;
 
@@ -1412,12 +1420,11 @@ function renderStaffAnalysis(){
 
       const grid = document.createElement("div");
       grid.className = "menuRateGrid";
-      grid.appendChild(makeRingItem("カラー率", rates.color));
-      grid.appendChild(makeRingItem("炭酸率", rates.soda));
-      grid.appendChild(makeRingItem("Pトリ率", rates.ptreat));
-      grid.appendChild(makeRingItem("Tトリ率", rates.treat));
-      grid.appendChild(makeRingItem("スパ率", rates.spa));
-
+      grid.appendChild(makeRingItem("カラー率", rates.color, v.menus?.color, false));
+      grid.appendChild(makeRingItem("炭酸率", rates.soda, v.menus?.soda, showRingCounts));
+      grid.appendChild(makeRingItem("Pトリ率", rates.ptreat, v.menus?.ptreat, showRingCounts));
+      grid.appendChild(makeRingItem("Tトリ率", rates.treat, v.menus?.treat, false));
+      grid.appendChild(makeRingItem("スパ率", rates.spa, v.menus?.spa, showRingCounts));
       block.appendChild(grid);
     }
 
@@ -1450,7 +1457,7 @@ function renderStaffAnalysis(){
     total.menus.spa    += Number(v.menus?.spa || 0);
   }
 
-  box.appendChild(buildBlock("店舗全体", total, true));
+  box.appendChild(buildBlock("店舗全体", total, true, true));
 }
 
 /* ===== Day Editor ===== */
