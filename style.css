@@ -914,3 +914,9 @@ body{
 .dayMenuMeta{
   font-weight: 700;
 }
+.ringCount{
+  font-size: 10px;
+  line-height: 1.1;
+  margin-top: 2px;
+  opacity: 0.9;
+}
