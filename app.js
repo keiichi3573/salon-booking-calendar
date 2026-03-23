@@ -598,6 +598,49 @@ srcTicket     += Number(src.ticket || 0);
   const sumCustomers = sumNew + sumRepeat;
   const unitPrice = sumCustomers > 0 ? Math.floor(sumSales / sumCustomers) : 0;
 
+  const prevYearMonthKey = `${viewDate.getFullYear()-1}-${String(viewDate.getMonth()+1).padStart(2, "0")}`;
+const prevYearRow = monthlyCompareMap.get(prevYearMonthKey);
+
+const setYoY = (id, current, prev, suffix = "") => {
+  const el = document.getElementById(id);
+  if (!el) return;
+
+  const cur = Number(current || 0);
+  const old = Number(prev || 0);
+
+  if (old <= 0){
+    el.textContent = "—";
+    return;
+  }
+
+  const diff = cur - old;
+  const rate = (cur / old) * 100;
+  const sign = diff > 0 ? "+" : "";
+
+  let diffText = `${sign}${diff.toLocaleString("ja-JP")}${suffix}`;
+  if (suffix === "円") diffText = `${sign}${diff.toLocaleString("ja-JP")}${suffix}`;
+  if (suffix === "名") diffText = `${sign}${diff.toLocaleString("ja-JP")}${suffix}`;
+
+  el.textContent = `${rate.toFixed(1)}% (${diffText})`;
+};
+
+if (prevYearRow){
+  const prevSales = Number(prevYearRow.sales || 0);
+  const prevCustomers = Number(prevYearRow.customers || 0);
+  const prevNew = Number(prevYearRow.new_customers || 0);
+  const prevUnit = prevCustomers > 0 ? Math.floor(prevSales / prevCustomers) : 0;
+
+  setYoY("yoySales", sumSales, prevSales, "円");
+  setYoY("yoyCustomers", sumCustomers, prevCustomers, "名");
+  setYoY("yoyNewCustomers", sumNew, prevNew, "名");
+  setYoY("yoyUnitPrice", unitPrice, prevUnit, "円");
+} else {
+  ["yoySales","yoyCustomers","yoyNewCustomers","yoyUnitPrice"].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = "—";
+  });
+}
+
   // Goal
   const goalCustomers = monthGoalCustomers;
   const goalUnitPrice = monthGoalUnitPrice;
