@@ -920,3 +920,8 @@ body{
   margin-top: 2px;
   opacity: 0.9;
 }
+.yoySalesChart{
+  width: 100%;
+  height: 260px !important;
+  max-height: 260px;
+}
