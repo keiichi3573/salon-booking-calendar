@@ -304,6 +304,7 @@ const goalCustomersInput = document.getElementById("goalCustomersInput");
 const goalUnitPriceInput = document.getElementById("goalUnitPriceInput");
 
 /* ===== State ===== */
+let yoySalesChartInstance = null;
 let viewDate = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
 let currentMonthKey = toMonthKey(viewDate);
 let dailyMenuMap = new Map(); // day -> { soda, ptreat, spa }
