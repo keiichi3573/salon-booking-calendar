@@ -307,6 +307,7 @@ const goalUnitPriceInput = document.getElementById("goalUnitPriceInput");
 let viewDate = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
 let currentMonthKey = toMonthKey(viewDate);
 let dailyMenuMap = new Map(); // day -> { soda, ptreat, spa }
+let monthlyCompareMap = new Map(); // month_key -> { sales, customers, new_customers }
 
 // Month data maps keyed by YYYY-MM-DD
 // bookingsDailyMap: { day -> { total, tech_sales, retail_sales, new_customers, repeat_customers } }
@@ -1131,6 +1132,18 @@ async function loadDailyMenuMapForMonth(){
 
     dailyMenuMap.set(dayKey, cur);
   }
+}
+
+async function loadMonthlyCompareRange(startMonthKey, endMonthKey){
+  const res = await sb
+    .from("monthly_compare")
+    .select("month_key, sales, customers, new_customers")
+    .gte("month_key", startMonthKey)
+    .lte("month_key", endMonthKey)
+    .order("month_key", { ascending: true });
+
+  if (res.error) throw res.error;
+  return res.data || [];
 }
 
 async function loadStaffSalesForMonth(){
@@ -2209,6 +2222,27 @@ async function loadAndRender(){
   const first = startOfMonth(viewDate);
   const last = endOfMonth(viewDate);
   currentMonthKey = toMonthKey(first);
+
+  const compareStart = `${first.getFullYear()-1}-01`;
+const compareEnd   = `${first.getFullYear()}-12`;
+
+let compareRows = [];
+try{
+  compareRows = await loadMonthlyCompareRange(compareStart, compareEnd);
+}catch(e){
+  console.error(e);
+  alert("monthly_compare 取得でエラー: " + (e?.message || e));
+  compareRows = [];
+}
+
+monthlyCompareMap = new Map();
+for (const r of compareRows){
+  monthlyCompareMap.set(r.month_key, {
+    sales: Number(r.sales || 0),
+    customers: Number(r.customers || 0),
+    new_customers: Number(r.new_customers || 0),
+  });
+}
 
   // load goals
   const goals = await loadGoals(currentMonthKey);
