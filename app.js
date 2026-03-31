@@ -869,12 +869,10 @@ if (elSecondHalfAvgSales) elSecondHalfAvgSales.textContent = secondHalfAvgSales 
 if (elProjectedSales) elProjectedSales.textContent = projectedSales ? fmtYen(Math.round(projectedSales)) : "—";
 if (elProjectedCustomers) elProjectedCustomers.textContent = projectedCustomers ? (fmtNum1(projectedCustomers) + "名") : "—";
 
-  // ★追加：スタッフ別（月合計）枠の表示
+  // ★スタッフ別（月合計）枠の表示
 renderStaffAnalysis();
-  const __box = document.getElementById("staffAnalysisBox");
-if (__box) __box.prepend(Object.assign(document.createElement("div"), { className: "hint", textContent: "TEST: staffAnalysisBox is updating" }));
-renderStaffAnalysis();
-  const setSrc = (id, n) => {
+
+const setSrc = (id, n) => {
   const el = document.getElementById(id);
   if(!el) return;
   el.textContent = n ? (fmtNum(n) + "名") : "—";
@@ -885,9 +883,12 @@ setSrc("srcReferral",   srcReferral);
 setSrc("srcHotpepper",  srcHotpepper);
 setSrc("srcWeb",        srcWeb);
 setSrc("srcTicket",     srcTicket);
-  updateRings(sumSales, unitPrice, goalSales, goalUnitPrice);
-}
 
+// ★前年比較グラフ
+renderYoYSalesChart();
+
+updateRings(sumSales, unitPrice, goalSales, goalUnitPrice);
+}
 function renderSalesStaffCards(staffRows){
   const salesStaffInputs = document.getElementById("salesStaffInputs");
   if(!salesStaffInputs) return;
