@@ -1517,6 +1517,171 @@ const makeRingItem = (label, pct, count = null, showCount = false) => {
   box.appendChild(buildBlock("店舗全体", total, true, true));
 }
 
+function getYearMonthlySalesMap(targetYear){
+  const monthly = Array(12).fill(0);
+
+  for (const [dayKey, row] of bookingsDailyMap.entries()){
+    const d = new Date(dayKey + "T00:00:00");
+    if (d.getFullYear() !== targetYear) continue;
+
+    const monthIndex = d.getMonth();
+    const sales = Number(row.tech_sales || 0) + Number(row.retail_sales || 0);
+    monthly[monthIndex] += sales;
+  }
+
+  return monthly;
+}
+
+function getCompareYearMonthlySalesMap(targetYear){
+  const monthly = Array(12).fill(0);
+
+  for (const [monthKey, row] of monthlyCompareMap.entries()){
+    const [y, m] = String(monthKey).split("-");
+    const yy = Number(y);
+    const mm = Number(m);
+    if (yy !== targetYear) continue;
+    if (!mm || mm < 1 || mm > 12) continue;
+
+    monthly[mm - 1] = Number(row.sales || 0);
+  }
+
+  return monthly;
+}
+
+function renderYoYSalesChart(){
+  const canvas = document.getElementById("yoySalesChart");
+  if (!canvas || typeof Chart === "undefined") return;
+
+  const currentYear = viewDate.getFullYear();
+  const prevYear = currentYear - 1;
+
+  const labels = ["1月","2月","3月","4月","5月","6月","7月","8月","9月","10月","11月","12月"];
+
+  const currentData = getYearMonthlySalesMap(currentYear);
+  const prevData = getCompareYearMonthlySalesMap(prevYear);
+
+  if (yoySalesChartInstance){
+    yoySalesChartInstance.destroy();
+  }
+
+  yoySalesChartInstance = new Chart(canvas, {
+    type: "line",
+    data: {
+      labels,
+      datasets: [
+        {
+          label: `${prevYear}年`,
+          data: prevData,
+          borderColor: "rgba(140, 140, 140, 0.9)",
+          backgroundColor: "rgba(140, 140, 140, 0.15)",
+          borderWidth: 2,
+          pointRadius: 3,
+          pointHoverRadius: 5,
+          pointBackgroundColor: "rgba(140, 140, 140, 0.9)",
+          pointBorderColor: "#ffffff",
+          pointBorderWidth: 1.5,
+          tension: 0.32,
+          fill: false
+        },
+        {
+          label: `${currentYear}年`,
+          data: currentData,
+          borderColor: "rgba(214, 138, 69, 0.95)",
+          backgroundColor: "rgba(214, 138, 69, 0.18)",
+          borderWidth: 3,
+          pointRadius: 3.5,
+          pointHoverRadius: 6,
+          pointBackgroundColor: "rgba(214, 138, 69, 0.95)",
+          pointBorderColor: "#ffffff",
+          pointBorderWidth: 1.5,
+          tension: 0.32,
+          fill: false
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      layout: {
+        padding: {
+          top: 6,
+          right: 10,
+          bottom: 4,
+          left: 4
+        }
+      },
+      interaction: {
+        mode: "index",
+        intersect: false
+      },
+      plugins: {
+        legend: {
+          display: true,
+          position: "top",
+          align: "start",
+          labels: {
+            usePointStyle: true,
+            pointStyle: "circle",
+            boxWidth: 8,
+            boxHeight: 8,
+            padding: 16,
+            color: "#444",
+            font: {
+              size: 12,
+              weight: "600"
+            }
+          }
+        },
+        tooltip: {
+          backgroundColor: "rgba(255,255,255,0.96)",
+          titleColor: "#333",
+          bodyColor: "#333",
+          borderColor: "rgba(0,0,0,0.08)",
+          borderWidth: 1,
+          padding: 10,
+          displayColors: true,
+          callbacks: {
+            label: function(context){
+              const v = Number(context.parsed.y || 0);
+              return `${context.dataset.label}: ${v.toLocaleString("ja-JP")}円`;
+            }
+          }
+        }
+      },
+      scales: {
+        x: {
+          grid: {
+            display: false,
+            drawBorder: false
+          },
+          ticks: {
+            color: "#666",
+            font: {
+              size: 11
+            }
+          }
+        },
+        y: {
+          beginAtZero: true,
+          grid: {
+            color: "rgba(0,0,0,0.05)",
+            drawBorder: false
+          },
+          ticks: {
+            color: "#666",
+            font: {
+              size: 11
+            },
+            callback: function(value){
+              return Number(value).toLocaleString("ja-JP") + "円";
+            }
+          }
+        }
+      }
+    }
+  });
+}
+
 /* ===== Day Editor ===== */
 function fill0toMaxSelect(sel, max){
   if(!sel) return;
