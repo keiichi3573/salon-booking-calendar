@@ -477,7 +477,7 @@ function renderCalendar(){
   const last = endOfMonth(viewDate);
 
   currentMonthKey = toMonthKey(first);
-  await loadYearlyBookingsDailyMap(first.getFullYear());
+  
   elMonthTitle.textContent = `${first.getFullYear()}年 ${first.getMonth()+1}月`;
 
   elCalendar.classList.remove("mobileList");
@@ -2461,6 +2461,8 @@ async function loadAndRender(){
   const first = startOfMonth(viewDate);
   const last = endOfMonth(viewDate);
   currentMonthKey = toMonthKey(first);
+  
+  await loadYearlyBookingsDailyMap(first.getFullYear());
 
   const compareStart = `${first.getFullYear()-1}-01`;
 const compareEnd   = `${first.getFullYear()}-12`;
