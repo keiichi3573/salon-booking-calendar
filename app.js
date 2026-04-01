@@ -309,6 +309,7 @@ let viewDate = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
 let currentMonthKey = toMonthKey(viewDate);
 let dailyMenuMap = new Map(); // day -> { soda, ptreat, spa }
 let monthlyCompareMap = new Map(); // month_key -> { sales, customers, new_customers }
+let yearlyBookingsDailyMap = new Map(); // day -> { total, tech_sales, retail_sales, new_customers, repeat_customers }
 
 // Month data maps keyed by YYYY-MM-DD
 // bookingsDailyMap: { day -> { total, tech_sales, retail_sales, new_customers, repeat_customers } }
@@ -423,6 +424,33 @@ async function fetchBookingsDailyRange(startKey, endKey){
   return res.data || [];
 }
 
+async function loadYearlyBookingsDailyMap(targetYear){
+  yearlyBookingsDailyMap = new Map();
+
+  const startKey = `${targetYear}-01-01`;
+  const endKey = `${targetYear}-12-31`;
+
+  let rows = [];
+  try{
+    rows = await fetchBookingsDailyRange(startKey, endKey);
+  }catch(e){
+    console.error(e);
+    alert("年間 bookings_daily 取得でエラー: " + (e?.message || e));
+    rows = [];
+  }
+
+  for (const r of rows){
+    yearlyBookingsDailyMap.set(r.day, {
+      total: Number(r.total || 0),
+      tech_sales: Number(r.tech_sales || 0),
+      retail_sales: Number(r.retail_sales || 0),
+      new_customers: Number(r.new_customers || 0),
+      repeat_customers: Number(r.repeat_customers || 0),
+      new_sources: r.new_sources || {},
+    });
+  }
+}
+
 async function fetchBookingsStaffDay(dayKey){
   const res = await sb
     .from("bookings_staff_daily")
@@ -449,6 +477,7 @@ function renderCalendar(){
   const last = endOfMonth(viewDate);
 
   currentMonthKey = toMonthKey(first);
+  await loadYearlyBookingsDailyMap(first.getFullYear());
   elMonthTitle.textContent = `${first.getFullYear()}年 ${first.getMonth()+1}月`;
 
   elCalendar.classList.remove("mobileList");
@@ -1521,7 +1550,7 @@ const makeRingItem = (label, pct, count = null, showCount = false) => {
 function getYearMonthlySalesMap(targetYear){
   const monthly = Array(12).fill(0);
 
-  for (const [dayKey, row] of bookingsDailyMap.entries()){
+  for (const [dayKey, row] of yearlyBookingsDailyMap.entries()){
     const d = new Date(dayKey + "T00:00:00");
     if (d.getFullYear() !== targetYear) continue;
 
