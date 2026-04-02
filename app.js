@@ -277,6 +277,7 @@ const loginEmail = document.getElementById("loginEmail");
 const loginPassword = document.getElementById("loginPassword");
 const loginBtn = document.getElementById("loginBtn");
 const authHint = document.getElementById("authHint");
+const logoutBtn = document.getElementById("logoutBtn");
 
 
 // Hidden select (kept for compatibility)
@@ -2483,6 +2484,7 @@ async function signInApp(){
   if (authHint) authHint.textContent = "";
   if (authScreen) authScreen.classList.add("hidden");
   if (appShell) appShell.classList.remove("hidden");
+  if (logoutBtn) logoutBtn.classList.remove("hidden");
 
   await loadAndRender();
 }
@@ -2495,6 +2497,7 @@ async function signOutApp(){
 
   if (appShell) appShell.classList.add("hidden");
   if (authScreen) authScreen.classList.remove("hidden");
+  if (logoutBtn) logoutBtn.classList.add("hidden");
 }
 async function loadAndRender(){
   // Repair viewDate safety
@@ -2729,14 +2732,18 @@ async function bootAuth(){
   if (session){
     if (authScreen) authScreen.classList.add("hidden");
     if (appShell) appShell.classList.remove("hidden");
+    if (logoutBtn) logoutBtn.classList.remove("hidden");
     await loadAndRender();
   } else {
     if (appShell) appShell.classList.add("hidden");
     if (authScreen) authScreen.classList.remove("hidden");
+    if (logoutBtn) logoutBtn.classList.add("hidden");
   }
 }
 
 loginBtn?.addEventListener("click", signInApp);
+
+logoutBtn?.addEventListener("click", signOutApp);
 
 loginPassword?.addEventListener("keydown", (e) => {
   if (e.key === "Enter"){
