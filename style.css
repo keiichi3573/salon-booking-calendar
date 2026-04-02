@@ -925,3 +925,39 @@ body{
   height: 260px !important;
   max-height: 260px;
 }
+.authScreen{
+  position: fixed;
+  inset: 0;
+  background: rgba(245, 242, 236, 0.96);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  padding: 20px;
+}
+
+.authCard{
+  width: 100%;
+  max-width: 420px;
+  background: #fff;
+  border: 1px solid rgba(0,0,0,0.08);
+  border-radius: 18px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+  padding: 22px;
+}
+
+.authTitle{
+  font-size: 22px;
+  font-weight: 800;
+  margin-bottom: 6px;
+}
+
+.authSub{
+  font-size: 13px;
+  color: #666;
+  margin-bottom: 16px;
+}
+
+.hidden{
+  display: none !important;
+}
