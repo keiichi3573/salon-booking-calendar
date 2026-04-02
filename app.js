@@ -271,6 +271,12 @@ const salesRepeatCustomersSelect = document.getElementById("salesRepeatCustomers
 const salesTechInput = document.getElementById("salesTechInput");
 const salesRetailInput = document.getElementById("salesRetailInput");
 const salesStaffInputs = document.getElementById("salesStaffInputs");
+const appShell = document.getElementById("appShell");
+const authScreen = document.getElementById("authScreen");
+const loginEmail = document.getElementById("loginEmail");
+const loginPassword = document.getElementById("loginPassword");
+const loginBtn = document.getElementById("loginBtn");
+const authHint = document.getElementById("authHint");
 
 
 // Hidden select (kept for compatibility)
@@ -2452,6 +2458,44 @@ function initStoreBoardSafe(){
 }
   
 /* ===== Main load ===== */
+async function signInApp(){
+  const email = loginEmail?.value?.trim();
+  const password = loginPassword?.value || "";
+
+  if (!email || !password){
+    if (authHint) authHint.textContent = "メールアドレスとパスワードを入力してください";
+    return;
+  }
+
+  if (authHint) authHint.textContent = "ログイン中...";
+
+  const { error } = await sb.auth.signInWithPassword({
+    email,
+    password
+  });
+
+  if (error){
+    console.error(error);
+    if (authHint) authHint.textContent = "ログインに失敗しました";
+    return;
+  }
+
+  if (authHint) authHint.textContent = "";
+  if (authScreen) authScreen.classList.add("hidden");
+  if (appShell) appShell.classList.remove("hidden");
+
+  await loadAndRender();
+}
+
+async function signOutApp(){
+  const { error } = await sb.auth.signOut();
+  if (error){
+    console.error(error);
+  }
+
+  if (appShell) appShell.classList.add("hidden");
+  if (authScreen) authScreen.classList.remove("hidden");
+}
 async function loadAndRender(){
   // Repair viewDate safety
   if(!(viewDate instanceof Date) || isNaN(viewDate.getTime())){
@@ -2673,3 +2717,32 @@ window.addEventListener("focus", ()=>{
 /* ===== Boot ===== */
 initStoreBoardSafe();
 loadAndRender();
+
+async function bootAuth(){
+  const { data, error } = await sb.auth.getSession();
+  if (error){
+    console.error(error);
+  }
+
+  const session = data?.session || null;
+
+  if (session){
+    if (authScreen) authScreen.classList.add("hidden");
+    if (appShell) appShell.classList.remove("hidden");
+    await loadAndRender();
+  } else {
+    if (appShell) appShell.classList.add("hidden");
+    if (authScreen) authScreen.classList.remove("hidden");
+  }
+}
+
+loginBtn?.addEventListener("click", signInApp);
+
+loginPassword?.addEventListener("keydown", (e) => {
+  if (e.key === "Enter"){
+    e.preventDefault();
+    signInApp();
+  }
+});
+
+bootAuth();
