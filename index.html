@@ -182,7 +182,7 @@
 <canvas id="yoySalesChart" class="yoySalesChart"></canvas>
 </aside>
 
-  </main>
+  <main id="appShell">
 
   <!-- 日付入力モーダル -->
   <div class="modal hidden" id="dayModal">
@@ -395,7 +395,31 @@
       </div>
     </div>
   </div>
-    
+
+　  <!-- ログイン画面 -->
+  <div id="authScreen" class="authScreen hidden">
+    <div class="authCard">
+      <div class="authTitle">予約アプリ ログイン</div>
+      <div class="authSub">ログインすると予約アプリを利用できます</div>
+
+      <div class="fieldRow">
+        <label class="fieldLabel">メールアドレス</label>
+        <input id="loginEmail" class="fieldInput" type="email" autocomplete="username" />
+      </div>
+
+      <div class="fieldRow">
+        <label class="fieldLabel">パスワード</label>
+        <input id="loginPassword" class="fieldInput" type="password" autocomplete="current-password" />
+      </div>
+
+      <div class="cardRow">
+        <button id="loginBtn" class="btn primary" type="button">ログイン</button>
+      </div>
+
+      <div id="authHint" class="hint"></div>
+    </div>
+  </div>
+  
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 　<script src="config.js"></script>
