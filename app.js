@@ -2664,7 +2664,6 @@ for (const r of compareRows){
 　await loadStaffSalesForMonth();
 　renderCalendar();
 　renderSummaryAndPanel();
-renderSummaryAndPanel();
   applyDeviceVisibility();
 }
 
