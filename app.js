@@ -251,6 +251,7 @@ const elFirstHalfAvgSales = document.getElementById("firstHalfAvgSales");
 const elSecondHalfAvgSales = document.getElementById("secondHalfAvgSales");
 const elProjectedSales = document.getElementById("projectedSales");
 const elProjectedCustomers = document.getElementById("projectedCustomers");
+const elWeeklySummaryBox = document.getElementById("weeklySummaryBox");
 
 // Day modal
 const dayModal = document.getElementById("dayModal");
@@ -314,7 +315,7 @@ const goalUnitPriceInput = document.getElementById("goalUnitPriceInput");
 let yoySalesChartInstance = null;
 let viewDate = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
 let currentMonthKey = toMonthKey(viewDate);
-let dailyMenuMap = new Map(); // day -> { soda, ptreat, spa }
+let dailyMenuMap = new Map(); // day -> { soda, ptreat, treat, spa }
 let monthlyCompareMap = new Map(); // month_key -> { sales, customers, new_customers }
 let yearlyBookingsDailyMap = new Map(); // day -> { total, tech_sales, retail_sales, new_customers, repeat_customers }
 
@@ -534,38 +535,48 @@ function renderCalendar(){
 
     cell.appendChild(top);
 
-    const sales = Number(row.tech_sales||0) + Number(row.retail_sales||0);
-    if(sales > 0){
-      const salesEl = document.createElement("div");
-      salesEl.className = "daySales";
-      salesEl.textContent = sales.toLocaleString("ja-JP");
-      cell.appendChild(salesEl);
-    }
+const sales = Number(row.tech_sales||0) + Number(row.retail_sales||0);
+const customers = Number(row.new_customers || 0) + Number(row.repeat_customers || 0);
 
-    const customers = Number(row.new_customers || 0) + Number(row.repeat_customers || 0);
-if (customers > 0){
-  const cusEl = document.createElement("div");
-  cusEl.className = "dayMeta";
-  cusEl.textContent = `客 ${customers}`;
-  cell.appendChild(cusEl);
-}
-
-const menuDay = dailyMenuMap.get(key) || { soda: 0, ptreat: 0, spa: 0 };
+const menuDay = dailyMenuMap.get(key) || { soda: 0, ptreat: 0, treat: 0, spa: 0 };
 const soda = Number(menuDay.soda || 0);
 const pt   = Number(menuDay.ptreat || 0);
+const treat = Number(menuDay.treat || 0);
 const spa  = Number(menuDay.spa || 0);
 
-if (soda > 0 || pt > 0 || spa > 0){
+const metrics = document.createElement("div");
+metrics.className = "dayMetrics";
+
+if (sales > 0){
+  const salesEl = document.createElement("div");
+  salesEl.className = "daySales";
+  salesEl.textContent = `売 ${sales.toLocaleString("ja-JP")}`;
+  metrics.appendChild(salesEl);
+}
+
+if (customers > 0){
+  const cusEl = document.createElement("div");
+  cusEl.className = "dayMeta dayCustomersMeta";
+  cusEl.textContent = `客 ${customers}`;
+  metrics.appendChild(cusEl);
+}
+
+if (soda > 0 || pt > 0 || treat > 0 || spa > 0){
   const menuEl = document.createElement("div");
   menuEl.className = "dayMeta dayMenuMeta";
 
   const parts = [];
   if (soda > 0) parts.push(`炭${soda}`);
-  if (pt > 0)   parts.push(`PT${pt}`);
-  if (spa > 0)  parts.push(`ス${spa}`);
+  if (pt > 0) parts.push(`P${pt}`);
+  if (treat > 0) parts.push(`T${treat}`);
+  if (spa > 0) parts.push(`ス${spa}`);
 
-  menuEl.textContent = parts.join(" ");
-  cell.appendChild(menuEl);
+  menuEl.textContent = parts.join(" ・ ");
+  metrics.appendChild(menuEl);
+}
+
+if (metrics.children.length > 0){
+  cell.appendChild(metrics);
 }
 
     cell.addEventListener("click", () => openDayEditor(d));
@@ -594,6 +605,93 @@ function updateRings(sumSales, unitPrice, goalSales, goalUnitPrice){
   }
 }
 
+function getWeekBucketsForMonth(baseDate){
+  const first = startOfMonth(baseDate);
+  const last = endOfMonth(baseDate);
+  const weeks = [];
+
+  let cursor = new Date(first);
+  cursor.setDate(first.getDate() - first.getDay());
+
+  while (cursor <= last){
+    const start = new Date(cursor);
+    const end = new Date(cursor);
+    end.setDate(start.getDate() + 6);
+
+    const rangeStart = start < first ? new Date(first) : new Date(start);
+    const rangeEnd = end > last ? new Date(last) : new Date(end);
+
+    weeks.push({ start, end, rangeStart, rangeEnd });
+    cursor.setDate(cursor.getDate() + 7);
+  }
+
+  return weeks;
+}
+
+function renderWeeklySummary(){
+  if (!elWeeklySummaryBox) return;
+
+  elWeeklySummaryBox.innerHTML = "";
+  const weeks = getWeekBucketsForMonth(viewDate);
+
+  weeks.forEach((week, idx) => {
+    const total = {
+      sales: 0,
+      customers: 0,
+      newCustomers: 0,
+      soda: 0,
+      ptreat: 0,
+      treat: 0,
+      spa: 0
+    };
+
+    for (let d = new Date(week.rangeStart); d <= week.rangeEnd; d.setDate(d.getDate() + 1)){
+      const key = toDateKey(d);
+      const row = bookingsDailyMap.get(key) || {};
+      const menu = dailyMenuMap.get(key) || {};
+
+      total.sales += Number(row.tech_sales || 0) + Number(row.retail_sales || 0);
+      total.customers += Number(row.new_customers || 0) + Number(row.repeat_customers || 0);
+      total.newCustomers += Number(row.new_customers || 0);
+      total.soda += Number(menu.soda || 0);
+      total.ptreat += Number(menu.ptreat || 0);
+      total.treat += Number(menu.treat || 0);
+      total.spa += Number(menu.spa || 0);
+    }
+
+    const item = document.createElement("div");
+    item.className = "weeklyCard";
+
+    const head = document.createElement("div");
+    head.className = "weeklyCardHead";
+    head.innerHTML = `<strong>第${idx + 1}週</strong><span>${week.rangeStart.getMonth()+1}/${week.rangeStart.getDate()}〜${week.rangeEnd.getMonth()+1}/${week.rangeEnd.getDate()}</span>`;
+
+    const grid = document.createElement("div");
+    grid.className = "weeklyGrid";
+
+    const entries = [
+      ["売上", total.sales ? fmtYen(total.sales) : "—"],
+      ["客数", total.customers ? `${fmtNum(total.customers)}名` : "—"],
+      ["新規", total.newCustomers ? `${fmtNum(total.newCustomers)}名` : "—"],
+      ["炭酸", total.soda ? `${fmtNum(total.soda)}件` : "—"],
+      ["Pトリ", total.ptreat ? `${fmtNum(total.ptreat)}件` : "—"],
+      ["Tトリ", total.treat ? `${fmtNum(total.treat)}件` : "—"],
+      ["スパ", total.spa ? `${fmtNum(total.spa)}件` : "—"],
+    ];
+
+    entries.forEach(([label, value]) => {
+      const row = document.createElement("div");
+      row.className = "weeklyItem";
+      row.innerHTML = `<span>${label}</span><b>${value}</b>`;
+      grid.appendChild(row);
+    });
+
+    item.appendChild(head);
+    item.appendChild(grid);
+    elWeeklySummaryBox.appendChild(item);
+  });
+}
+
 function renderSummaryAndPanel(){
   const first = startOfMonth(viewDate);
   const last = endOfMonth(viewDate);
@@ -606,7 +704,7 @@ function renderSummaryAndPanel(){
   let sumRepeat = 0;
 
   // ★新規経路（月合計）
-let srcStorefront = 0, srcReferral = 0, srcHotpepper = 0, srcWeb = 0, srcTicket = 0;
+let srcStorefront = 0, srcReferral = 0, srcWeb = 0, srcTicket = 0;
 
   for(let day=1; day<=last.getDate(); day++){
     const d = new Date(first.getFullYear(), first.getMonth(), day);
@@ -618,7 +716,6 @@ let srcStorefront = 0, srcReferral = 0, srcHotpepper = 0, srcWeb = 0, srcTicket 
 const src = row.new_sources || {};
 srcStorefront += Number(src.storefront || 0);
 srcReferral   += Number(src.referral || 0);
-srcHotpepper  += Number(src.hotpepper || 0);
 srcWeb        += Number(src.web || 0);
 srcTicket     += Number(src.ticket || 0);
 
@@ -907,7 +1004,8 @@ if (elProjectedCustomers) elProjectedCustomers.textContent = projectedCustomers 
 
   // ★スタッフ別（月合計）枠の表示
 renderStaffAnalysis();
-
+renderWeeklySummary();
+  
 const setSrc = (id, n) => {
   const el = document.getElementById(id);
   if(!el) return;
@@ -916,7 +1014,6 @@ const setSrc = (id, n) => {
 
 setSrc("srcStorefront", srcStorefront);
 setSrc("srcReferral",   srcReferral);
-setSrc("srcHotpepper",  srcHotpepper);
 setSrc("srcWeb",        srcWeb);
 setSrc("srcTicket",     srcTicket);
 
@@ -1204,12 +1301,13 @@ async function loadDailyMenuMapForMonth(){
 
   for (const r of (res.data || [])){
     const dayKey = r.day;
-    const cur = dailyMenuMap.get(dayKey) || { soda: 0, ptreat: 0, spa: 0 };
-    const m = r.menus || {};
+    const cur = dailyMenuMap.get(dayKey) || { soda: 0, ptreat: 0, treat: 0, spa: 0 };
+const m = r.menus || {};
 
-    cur.soda   += Number(m.soda || 0);
-    cur.ptreat += Number(m.ptreat || 0);
-    cur.spa    += Number(m.spa || 0);
+cur.soda   += Number(m.soda || 0);
+cur.ptreat += Number(m.ptreat || 0);
+cur.treat  += Number(m.treat || 0);
+cur.spa    += Number(m.spa || 0);
 
     dailyMenuMap.set(dayKey, cur);
   }
@@ -2564,8 +2662,9 @@ for (const r of compareRows){
 
   renderCalendar();
   await loadDailyMenuMapForMonth();
-  await loadStaffSalesForMonth();   // ★追加（renderSummaryAndPanelの前）
-  renderSummaryAndPanel();
+renderCalendar();
+await loadStaffSalesForMonth();
+renderSummaryAndPanel();
   applyDeviceVisibility();
 }
 
