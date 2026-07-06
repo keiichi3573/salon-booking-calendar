@@ -2660,10 +2660,10 @@ for (const r of compareRows){
     });
   }
 
-  renderCalendar();
   await loadDailyMenuMapForMonth();
-renderCalendar();
-await loadStaffSalesForMonth();
+　await loadStaffSalesForMonth();
+　renderCalendar();
+　renderSummaryAndPanel();
 renderSummaryAndPanel();
   applyDeviceVisibility();
 }
