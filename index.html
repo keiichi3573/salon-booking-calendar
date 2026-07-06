@@ -37,7 +37,6 @@
 
       <div class="legendRight">
         <span class="chip closed">定休日</span>
-        <span class="chip note">📝 メモあり</span>
 
         <div class="legendActions">
           <button id="exportCsvBtn" class="btn" type="button">CSV出力</button>
@@ -120,7 +119,6 @@
 
 <div class="salesRow sourceRow"><span>新規：店頭</span><b id="srcStorefront">—</b></div>
 <div class="salesRow sourceRow"><span>新規：紹介</span><b id="srcReferral">—</b></div>
-<div class="salesRow sourceRow"><span>新規：ホットペッパー</span><b id="srcHotpepper">—</b></div>
 <div class="salesRow sourceRow"><span>新規：ネット（HP/SNS等）</span><b id="srcWeb">—</b></div>
 <div class="salesRow sourceRow"><span>新規：チケット</span><b id="srcTicket">—</b></div>
       </div>
@@ -157,7 +155,13 @@
   <div class="salesRow"><span>月の予想客数</span><b id="projectedCustomers">—</b></div>
 
   <hr class="salesHr" />
+<hr class="salesHr" />
 
+<div class="analysisHead">
+  <div class="analysisTitle">週別まとめ</div>
+</div>
+
+<div id="weeklySummaryBox" class="weeklySummaryBox"></div>
   <div class="analysisHead">
     <div class="analysisTitle">スタッフ別（月合計）</div>
   </div>
