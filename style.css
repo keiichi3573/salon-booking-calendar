@@ -961,3 +961,100 @@ body{
 .hidden{
   display: none !important;
 }
+.dayMetrics{
+  margin-top: 6px;
+  display: grid;
+  gap: 3px;
+}
+
+.daySales{
+  font-size: 12px;
+  font-weight: 900;
+  color: #111827;
+  line-height: 1.25;
+  white-space: nowrap;
+  opacity: 1;
+}
+
+.dayMeta{
+  font-size: 11px;
+  line-height: 1.25;
+  opacity: 0.96;
+  margin-top: 0;
+}
+
+.dayCustomersMeta{
+  color: #374151;
+  font-weight: 700;
+}
+
+.dayMenuMeta{
+  font-weight: 800;
+  color: #7c5a1f;
+  font-size: 10.5px;
+  letter-spacing: .01em;
+}
+.weeklySummaryBox{
+  display:grid;
+  gap: 10px;
+}
+
+.weeklyCard{
+  background:#fff;
+  border:1px solid rgba(0,0,0,.08);
+  border-radius: 14px;
+  padding: 10px 12px;
+}
+
+.weeklyCardHead{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.weeklyCardHead strong{
+  font-size: 14px;
+  color:#1f2937;
+}
+
+.weeklyCardHead span{
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.weeklyGrid{
+  display:grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px 10px;
+}
+
+.weeklyItem{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap: 8px;
+  padding: 4px 0;
+  border-bottom: 1px dashed rgba(0,0,0,.08);
+}
+
+.weeklyItem:nth-last-child(-n+2){
+  border-bottom:none;
+}
+
+.weeklyItem span{
+  font-size: 12px;
+  color: #4b5563;
+}
+
+.weeklyItem b{
+  font-size: 12px;
+  color: #111827;
+}
+
+@media (max-width: 680px){
+  .weeklyGrid{ grid-template-columns: 1fr; }
+  .weeklyItem{ border-bottom: 1px dashed rgba(0,0,0,.08); }
+  .weeklyItem:last-child{ border-bottom:none; }
+}
