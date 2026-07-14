@@ -220,6 +220,7 @@ const btnPrev      = document.getElementById("prevBtn");
 const btnNext      = document.getElementById("nextBtn");
 const btnExport    = document.getElementById("exportCsvBtn");
 const btnSettings  = document.getElementById("settingsBtn");
+const btnOpenAnalysis = document.getElementById("openAnalysisBtn");
 
 const elTotalMonthCount = document.getElementById("totalMonthCount");
 const elTodayTotalCount = document.getElementById("todayTotalCount");
@@ -2678,6 +2679,11 @@ btnNext?.addEventListener("click", async ()=>{
 });
 
 btnExport?.addEventListener("click", exportCsv);
+
+btnOpenAnalysis?.addEventListener("click", () => {
+  const monthKey = toMonthKey(viewDate);
+  window.location.href = `analysis.html?month=${monthKey}`;
+});
 
 btnSettings?.addEventListener("click", ()=> openModal(settingsModal));
 settingsCloseBtn?.addEventListener("click", ()=> closeModal(settingsModal));
