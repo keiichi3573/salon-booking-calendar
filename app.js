@@ -336,7 +336,7 @@ let editingStaffRows = [];
 let editingStaffCountMap = new Map();
 let editingStaffSalesMap = new Map(); // staff_id -> { tech, retail, customers, menus? }
 let editingNewSourceMap = new Map(); 
-// key: storefront/referral/hotpepper/web/ticket  value: number
+// key: storefront/referral/web/ticket  value: number
 
 /* ===== Data access ===== */
 async function loadGoals(monthKey){
@@ -1197,13 +1197,12 @@ function renderNewSourceCards(){
 
   wrap.innerHTML = "";
 
-  const sources = [
-    { key:"storefront", label:"店頭" },
-    { key:"referral", label:"紹介" },
-    { key:"hotpepper", label:"ホットペッパー" },
-    { key:"web", label:"ネット（HP/SNS等）" },
-    { key:"ticket", label:"チケット" },
-  ];
+ const sources = [
+  { key:"storefront", label:"店頭" },
+  { key:"referral", label:"紹介" },
+  { key:"web", label:"ネット（HP/SNS等）" },
+  { key:"ticket", label:"チケット" },
+];
 
   const makeCard = (item) => {
     const card = document.createElement("div");
@@ -1276,14 +1275,18 @@ function getNewSourcesObj(){
   return {
     storefront: Number(editingNewSourceMap.get("storefront") || 0),
     referral: Number(editingNewSourceMap.get("referral") || 0),
-    hotpepper: Number(editingNewSourceMap.get("hotpepper") || 0),
     web: Number(editingNewSourceMap.get("web") || 0),
     ticket: Number(editingNewSourceMap.get("ticket") || 0),
   };
 }
 
 function sumNewSources(obj){
-  return Number(obj.storefront||0) + Number(obj.referral||0) + Number(obj.hotpepper||0) + Number(obj.web||0) + Number(obj.ticket||0);
+  return (
+    Number(obj.storefront || 0) +
+    Number(obj.referral || 0) +
+    Number(obj.web || 0) +
+    Number(obj.ticket || 0)
+  );
 }
 
 async function loadDailyMenuMapForMonth(){
@@ -2724,12 +2727,11 @@ salesEntrySaveBtnEl?.addEventListener("click", () => {
 const newSourceClearBtn = document.getElementById("newSourceClearBtn");
 newSourceClearBtn?.addEventListener("click", () => {
   editingNewSourceMap = new Map([
-    ["storefront", 0],
-    ["referral", 0],
-    ["hotpepper", 0],
-    ["web", 0],
-    ["ticket", 0],
-  ]);
+  ["storefront", 0],
+  ["referral", 0],
+  ["web", 0],
+  ["ticket", 0],
+]);
   renderNewSourceCards();
 });
 
