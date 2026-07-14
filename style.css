@@ -1058,3 +1058,28 @@ body{
   .weeklyItem{ border-bottom: 1px dashed rgba(0,0,0,.08); }
   .weeklyItem:last-child{ border-bottom:none; }
 }
+
+.salesAnalysisAction{
+  margin-top: 12px;
+}
+
+.salesAnalysisBtn{
+  width: 100%;
+  min-height: 46px;
+  border: none;
+  border-radius: 12px;
+  background: #2563eb;
+  color: #ffffff;
+  font-size: 15px;
+  font-weight: 900;
+  cursor: pointer;
+  box-shadow: 0 6px 16px rgba(37, 99, 235, 0.20);
+}
+
+.salesAnalysisBtn:hover{
+  background: #1d4ed8;
+}
+
+.salesAnalysisBtn:active{
+  transform: translateY(1px);
+}
