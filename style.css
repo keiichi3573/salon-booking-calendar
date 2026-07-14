@@ -1083,3 +1083,9 @@ body{
 .salesAnalysisBtn:active{
   transform: translateY(1px);
 }
+
+.analysisChartWrap{
+  position: relative;
+  width: 100%;
+  height: 360px;
+}
