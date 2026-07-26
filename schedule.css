@@ -1,0 +1,756 @@
+:root{
+  --schedule-bg:#f6f4f0;
+  --schedule-panel:#ffffff;
+  --schedule-text:#243247;
+  --schedule-muted:#6b7280;
+  --schedule-line:#d9dee7;
+  --schedule-line-soft:#edf0f4;
+  --schedule-primary:#416b9c;
+  --schedule-primary-dark:#31557d;
+  --schedule-primary-soft:#eaf1f8;
+  --schedule-danger:#b44747;
+  --schedule-danger-soft:#faecec;
+  --schedule-closed:#f1f2f4;
+  --schedule-new:#f8e7e7;
+  --schedule-repeat:#e6f0fb;
+  --schedule-visited:#e7f3ec;
+  --schedule-shadow:0 12px 34px rgba(26,42,68,.12);
+
+  --schedule-slot-width:46px;
+  --schedule-staff-width:170px;
+  --schedule-row-height:104px;
+}
+
+*{
+  box-sizing:border-box;
+}
+
+html,
+body{
+  margin:0;
+  min-height:100%;
+}
+
+body{
+  font-family:
+    "Noto Sans JP",
+    "Yu Gothic",
+    Meiryo,
+    sans-serif;
+
+  color:var(--schedule-text);
+  background:var(--schedule-bg);
+}
+
+button,
+input,
+select,
+textarea{
+  font:inherit;
+}
+
+button{
+  touch-action:manipulation;
+}
+
+/* =========================
+   上部ヘッダー
+========================= */
+
+.scheduleTopbar{
+  position:sticky;
+  top:0;
+  z-index:20;
+
+  display:grid;
+  grid-template-columns:1fr auto 1fr;
+  align-items:center;
+  gap:14px;
+
+  padding:12px 18px;
+
+  background:rgba(255,255,255,.96);
+  border-bottom:1px solid var(--schedule-line);
+
+  backdrop-filter:blur(8px);
+}
+
+.scheduleTopbar > :last-child{
+  justify-self:end;
+}
+
+.scheduleBrand{
+  font-weight:900;
+  letter-spacing:.04em;
+  color:#2e4664;
+}
+
+/* =========================
+   共通ボタン
+========================= */
+
+.scheduleBtn,
+.scheduleIconBtn{
+  border:1px solid var(--schedule-line);
+  border-radius:11px;
+
+  background:#ffffff;
+  color:var(--schedule-text);
+
+  min-height:42px;
+  padding:0 16px;
+
+  font-weight:800;
+  cursor:pointer;
+  text-decoration:none;
+
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.scheduleIconBtn{
+  width:42px;
+  padding:0;
+}
+
+.scheduleBtnPrimary{
+  background:var(--schedule-primary);
+  border-color:var(--schedule-primary);
+  color:#ffffff;
+}
+
+.scheduleBtnPrimary:hover{
+  background:var(--schedule-primary-dark);
+}
+
+.scheduleBtnGhost:hover,
+.scheduleIconBtn:hover{
+  background:#f7f9fc;
+}
+
+.scheduleBtnDanger{
+  background:var(--schedule-danger-soft);
+  border-color:#efcaca;
+  color:var(--schedule-danger);
+}
+
+.scheduleBtnLarge{
+  min-width:150px;
+}
+
+/* =========================
+   ページ全体
+========================= */
+
+.schedulePage{
+  padding:18px;
+  max-width:1600px;
+  margin:0 auto;
+}
+
+.scheduleToolbar{
+  display:grid;
+  grid-template-columns:1fr auto 1fr;
+  align-items:center;
+  gap:14px;
+
+  margin-bottom:14px;
+}
+
+.scheduleDateNav{
+  display:flex;
+  gap:8px;
+  align-items:center;
+}
+
+.scheduleDateTitle{
+  margin:0;
+  font-size:22px;
+  text-align:center;
+}
+
+.scheduleSummary{
+  justify-self:end;
+  font-weight:900;
+  color:var(--schedule-primary-dark);
+}
+
+.scheduleCard{
+  background:var(--schedule-panel);
+  border:1px solid var(--schedule-line);
+  border-radius:16px;
+  box-shadow:var(--schedule-shadow);
+  overflow:hidden;
+}
+
+.scheduleScroll{
+  overflow:auto;
+  max-width:100%;
+}
+
+.scheduleFootnote{
+  margin:10px 4px 0;
+  color:var(--schedule-muted);
+  font-size:12px;
+}
+
+/* =========================
+   予約表
+========================= */
+
+.scheduleGrid{
+  display:grid;
+
+  grid-template-columns:
+    var(--schedule-staff-width)
+    repeat(35, var(--schedule-slot-width));
+
+  min-width:
+    calc(
+      var(--schedule-staff-width)
+      + 35 * var(--schedule-slot-width)
+    );
+
+  position:relative;
+}
+
+.scheduleCornerCell,
+.scheduleTimeCell,
+.scheduleStaffCell,
+.scheduleSlotCell{
+  border-right:1px solid var(--schedule-line);
+  border-bottom:1px solid var(--schedule-line);
+}
+
+.scheduleCornerCell{
+  position:sticky;
+  left:0;
+  z-index:8;
+
+  background:#f7f9fc;
+  padding:12px;
+  font-weight:900;
+}
+
+.scheduleTimeCell{
+  background:#f7f9fc;
+
+  text-align:center;
+  padding:10px 0;
+
+  font-size:11px;
+  color:#4b5563;
+
+  position:sticky;
+  top:0;
+  z-index:5;
+}
+
+.scheduleTimeCellMajor{
+  font-weight:900;
+  color:#27364b;
+}
+
+.scheduleStaffCell{
+  position:sticky;
+  left:0;
+  z-index:7;
+
+  background:#ffffff;
+
+  padding:15px 12px;
+  min-height:var(--schedule-row-height);
+}
+
+.scheduleStaffName{
+  font-size:15px;
+  font-weight:900;
+}
+
+.scheduleStaffMeta{
+  font-size:12px;
+  color:var(--schedule-muted);
+  margin-top:5px;
+}
+
+.scheduleStaffBadge{
+  display:inline-block;
+
+  margin-top:9px;
+  padding:4px 8px;
+
+  border-radius:999px;
+
+  background:var(--schedule-primary-soft);
+  color:var(--schedule-primary-dark);
+
+  font-size:11px;
+  font-weight:800;
+}
+
+.scheduleSlotCell{
+  min-height:var(--schedule-row-height);
+  background:#ffffff;
+
+  cursor:pointer;
+  position:relative;
+}
+
+.scheduleSlotCellHour{
+  border-left:1px solid #cbd2dc;
+}
+
+.scheduleSlotCell:hover{
+  background:#f5f9fd;
+}
+
+.scheduleSlotCellClosed{
+  background:var(--schedule-closed);
+  cursor:not-allowed;
+}
+
+/* =========================
+   予約ブロック
+========================= */
+
+.scheduleBookingBlock{
+  position:absolute;
+  z-index:4;
+
+  top:8px;
+  height:88px;
+
+  border-radius:10px;
+  padding:8px 10px;
+
+  border:1px solid rgba(56,87,122,.18);
+
+  box-shadow:
+    0 5px 14px
+    rgba(42,62,88,.12);
+
+  overflow:hidden;
+  cursor:pointer;
+}
+
+.scheduleBookingBlockNew{
+  background:var(--schedule-new);
+}
+
+.scheduleBookingBlockRepeat{
+  background:var(--schedule-repeat);
+}
+
+.scheduleBookingBlockVisited{
+  background:var(--schedule-visited);
+}
+
+.scheduleBookingBlockCancelled{
+  background:#ececec;
+  text-decoration:line-through;
+  opacity:.7;
+}
+
+.scheduleBookingTop{
+  display:flex;
+  justify-content:space-between;
+  gap:8px;
+  align-items:flex-start;
+}
+
+.scheduleBookingName{
+  font-weight:900;
+  font-size:13px;
+
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.scheduleBookingTime{
+  font-size:10px;
+  color:#536171;
+  white-space:nowrap;
+}
+
+.scheduleBookingMenu{
+  font-size:12px;
+  margin-top:6px;
+  line-height:1.25;
+  font-weight:700;
+}
+
+.scheduleBookingTags{
+  margin-top:5px;
+
+  display:flex;
+  gap:4px;
+  flex-wrap:wrap;
+}
+
+.scheduleTag{
+  font-size:9px;
+
+  padding:2px 5px;
+  border-radius:999px;
+
+  background:rgba(255,255,255,.72);
+}
+
+/* =========================
+   モーダル
+========================= */
+
+.scheduleModal{
+  position:fixed;
+  inset:0;
+  z-index:50;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  padding:18px;
+}
+
+.scheduleModalBackdrop{
+  position:absolute;
+  inset:0;
+
+  background:rgba(29,39,55,.5);
+}
+
+.scheduleModalCard{
+  position:relative;
+  z-index:1;
+
+  width:min(900px,96vw);
+  max-height:94vh;
+  overflow:auto;
+
+  background:#ffffff;
+
+  border-radius:20px;
+  box-shadow:
+    0 24px 70px
+    rgba(10,20,35,.28);
+
+  padding:24px;
+}
+
+.scheduleModalClose{
+  position:absolute;
+  right:14px;
+  top:12px;
+
+  border:0;
+  background:transparent;
+
+  font-size:28px;
+  color:#657083;
+
+  cursor:pointer;
+}
+
+.scheduleModalHeader h2{
+  margin:0;
+  font-size:24px;
+}
+
+.scheduleModalHeader p{
+  margin:6px 0 20px;
+
+  color:var(--schedule-muted);
+  font-size:13px;
+}
+
+/* =========================
+   入力フォーム
+========================= */
+
+.scheduleFormGrid{
+  display:grid;
+  grid-template-columns:
+    repeat(2, minmax(0,1fr));
+
+  gap:14px;
+}
+
+.scheduleLowerForm{
+  margin-top:18px;
+}
+
+.scheduleField{
+  display:flex;
+  flex-direction:column;
+  gap:7px;
+}
+
+.scheduleFieldFull{
+  grid-column:1 / -1;
+}
+
+.scheduleField > span,
+.scheduleMenuSection h3{
+  font-weight:900;
+  font-size:13px;
+  color:#334155;
+}
+
+.scheduleField input,
+.scheduleField select,
+.scheduleField textarea,
+.scheduleReadOnlyValue{
+  width:100%;
+
+  border:1px solid var(--schedule-line);
+  border-radius:11px;
+
+  background:#ffffff;
+
+  padding:11px 12px;
+  min-height:44px;
+}
+
+.scheduleField textarea{
+  resize:vertical;
+}
+
+.scheduleField small{
+  color:var(--schedule-muted);
+  font-size:11px;
+}
+
+.scheduleReadOnlyValue{
+  background:#f7f9fc;
+  font-weight:900;
+}
+
+/* =========================
+   選択ボタン
+========================= */
+
+.scheduleSegmented{
+  display:flex;
+  gap:7px;
+}
+
+.scheduleSegment{
+  flex:1;
+
+  min-height:44px;
+
+  border:1px solid var(--schedule-line);
+  border-radius:11px;
+
+  background:#ffffff;
+
+  font-weight:800;
+  cursor:pointer;
+}
+
+.scheduleSegment.active{
+  background:var(--schedule-primary-soft);
+  border-color:#8eadd0;
+  color:var(--schedule-primary-dark);
+}
+
+/* =========================
+   メニューボタン
+========================= */
+
+.scheduleMenuSection{
+  margin-top:20px;
+}
+
+.scheduleMenuSection h3{
+  margin:0 0 10px;
+}
+
+.scheduleMenuGrid{
+  display:grid;
+  grid-template-columns:
+    repeat(3, minmax(0,1fr));
+
+  gap:9px;
+}
+
+.scheduleMenuGridCompact{
+  grid-template-columns:
+    repeat(4, minmax(0,1fr));
+}
+
+.scheduleMenuBtn{
+  min-height:60px;
+
+  border:1px solid var(--schedule-line);
+  border-radius:12px;
+
+  background:#ffffff;
+
+  font-weight:800;
+  cursor:pointer;
+
+  padding:8px;
+
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:3px;
+}
+
+.scheduleMenuBtn:hover{
+  background:#f8fafc;
+}
+
+.scheduleMenuBtn.active{
+  background:var(--schedule-primary-soft);
+  border-color:#7297bf;
+  color:var(--schedule-primary-dark);
+
+  box-shadow:
+    inset 0 0 0 1px #7297bf;
+}
+
+.scheduleMenuBtn.disabled{
+  opacity:.4;
+  cursor:not-allowed;
+}
+
+.scheduleMenuIcon{
+  font-size:20px;
+}
+
+.scheduleMenuMinutes{
+  font-size:10px;
+  color:var(--schedule-muted);
+}
+
+/* =========================
+   カラー追加選択
+========================= */
+
+.scheduleSubChoice{
+  margin-top:12px;
+  padding:12px;
+
+  border:1px dashed #aebdce;
+  border-radius:12px;
+
+  background:#fafcff;
+}
+
+.scheduleSubChoice > span{
+  display:block;
+
+  font-size:12px;
+  font-weight:800;
+
+  margin-bottom:8px;
+}
+
+/* =========================
+   エラー表示・下部ボタン
+========================= */
+
+.scheduleFormMessage{
+  min-height:22px;
+  margin-top:14px;
+
+  font-size:12px;
+  color:var(--schedule-danger);
+  font-weight:700;
+}
+
+.scheduleModalActions{
+  display:flex;
+  align-items:center;
+  gap:10px;
+
+  margin-top:18px;
+
+  border-top:
+    1px solid
+    var(--schedule-line-soft);
+
+  padding-top:16px;
+}
+
+.scheduleActionSpacer{
+  flex:1;
+}
+
+/* =========================
+   共通非表示
+========================= */
+
+.hidden{
+  display:none !important;
+}
+
+/* =========================
+   スマホ・タブレット
+========================= */
+
+@media (max-width:760px){
+
+  :root{
+    --schedule-staff-width:132px;
+    --schedule-slot-width:42px;
+    --schedule-row-height:96px;
+  }
+
+  .scheduleTopbar{
+    grid-template-columns:1fr auto;
+    padding:10px;
+  }
+
+  .scheduleBrand{
+    display:none;
+  }
+
+  .scheduleToolbar{
+    grid-template-columns:1fr;
+    justify-items:center;
+  }
+
+  .scheduleDateNav{
+    order:2;
+  }
+
+  .scheduleSummary{
+    justify-self:center;
+  }
+
+  .scheduleFormGrid{
+    grid-template-columns:1fr;
+  }
+
+  .scheduleFieldFull{
+    grid-column:auto;
+  }
+
+  .scheduleMenuGrid,
+  .scheduleMenuGridCompact{
+    grid-template-columns:
+      repeat(2, minmax(0,1fr));
+  }
+
+  .scheduleModalCard{
+    padding:20px 14px;
+  }
+
+  .scheduleModalActions{
+    flex-wrap:wrap;
+  }
+
+  .scheduleActionSpacer{
+    display:none;
+  }
+
+  .scheduleModalActions .scheduleBtn{
+    flex:1;
+  }
+}
