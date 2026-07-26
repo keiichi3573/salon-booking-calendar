@@ -1,0 +1,401 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <title>予約表 | COMFORT</title>
+
+  <link rel="stylesheet" href="schedule.css" />
+</head>
+
+<body>
+
+  <header class="scheduleTopbar">
+
+    <a class="scheduleBtn scheduleBtnGhost" href="index.html">
+      ← カレンダーへ戻る
+    </a>
+
+    <div class="scheduleBrand">
+      Hair＆Make COMFORT
+    </div>
+
+    <button
+      id="newBookingBtn"
+      class="scheduleBtn scheduleBtnPrimary"
+      type="button"
+    >
+      ＋ 予約を追加
+    </button>
+
+  </header>
+
+  <main class="schedulePage">
+
+    <section class="scheduleToolbar">
+
+      <div class="scheduleDateNav">
+
+        <button
+          id="prevDayBtn"
+          class="scheduleIconBtn"
+          type="button"
+          aria-label="前日"
+        >
+          ◀
+        </button>
+
+        <button
+          id="todayBtn"
+          class="scheduleBtn scheduleBtnGhost"
+          type="button"
+        >
+          今日
+        </button>
+
+        <button
+          id="nextDayBtn"
+          class="scheduleIconBtn"
+          type="button"
+          aria-label="翌日"
+        >
+          ▶
+        </button>
+
+      </div>
+
+      <h1 id="dateTitle" class="scheduleDateTitle">
+        —
+      </h1>
+
+      <div id="daySummary" class="scheduleSummary">
+        予約 0件
+      </div>
+
+    </section>
+
+    <section class="scheduleCard">
+
+      <div class="scheduleScroll">
+
+        <div
+          id="scheduleGrid"
+          class="scheduleGrid"
+        ></div>
+
+      </div>
+
+    </section>
+
+    <p class="scheduleFootnote">
+      空いている時間を押すと、担当スタッフと開始時間が自動で入ります。
+    </p>
+
+  </main>
+
+  <!-- 予約入力画面 -->
+  <div
+    id="bookingModal"
+    class="scheduleModal hidden"
+    aria-hidden="true"
+  >
+
+    <div
+      class="scheduleModalBackdrop"
+      data-close="true"
+    ></div>
+
+    <section
+      class="scheduleModalCard"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="bookingModalTitle"
+    >
+
+      <button
+        id="modalCloseBtn"
+        class="scheduleModalClose"
+        type="button"
+        aria-label="閉じる"
+      >
+        ×
+      </button>
+
+      <div class="scheduleModalHeader">
+
+        <h2 id="bookingModalTitle">
+          予約入力
+        </h2>
+
+        <p>
+          必要な項目だけを、上から順に入力してください。
+        </p>
+
+      </div>
+
+      <div class="scheduleFormGrid">
+
+        <label class="scheduleField scheduleFieldFull">
+
+          <span>お客様名</span>
+
+          <input
+            id="customerNameInput"
+            type="text"
+            placeholder="例：山田 花子"
+            autocomplete="off"
+          />
+
+          <small>
+            「様」は予約表で自動表示します。
+          </small>
+
+        </label>
+
+        <label class="scheduleField">
+
+          <span>担当スタッフ</span>
+
+          <select id="staffSelect"></select>
+
+        </label>
+
+        <label class="scheduleField">
+
+          <span>開始時間</span>
+
+          <select id="startTimeSelect"></select>
+
+        </label>
+
+        <div class="scheduleField">
+
+          <span>終了予定</span>
+
+          <div
+            id="endTimeDisplay"
+            class="scheduleReadOnlyValue"
+          >
+            —
+          </div>
+
+          <small>
+            選択したメニューから自動計算します。
+          </small>
+
+        </div>
+
+        <div class="scheduleField">
+
+          <span>区分</span>
+
+          <div class="scheduleSegmented">
+
+            <button
+              type="button"
+              class="scheduleSegment"
+              data-customer-type="new"
+            >
+              新規
+            </button>
+
+            <button
+              type="button"
+              class="scheduleSegment active"
+              data-customer-type="repeat"
+            >
+              既存
+            </button>
+
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- よく使う組み合わせ -->
+      <section class="scheduleMenuSection">
+
+        <h3>よく使う組み合わせ</h3>
+
+        <div
+          id="comboButtons"
+          class="scheduleMenuGrid"
+        ></div>
+
+      </section>
+
+      <!-- 単品・追加メニュー -->
+      <section class="scheduleMenuSection">
+
+        <h3>単品・追加メニュー</h3>
+
+        <div
+          id="singleMenuButtons"
+          class="scheduleMenuGrid scheduleMenuGridCompact"
+        ></div>
+
+      </section>
+
+      <!-- カラー選択 -->
+      <section
+        id="colorOptionsSection"
+        class="scheduleMenuSection hidden"
+      >
+
+        <h3>カラーの種類</h3>
+
+        <div
+          id="colorTypeButtons"
+          class="scheduleMenuGrid scheduleMenuGridCompact"
+        ></div>
+
+        <div
+          id="placentaChoice"
+          class="scheduleSubChoice hidden"
+        >
+
+          <span>
+            白髪染め・通常カラーの場合
+          </span>
+
+          <div class="scheduleSegmented">
+
+            <button
+              type="button"
+              class="scheduleSegment active"
+              data-placenta="normal"
+            >
+              通常
+            </button>
+
+            <button
+              type="button"
+              class="scheduleSegment"
+              data-placenta="placenta"
+            >
+              プラセンタカラー
+            </button>
+
+          </div>
+
+        </div>
+
+      </section>
+
+      <div class="scheduleFormGrid scheduleLowerForm">
+
+        <div class="scheduleField">
+
+          <span>指名・フリー</span>
+
+          <div class="scheduleSegmented">
+
+            <button
+              type="button"
+              class="scheduleSegment active"
+              data-nomination="nomination"
+            >
+              指名
+            </button>
+
+            <button
+              type="button"
+              class="scheduleSegment"
+              data-nomination="free"
+            >
+              フリー
+            </button>
+
+          </div>
+
+        </div>
+
+        <label class="scheduleField">
+
+          <span>来店経路</span>
+
+          <select id="sourceSelect">
+
+            <option value="">
+              選択なし
+            </option>
+
+            <option value="storefront">
+              店頭
+            </option>
+
+            <option value="referral">
+              紹介
+            </option>
+
+            <option value="web">
+              ネット（HP/SNS等）
+            </option>
+
+            <option value="ticket">
+              チケット
+            </option>
+
+          </select>
+
+        </label>
+
+        <label class="scheduleField scheduleFieldFull">
+
+          <span>備考（任意）</span>
+
+          <textarea
+            id="noteInput"
+            rows="2"
+            placeholder="例：前回と同じ色味"
+          ></textarea>
+
+        </label>
+
+      </div>
+
+      <div
+        id="formMessage"
+        class="scheduleFormMessage"
+      ></div>
+
+      <div class="scheduleModalActions">
+
+        <button
+          id="cancelBookingBtn"
+          type="button"
+          class="scheduleBtn scheduleBtnDanger hidden"
+        >
+          予約をキャンセル
+        </button>
+
+        <div class="scheduleActionSpacer"></div>
+
+        <button
+          id="modalCancelBtn"
+          type="button"
+          class="scheduleBtn scheduleBtnGhost"
+        >
+          閉じる
+        </button>
+
+        <button
+          id="saveBookingBtn"
+          type="button"
+          class="scheduleBtn scheduleBtnPrimary scheduleBtnLarge"
+        >
+          予約を保存
+        </button>
+
+      </div>
+
+    </section>
+
+  </div>
+
+  <script src="schedule.js"></script>
+
+</body>
+</html>
