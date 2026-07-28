@@ -48,8 +48,7 @@ const SLOT_COUNT =
     SLOT_MINUTES
   ) + 1;
 
-const STORAGE_KEY =
-  "comfort_schedule_prototype_v1";
+
 
 /* =========================
    スタッフ
@@ -382,8 +381,7 @@ let viewDate =
     now.getDate()
   );
 
-let bookings =
-  loadBookings();
+let bookings = [];
 
 let editingBookingId = null;
 
@@ -519,39 +517,163 @@ function roundUpToSlot(minutes){
 }
 
 /* =========================
-   仮保存
+   Supabase予約データ
 ========================= */
 
-function loadBookings(){
-  try{
-    const value =
-      localStorage.getItem(
-        STORAGE_KEY
+function normalizeDatabaseTime(
+  timeValue
+){
+  if(!timeValue){
+    return "";
+  }
+
+  return String(timeValue)
+    .slice(0, 5);
+}
+
+function databaseRowToBooking(
+  row
+){
+  return {
+    id:
+      row.id,
+
+    date:
+      row.appointment_date,
+
+    staffId:
+      row.staff_id,
+
+    customerName:
+      row.customer_name,
+
+    start:
+      normalizeDatabaseTime(
+        row.start_time
+      ),
+
+    end:
+      normalizeDatabaseTime(
+        row.end_time
+      ),
+
+    customerType:
+      row.customer_type,
+
+    nomination:
+      row.nomination,
+
+    menus:
+      row.menu_ids || [],
+
+    menuLabels:
+      row.menu_labels || [],
+
+    colorType:
+      row.color_type || "",
+
+    placentaMode:
+      row.placenta_mode ||
+      "normal",
+
+    source:
+      row.source || "",
+
+    note:
+      row.note || "",
+
+    status:
+      row.status ||
+      "reserved"
+  };
+}
+
+function bookingToDatabaseRow(
+  booking
+){
+  return {
+    appointment_date:
+      booking.date,
+
+    staff_id:
+      booking.staffId,
+
+    customer_name:
+      booking.customerName,
+
+    start_time:
+      booking.start,
+
+    end_time:
+      booking.end,
+
+    customer_type:
+      booking.customerType,
+
+    nomination:
+      booking.nomination,
+
+    menu_ids:
+      booking.menus,
+
+    menu_labels:
+      booking.menuLabels,
+
+    color_type:
+      booking.colorType || null,
+
+    placenta_mode:
+      booking.placentaMode,
+
+    source:
+      booking.source || null,
+
+    note:
+      booking.note || null,
+
+    status:
+      booking.status,
+
+    updated_at:
+      new Date().toISOString()
+  };
+}
+
+async function loadBookingsFromSupabase(){
+  const {
+    data,
+    error
+  } =
+    await sb
+      .from("appointments")
+      .select("*")
+      .order(
+        "appointment_date",
+        {
+          ascending:true
+        }
+      )
+      .order(
+        "start_time",
+        {
+          ascending:true
+        }
       );
 
-    const parsed =
-      JSON.parse(
-        value || "[]"
-      );
-
-    return Array.isArray(parsed)
-      ? parsed
-      : [];
-  }catch(error){
+  if(error){
     console.error(
       "予約データ読込エラー:",
       error
     );
 
-    return [];
+    throw error;
   }
-}
 
-function saveBookings(){
-  localStorage.setItem(
-    STORAGE_KEY,
-    JSON.stringify(bookings)
-  );
+  bookings =
+    (data || [])
+      .map(
+        databaseRowToBooking
+      );
 }
 
 /* =========================
@@ -772,65 +894,7 @@ function renderColorTypeButtons(){
       .join("");
 }
 
-/* =========================
-   サンプル予約
-========================= */
 
-function createDemoBookings(){
-  if(bookings.length > 0){
-    return;
-  }
-
-  const todayKey =
-    toDateKey(viewDate);
-
-  bookings = [
-    {
-      id:createId(),
-      date:todayKey,
-      staffId:"kitamura",
-      customerName:"山田 花子",
-      start:"10:00",
-      end:"12:30",
-      customerType:"repeat",
-      nomination:"nomination",
-      menus:[
-        "cut_color"
-      ],
-      menuLabels:[
-        "カット＋カラー"
-      ],
-      colorType:"gray",
-      placentaMode:"placenta",
-      source:"referral",
-      note:"",
-      status:"reserved"
-    },
-    {
-      id:createId(),
-      date:todayKey,
-      staffId:"yamazaki",
-      customerName:"鈴木 結衣",
-      start:"09:30",
-      end:"10:45",
-      customerType:"new",
-      nomination:"free",
-      menus:[
-        "cut"
-      ],
-      menuLabels:[
-        "カット"
-      ],
-      colorType:"",
-      placentaMode:"normal",
-      source:"web",
-      note:"",
-      status:"reserved"
-    }
-  ];
-
-  saveBookings();
-}
 
 /* =========================
    予約表表示
@@ -1748,7 +1812,7 @@ function hasBookingOverlap(
    保存
 ========================= */
 
-function saveBooking(){
+async function saveBooking(){
   formMessage.textContent = "";
 
   const customerName =
@@ -1804,8 +1868,7 @@ function saveBooking(){
 
   const bookingData = {
     id:
-      editingBookingId ||
-      createId(),
+      editingBookingId || null,
 
     date:
       toDateKey(viewDate),
@@ -1869,33 +1932,80 @@ function saveBooking(){
     }
   }
 
-  if(editingBookingId){
-    bookings =
-      bookings.map(
-        booking =>
-          booking.id ===
+  saveBookingBtn.disabled = true;
+
+  saveBookingBtn.textContent =
+    "保存中…";
+
+  try{
+    if(editingBookingId){
+      const {
+        error
+      } =
+        await sb
+          .from("appointments")
+          .update(
+            bookingToDatabaseRow(
+              bookingData
+            )
+          )
+          .eq(
+            "id",
             editingBookingId
-            ? bookingData
-            : booking
-      );
-  }else{
-    bookings.push(
-      bookingData
+          );
+
+      if(error){
+        throw error;
+      }
+    }else{
+      const insertData =
+        bookingToDatabaseRow(
+          bookingData
+        );
+
+      const {
+        error
+      } =
+        await sb
+          .from("appointments")
+          .insert(
+            insertData
+          );
+
+      if(error){
+        throw error;
+      }
+    }
+
+    await loadBookingsFromSupabase();
+
+    closeBookingModal();
+
+    renderSchedule();
+
+  }catch(error){
+    console.error(
+      "予約保存エラー:",
+      error
     );
+
+    formMessage.textContent =
+      "予約を保存できませんでした。通信状態またはログイン状態を確認してください。";
+
+  }finally{
+    saveBookingBtn.disabled =
+      false;
+
+    saveBookingBtn.textContent =
+      "予約を保存";
   }
-
-  saveBookings();
-
-  closeBookingModal();
-
-  renderSchedule();
 }
 
 /* =========================
    キャンセル
 ========================= */
 
-function cancelBooking(){
+async function cancelBooking(){
   if(!editingBookingId){
     return;
   }
@@ -1920,14 +2030,57 @@ function cancelBooking(){
     return;
   }
 
-  booking.status =
-    "cancelled";
+  cancelBookingBtn.disabled =
+    true;
 
-  saveBookings();
+  cancelBookingBtn.textContent =
+    "処理中…";
 
-  closeBookingModal();
+  try{
+    const {
+      error
+    } =
+      await sb
+        .from("appointments")
+        .update({
+          status:
+            "cancelled",
 
-  renderSchedule();
+          updated_at:
+            new Date()
+              .toISOString()
+        })
+        .eq(
+          "id",
+          editingBookingId
+        );
+
+    if(error){
+      throw error;
+    }
+
+    await loadBookingsFromSupabase();
+
+    closeBookingModal();
+
+    renderSchedule();
+
+  }catch(error){
+    console.error(
+      "予約キャンセルエラー:",
+      error
+    );
+
+    formMessage.textContent =
+      "予約をキャンセルできませんでした。";
+
+  }finally{
+    cancelBookingBtn.disabled =
+      false;
+
+    cancelBookingBtn.textContent =
+      "予約をキャンセル";
+  }
 }
 
 /* =========================
@@ -2128,16 +2281,59 @@ function setupEvents(){
    開始
 ========================= */
 
-renderStaffOptions();
+async function initializeSchedule(){
+  renderStaffOptions();
 
-renderTimeOptions();
+  renderTimeOptions();
 
-renderMenuButtons();
+  renderMenuButtons();
 
-renderColorTypeButtons();
+  renderColorTypeButtons();
 
-setupEvents();
+  setupEvents();
 
-createDemoBookings();
+  daySummary.textContent =
+    "予約を読み込み中…";
 
-renderSchedule();
+  try{
+    const {
+      data,
+      error
+    } =
+      await sb.auth.getUser();
+
+    if(error){
+      throw error;
+    }
+
+    if(!data.user){
+      window.alert(
+        "ログインが必要です。カレンダー画面からログインしてください。"
+      );
+
+      window.location.href =
+        "index.html";
+
+      return;
+    }
+
+    await loadBookingsFromSupabase();
+
+    renderSchedule();
+
+  }catch(error){
+    console.error(
+      "予約表初期化エラー:",
+      error
+    );
+
+    daySummary.textContent =
+      "予約を読み込めませんでした";
+
+    window.alert(
+      "予約データを読み込めませんでした。ログイン状態を確認してください。"
+    );
+  }
+}
+
+initializeSchedule();
