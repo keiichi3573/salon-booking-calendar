@@ -1089,3 +1089,30 @@ body{
   width: 100%;
   height: 360px;
 }
+/* =========================
+   予約表を開くボタン
+========================= */
+
+.scheduleOpenBtn{
+  background:#416b9c;
+  border-color:#416b9c;
+  color:#ffffff;
+
+  text-decoration:none;
+
+  font-weight:900;
+
+  box-shadow:
+    0 4px 10px
+    rgba(49,85,125,.18);
+}
+
+.scheduleOpenBtn:hover{
+  background:#31557d;
+  border-color:#31557d;
+  color:#ffffff;
+}
+
+.scheduleOpenBtn:active{
+  transform:translateY(1px);
+}
