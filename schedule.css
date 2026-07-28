@@ -875,7 +875,7 @@ button{
 }
 
 .scheduleMenuBtn{
-  min-height:86px;
+  min-height:94px;
   border-radius:16px;
   border:1px solid #ddd8d2;
   background:linear-gradient(to bottom, #ffffff 0%, #f8f6f3 100%);
@@ -909,8 +909,8 @@ button{
 .scheduleMenuBtnWithIcon{
   display:flex;
   align-items:center;
-  justify-content:flex-start;
-  gap:12px;
+  justify-content:center;
+  gap:10px;
   text-align:left;
 }
 
@@ -924,15 +924,19 @@ button{
 }
 
 .scheduleMenuIconWrap{
-  width:34px;
-  min-width:34px;
+  width:46px;
+  min-width:46px;
+  height:46px;
+
   display:flex;
   align-items:center;
   justify-content:center;
 }
 
 .scheduleMenuIconGroup{
-  min-width:56px;
+  min-width:78px;
+  height:46px;
+
   display:flex;
   align-items:center;
   justify-content:center;
@@ -940,12 +944,16 @@ button{
 }
 
 .scheduleMenuImage{
-  width:26px;
-  height:26px;
+  width:40px;
+  height:40px;
+
   object-fit:contain;
   display:block;
 }
-
+.scheduleMenuIconGroup .scheduleMenuImage{
+  width:34px;
+  height:34px;
+}
 .scheduleMenuLabelWrap{
   display:flex;
   flex-direction:column;
@@ -1042,7 +1050,7 @@ button{
   }
 
   .scheduleMenuBtn{
-    min-height:82px;
+  min-height:94px;
     padding:10px 12px;
   }
 
@@ -1053,4 +1061,25 @@ button{
   .scheduleBtn{
     min-height:54px;
   }
+  .scheduleMenuIconWrap{
+  width:42px;
+  min-width:42px;
+  height:42px;
+}
+
+.scheduleMenuIconGroup{
+  min-width:68px;
+  height:42px;
+  gap:5px;
+}
+
+.scheduleMenuImage{
+  width:36px;
+  height:36px;
+}
+
+.scheduleMenuIconGroup .scheduleMenuImage{
+  width:30px;
+  height:30px;
+}
 }
