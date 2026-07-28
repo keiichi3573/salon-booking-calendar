@@ -1090,29 +1090,101 @@ body{
   height: 360px;
 }
 /* =========================
-   予約表を開くボタン
+   予約表を開くメインボタン
 ========================= */
 
 .scheduleOpenBtn{
-  background:#416b9c;
-  border-color:#416b9c;
-  color:#ffffff;
+  min-height:52px;
+  min-width:230px;
 
+  padding:0 18px;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+
+  border:1px solid #416b9c;
+  border-radius:14px;
+
+  background:
+    linear-gradient(
+      to bottom,
+      #6f98ca 0%,
+      #416b9c 100%
+    );
+
+  color:#ffffff;
   text-decoration:none;
 
+  font-size:15px;
   font-weight:900;
 
   box-shadow:
-    0 4px 10px
-    rgba(49,85,125,.18);
+    0 6px 14px
+    rgba(49,85,125,.24),
+    inset 0 1px 0
+    rgba(255,255,255,.30);
+
+  transition:.15s ease;
 }
 
 .scheduleOpenBtn:hover{
-  background:#31557d;
-  border-color:#31557d;
+  background:
+    linear-gradient(
+      to bottom,
+      #7ca4d3 0%,
+      #4b76a8 100%
+    );
+
   color:#ffffff;
+
+  transform:
+    translateY(-1px);
 }
 
 .scheduleOpenBtn:active{
-  transform:translateY(1px);
+  transform:
+    translateY(2px);
+
+  box-shadow:
+    0 2px 6px
+    rgba(49,85,125,.20),
+    inset 0 1px 2px
+    rgba(0,0,0,.12);
+}
+
+.scheduleOpenBtnIcon{
+  font-size:20px;
+  line-height:1;
+}
+
+.scheduleOpenBtnText{
+  white-space:nowrap;
+}
+
+.scheduleOpenBtnArrow{
+  font-size:18px;
+  line-height:1;
+}
+@media (max-width:760px){
+
+  .legendActions{
+    width:100%;
+    display:grid;
+    grid-template-columns:1fr auto;
+    gap:8px;
+  }
+
+  .scheduleOpenBtn{
+    width:100%;
+    min-width:0;
+    min-height:50px;
+    padding:0 12px;
+    font-size:14px;
+  }
+
+  .scheduleOpenBtnIcon{
+    font-size:18px;
+  }
 }
