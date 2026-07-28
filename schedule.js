@@ -2297,18 +2297,25 @@ async function initializeSchedule(){
 
   try{
     const {
-      data,
-      error
+      data: sessionData,
+      error: sessionError
     } =
-      await sb.auth.getUser();
+      await sb.auth.getSession();
 
-    if(error){
-      throw error;
+    if(sessionError){
+      console.error(
+        "ログイン確認エラー:",
+        sessionError
+      );
+
+      throw new Error(
+        "ログイン情報の確認中にエラーが発生しました。"
+      );
     }
 
-    if(!data.user){
+    if(!sessionData.session){
       window.alert(
-        "ログインが必要です。カレンダー画面からログインしてください。"
+        "予約表を使うにはログインが必要です。カレンダー画面でログインしてください。"
       );
 
       window.location.href =
@@ -2331,7 +2338,7 @@ async function initializeSchedule(){
       "予約を読み込めませんでした";
 
     window.alert(
-      "予約データを読み込めませんでした。ログイン状態を確認してください。"
+      `予約データを読み込めませんでした。\n\n${error.message || "原因不明のエラーです。"}`
     );
   }
 }
