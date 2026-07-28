@@ -886,6 +886,112 @@ function renderSchedule(){
   );
 }
 
+/* =========================
+   重複予約の表示位置を計算
+========================= */
+
+function createBookingLaneData(
+  staffBookings
+){
+  const sortedBookings = [
+    ...staffBookings
+  ].sort(
+    (bookingA, bookingB) => {
+      const startDifference =
+        timeToMinutes(
+          bookingA.start
+        ) -
+        timeToMinutes(
+          bookingB.start
+        );
+
+      if(startDifference !== 0){
+        return startDifference;
+      }
+
+      return (
+        timeToMinutes(
+          bookingA.end
+        ) -
+        timeToMinutes(
+          bookingB.end
+        )
+      );
+    }
+  );
+
+  const laneEndTimes = [];
+
+  const laneMap =
+    new Map();
+
+  sortedBookings.forEach(
+    booking => {
+      const bookingStart =
+        timeToMinutes(
+          booking.start
+        );
+
+      const bookingEnd =
+        timeToMinutes(
+          booking.end
+        );
+
+      let laneIndex =
+        laneEndTimes.findIndex(
+          laneEndTime =>
+            bookingStart >=
+            laneEndTime
+        );
+
+      if(laneIndex === -1){
+        laneIndex =
+          laneEndTimes.length;
+
+        laneEndTimes.push(
+          bookingEnd
+        );
+      }else{
+        laneEndTimes[
+          laneIndex
+        ] = bookingEnd;
+      }
+
+      laneMap.set(
+        booking.id,
+        laneIndex
+      );
+    }
+  );
+
+  return {
+    laneMap,
+
+    laneCount:
+      Math.max(
+        1,
+        laneEndTimes.length
+      )
+  };
+}
+
+function getScheduleSlotWidth(){
+  const rootStyle =
+    getComputedStyle(
+      document.documentElement
+    );
+
+  const cssValue =
+    rootStyle.getPropertyValue(
+      "--schedule-slot-width"
+    );
+
+  return (
+    parseFloat(cssValue) ||
+    46
+  );
+}
+
 function renderStaffRow(
   staff,
   currentBookings
@@ -897,11 +1003,32 @@ function renderStaffRow(
           staff.id
     );
 
+  const {
+    laneMap,
+    laneCount
+  } =
+    createBookingLaneData(
+      staffBookings
+    );
+
+  /*
+    予約1段：104px
+    重複するたびに96pxずつ追加
+  */
+  const rowHeight =
+    104 +
+    (
+      laneCount - 1
+    ) * 96;
+
   const staffCell =
     document.createElement("div");
 
   staffCell.className =
     "scheduleStaffCell";
+
+  staffCell.style.height =
+    `${rowHeight}px`;
 
   staffCell.innerHTML =
     `<div class="scheduleStaffName">` +
@@ -937,6 +1064,9 @@ function renderStaffRow(
 
     slotCell.className =
       "scheduleSlotCell";
+
+    slotCell.style.height =
+      `${rowHeight}px`;
 
     if(minutes % 60 === 0){
       slotCell.classList.add(
@@ -974,9 +1104,15 @@ function renderStaffRow(
 
     startingBookings.forEach(
       booking => {
+        const laneIndex =
+          laneMap.get(
+            booking.id
+          ) || 0;
+
         const bookingBlock =
           createBookingBlock(
-            booking
+            booking,
+            laneIndex
           );
 
         slotCell.appendChild(
@@ -996,7 +1132,8 @@ function renderStaffRow(
 ========================= */
 
 function createBookingBlock(
-  booking
+  booking,
+  laneIndex = 0
 ){
   const startMinutes =
     timeToMinutes(
@@ -1015,13 +1152,18 @@ function createBookingBlock(
       startMinutes
     );
 
-  const slotWidth = 46;
+  const slotWidth =
+    getScheduleSlotWidth();
 
   const blockWidth =
     duration /
     SLOT_MINUTES *
     slotWidth -
     4;
+
+  const blockTop =
+    8 +
+    laneIndex * 96;
 
   const bookingBlock =
     document.createElement(
@@ -1030,6 +1172,12 @@ function createBookingBlock(
 
   bookingBlock.className =
     "scheduleBookingBlock";
+
+  bookingBlock.style.width =
+    `${blockWidth}px`;
+
+  bookingBlock.style.top =
+    `${blockTop}px`;
 
   if(
     booking.customerType ===
@@ -1061,9 +1209,6 @@ function createBookingBlock(
       "scheduleBookingBlockCancelled"
     );
   }
-
-  bookingBlock.style.width =
-    `${blockWidth}px`;
 
   bookingBlock.innerHTML =
     `<div class="scheduleBookingTop">` +
