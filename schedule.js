@@ -1,9 +1,34 @@
 /* =========================
-  COMFORT 予約表プロトタイプ
-
-  現段階では、
-  Supabaseではなくブラウザ内に仮保存します。
+  COMFORT 予約表
 ========================= */
+
+/* =========================
+   Supabase接続
+========================= */
+
+const SUPABASE_URL =
+  window.APP_CONFIG
+    ?.SUPABASE_URL;
+
+const SUPABASE_ANON_KEY =
+  window.APP_CONFIG
+    ?.SUPABASE_ANON_KEY;
+
+if(
+  !SUPABASE_URL ||
+  !SUPABASE_ANON_KEY
+){
+  throw new Error(
+    "Supabase設定が読み込めていません。config.jsを確認してください。"
+  );
+}
+
+const sb =
+  window.supabase
+    .createClient(
+      SUPABASE_URL,
+      SUPABASE_ANON_KEY
+    );
 
 /* =========================
    基本設定
