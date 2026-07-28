@@ -198,6 +198,28 @@ const COLOR_TYPES = [
   }
 ];
 
+const MENU_DISPLAY_ORDER = [
+  "cut",
+  "color",
+  "cut_color",
+
+  "perm",
+  "straight",
+  "placenta_treatment",
+
+  "tsuyakoi_treatment",
+  "spa",
+  "basic_treatment",
+
+  "soda",
+  "m",
+  "cut_perm",
+
+  "cut_color_basic",
+  "cut_perm_basic",
+  "color_treatment"
+];
+
 /* =========================
    DOM
 ========================= */
@@ -277,14 +299,9 @@ const endTimeDisplay =
     "endTimeDisplay"
   );
 
-const comboButtons =
+const menuButtons =
   document.getElementById(
-    "comboButtons"
-  );
-
-const singleMenuButtons =
-  document.getElementById(
-    "singleMenuButtons"
+    "menuButtons"
   );
 
 const colorOptionsSection =
@@ -612,23 +629,85 @@ function renderTimeOptions(){
     options.join("");
 }
 
+function getMenuIconHtml(menu){
+  const cutIcon =
+    `<img src="icon-cut.png" alt="" class="scheduleMenuImage">`;
+
+  const permIcon =
+    `<img src="icon-perm.png" alt="" class="scheduleMenuImage">`;
+
+  const colorIcon =
+    `<img src="icon-color.png" alt="" class="scheduleMenuImage">`;
+
+  switch(menu.id){
+
+    case "cut":
+      return (
+        `<span class="scheduleMenuIconWrap">` +
+          `${cutIcon}` +
+        `</span>`
+      );
+
+    case "color":
+      return (
+        `<span class="scheduleMenuIconWrap">` +
+          `${colorIcon}` +
+        `</span>`
+      );
+
+    case "perm":
+      return (
+        `<span class="scheduleMenuIconWrap">` +
+          `${permIcon}` +
+        `</span>`
+      );
+
+    case "cut_color":
+    case "cut_color_basic":
+      return (
+        `<span class="scheduleMenuIconGroup">` +
+          `${cutIcon}` +
+          `${colorIcon}` +
+        `</span>`
+      );
+
+    case "cut_perm":
+    case "cut_perm_basic":
+      return (
+        `<span class="scheduleMenuIconGroup">` +
+          `${cutIcon}` +
+          `${permIcon}` +
+        `</span>`
+      );
+
+    default:
+      return "";
+  }
+}
+
 function createMenuButtonHtml(menu){
+  const iconHtml =
+    getMenuIconHtml(menu);
+
+  const hasIcon =
+    iconHtml !== "";
+
   return (
     `<button ` +
     `type="button" ` +
-    `class="scheduleMenuBtn" ` +
+    `class="scheduleMenuBtn ${hasIcon ? "scheduleMenuBtnWithIcon" : "scheduleMenuBtnTextOnly"}" ` +
     `data-menu-id="${menu.id}">` +
 
-      `<span class="scheduleMenuIcon">` +
-        `${menu.icon}` +
-      `</span>` +
+      `${iconHtml}` +
 
-      `<span>` +
-        `${menu.label}` +
-      `</span>` +
+      `<span class="scheduleMenuLabelWrap">` +
+        `<span class="scheduleMenuLabel">` +
+          `${menu.label}` +
+        `</span>` +
 
-      `<span class="scheduleMenuMinutes">` +
-        `${menu.minutes}分` +
+        `<span class="scheduleMenuMinutes">` +
+          `${menu.minutes}分` +
+        `</span>` +
       `</span>` +
 
     `</button>`
@@ -636,15 +715,16 @@ function createMenuButtonHtml(menu){
 }
 
 function renderMenuButtons(){
-  comboButtons.innerHTML =
-    COMBINATION_MENUS
+  const orderedMenus =
+    MENU_DISPLAY_ORDER
       .map(
-        createMenuButtonHtml
+        menuId =>
+          getMenuById(menuId)
       )
-      .join("");
+      .filter(Boolean);
 
-  singleMenuButtons.innerHTML =
-    SINGLE_MENUS
+  menuButtons.innerHTML =
+    orderedMenus
       .map(
         createMenuButtonHtml
       )
