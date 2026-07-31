@@ -1869,3 +1869,402 @@ body{
     height:auto !important;
   }
 }
+/* =========================================
+   COMFORT ログイン画面
+========================================= */
+
+.comfortLoginScreen{
+  position:fixed;
+  inset:0;
+  z-index:1000;
+
+  display:flex;
+  justify-content:center;
+  align-items:center;
+
+  min-height:100vh;
+  padding:32px 20px;
+
+  overflow:auto;
+
+  background:
+    radial-gradient(
+      circle at 15% 20%,
+      rgba(222, 184, 173, .34),
+      transparent 34%
+    ),
+    radial-gradient(
+      circle at 85% 78%,
+      rgba(193, 164, 134, .26),
+      transparent 36%
+    ),
+    linear-gradient(
+      145deg,
+      #f8f4ed 0%,
+      #eee5dc 52%,
+      #e7d9d2 100%
+    );
+}
+
+.comfortLoginScreen.hidden{
+  display:none !important;
+}
+
+.comfortLoginCard{
+  position:relative;
+  z-index:2;
+
+  width:min(100%, 430px);
+  margin:0;
+  padding:42px 38px 30px;
+
+  overflow:hidden;
+
+  border:1px solid rgba(255,255,255,.78);
+  border-radius:30px;
+
+  background:rgba(255,255,255,.82);
+
+  box-shadow:
+    0 28px 70px rgba(89, 62, 51, .18),
+    inset 0 1px 0 rgba(255,255,255,.9);
+
+  backdrop-filter:blur(16px);
+  -webkit-backdrop-filter:blur(16px);
+}
+
+.comfortLoginCard::before{
+  content:"";
+
+  position:absolute;
+  top:0;
+  left:0;
+  right:0;
+
+  height:6px;
+
+  background:linear-gradient(
+    90deg,
+    #9d7265,
+    #d2a89b,
+    #b58b73
+  );
+}
+
+.comfortLoginLogoWrap{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+
+  margin-bottom:18px;
+}
+
+.comfortLoginLogo{
+  display:block;
+
+  width:220px;
+  max-width:78%;
+  height:auto;
+}
+
+.comfortLoginEyebrow{
+  margin-bottom:10px;
+
+  color:#9a7569;
+
+  text-align:center;
+  font-size:10px;
+  font-weight:800;
+  letter-spacing:.22em;
+}
+
+.comfortLoginTitle{
+  margin:0;
+
+  color:#4f3b35;
+
+  text-align:center;
+  font-size:28px;
+  font-weight:900;
+  line-height:1.3;
+}
+
+.comfortLoginSub{
+  margin:8px 0 28px;
+
+  color:#87736c;
+
+  text-align:center;
+  font-size:13px;
+  line-height:1.7;
+}
+
+.comfortLoginForm{
+  display:grid;
+  gap:18px;
+}
+
+.comfortLoginField{
+  display:grid;
+  gap:8px;
+}
+
+.comfortLoginLabel{
+  padding-left:3px;
+
+  color:#5f4a43;
+
+  font-size:13px;
+  font-weight:800;
+}
+
+.comfortLoginInputWrap{
+  position:relative;
+
+  display:block;
+}
+
+.comfortLoginInputIcon{
+  position:absolute;
+  top:50%;
+  left:16px;
+  z-index:2;
+
+  display:flex;
+  justify-content:center;
+  align-items:center;
+
+  width:22px;
+  height:22px;
+
+  color:#a37c70;
+
+  font-size:14px;
+  font-weight:900;
+
+  transform:translateY(-50%);
+  pointer-events:none;
+}
+
+.comfortLoginInput{
+  width:100% !important;
+  min-height:56px !important;
+
+  padding:
+    0
+    16px
+    0
+    50px !important;
+
+  border:1px solid #d8c8c0 !important;
+  border-radius:16px !important;
+
+  outline:none !important;
+
+  background:rgba(255,255,255,.92) !important;
+  color:#453631 !important;
+
+  font-size:16px !important;
+
+  box-shadow:
+    inset 0 1px 2px rgba(75,50,40,.04) !important;
+
+  transition:
+    border-color .2s ease,
+    box-shadow .2s ease,
+    background .2s ease;
+}
+
+.comfortLoginInput::placeholder{
+  color:#b8aaa4;
+}
+
+.comfortLoginInput:focus{
+  border-color:#b48476 !important;
+
+  background:#fff !important;
+
+  box-shadow:
+    0 0 0 4px rgba(180,132,118,.14) !important;
+}
+
+.comfortLoginButton{
+  display:flex !important;
+  justify-content:center !important;
+  align-items:center !important;
+  gap:12px !important;
+
+  width:100% !important;
+  min-height:58px !important;
+  margin-top:4px !important;
+
+  border:0 !important;
+  border-radius:17px !important;
+
+  background:
+    linear-gradient(
+      135deg,
+      #765448,
+      #9b7062
+    ) !important;
+
+  color:#fff !important;
+
+  font-size:16px !important;
+  font-weight:900 !important;
+  letter-spacing:.06em !important;
+
+  box-shadow:
+    0 14px 28px rgba(117,78,65,.25) !important;
+
+  cursor:pointer;
+
+  transition:
+    transform .18s ease,
+    box-shadow .18s ease,
+    filter .18s ease;
+}
+
+.comfortLoginButton:hover{
+  filter:brightness(1.05);
+
+  transform:translateY(-1px);
+
+  box-shadow:
+    0 17px 32px rgba(117,78,65,.3) !important;
+}
+
+.comfortLoginButton:active{
+  transform:translateY(1px);
+}
+
+.comfortLoginButtonArrow{
+  font-size:20px;
+  line-height:1;
+}
+
+.comfortLoginHint{
+  min-height:20px;
+  margin:0 !important;
+
+  color:#b44343;
+
+  text-align:center;
+  font-size:12px;
+  line-height:1.5;
+}
+
+.comfortLoginFooter{
+  margin-top:20px;
+  padding-top:18px;
+
+  border-top:1px solid rgba(136,101,87,.14);
+
+  color:#a18c83;
+
+  text-align:center;
+  font-family:Georgia, "Times New Roman", serif;
+  font-size:12px;
+  letter-spacing:.12em;
+}
+
+.comfortLoginDecoration{
+  position:fixed;
+
+  border-radius:50%;
+
+  pointer-events:none;
+}
+
+.comfortLoginDecorationOne{
+  top:-90px;
+  right:-80px;
+
+  width:270px;
+  height:270px;
+
+  border:1px solid rgba(156,111,95,.17);
+}
+
+.comfortLoginDecorationOne::before,
+.comfortLoginDecorationOne::after{
+  content:"";
+
+  position:absolute;
+
+  border:1px solid rgba(156,111,95,.12);
+  border-radius:50%;
+}
+
+.comfortLoginDecorationOne::before{
+  inset:34px;
+}
+
+.comfortLoginDecorationOne::after{
+  inset:72px;
+}
+
+.comfortLoginDecorationTwo{
+  bottom:-120px;
+  left:-90px;
+
+  width:310px;
+  height:310px;
+
+  border:1px solid rgba(181,139,112,.18);
+}
+
+.comfortLoginDecorationTwo::before{
+  content:"";
+
+  position:absolute;
+  inset:45px;
+
+  border:1px solid rgba(181,139,112,.13);
+  border-radius:50%;
+}
+
+/* スマホ */
+@media (max-width:520px){
+
+  .comfortLoginScreen{
+    align-items:center;
+
+    padding:22px 14px;
+  }
+
+  .comfortLoginCard{
+    width:100%;
+    padding:34px 22px 24px;
+
+    border-radius:24px;
+  }
+
+  .comfortLoginLogo{
+    width:195px;
+    max-width:82%;
+  }
+
+  .comfortLoginEyebrow{
+    font-size:9px;
+    letter-spacing:.16em;
+  }
+
+  .comfortLoginTitle{
+    font-size:24px;
+  }
+
+  .comfortLoginSub{
+    margin-bottom:23px;
+
+    font-size:12px;
+  }
+
+  .comfortLoginInput{
+    min-height:54px !important;
+  }
+
+  .comfortLoginButton{
+    min-height:56px !important;
+  }
+}
