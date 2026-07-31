@@ -2735,37 +2735,154 @@ newSourceClearBtn?.addEventListener("click", () => {
   renderNewSourceCards();
 });
 
-openSalesEntryFromDayBtn?.addEventListener("click", async () => {
-  const dateStr = dayModal?.dataset?.date;
-  if (!dateStr) return;
+/* =========================================
+   売上入力画面を指定日で開く
+========================================= */
 
-  // 日付表示＆保持（売上入力モーダル側）
-  const salesEntrySubTitleEl = document.getElementById("salesEntrySubTitle");
-  const salesEntryDateHiddenEl = document.getElementById("salesEntryDate");
+async function openSalesEntryForDate(
+  dateStr
+){
+  if(!dateStr){
+    return;
+  }
 
-  if (salesEntrySubTitleEl) salesEntrySubTitleEl.textContent = `日付：${dateStr}`;
-  if (salesEntryDateHiddenEl) salesEntryDateHiddenEl.value = dateStr;
+  const salesEntryModalEl =
+    document.getElementById(
+      "salesEntryModal"
+    );
 
-  // 新規（店舗合計）のセレクト初期化（0〜MAX）
-  const salesNewCustomersSelectEl = document.getElementById("salesNewCustomersSelect");
-  fill0toMaxSelect(salesNewCustomersSelectEl, MAX_COUNT);
-  if (salesNewCustomersSelectEl && !salesNewCustomersSelectEl.value) salesNewCustomersSelectEl.value = "0";
+  const salesEntrySubTitleEl =
+    document.getElementById(
+      "salesEntrySubTitle"
+    );
 
-  // ★追加：その日付のスタッフ別売上を読み込む（前日の値が残らない）
-  await loadStaffSalesForDay(dateStr);
+  const salesEntryDateHiddenEl =
+    document.getElementById(
+      "salesEntryDate"
+    );
 
-  // ★描画（読み込んだ値が各スタッフカードに反映される）
-  renderSalesStaffCards(editingStaffRows || []);
-  // 新規経路：保存済みを復元して描画
-const row = bookingsDailyMap.get(dateStr);
-const savedSources = row?.new_sources || {};
-editingNewSourceMap = new Map(Object.entries(savedSources));
-renderNewSourceCards();
+  const salesNewCustomersSelectEl =
+    document.getElementById(
+      "salesNewCustomersSelect"
+    );
 
-  // 日付モーダルを閉じて、売上入力モーダルを開く
-  closeModal(dayModal);
-  openModal(document.getElementById("salesEntryModal"));
-});
+  if(salesEntrySubTitleEl){
+    salesEntrySubTitleEl.textContent =
+      `日付：${dateStr}`;
+  }
+
+  if(salesEntryDateHiddenEl){
+    salesEntryDateHiddenEl.value =
+      dateStr;
+  }
+
+  fill0toMaxSelect(
+    salesNewCustomersSelectEl,
+    MAX_COUNT
+  );
+
+  if(
+    salesNewCustomersSelectEl &&
+    !salesNewCustomersSelectEl.value
+  ){
+    salesNewCustomersSelectEl.value =
+      "0";
+  }
+
+  await loadStaffSalesForDay(
+    dateStr
+  );
+
+  renderSalesStaffCards(
+    editingStaffRows || []
+  );
+
+  const row =
+    bookingsDailyMap.get(
+      dateStr
+    );
+
+  const savedSources =
+    row?.new_sources || {};
+
+  editingNewSourceMap =
+    new Map(
+      Object.entries(
+        savedSources
+      )
+    );
+
+  renderNewSourceCards();
+
+  if(dayModal){
+    closeModal(
+      dayModal
+    );
+  }
+
+  openModal(
+    salesEntryModalEl
+  );
+}
+
+/* 日付画面から売上入力 */
+openSalesEntryFromDayBtn
+  ?.addEventListener(
+    "click",
+    async () => {
+      const dateStr =
+        dayModal?.dataset?.date;
+
+      await openSalesEntryForDate(
+        dateStr
+      );
+    }
+  );
+
+/* スマホ：今日の売上を直接入力 */
+const mobileTodaySalesBtn =
+  document.getElementById(
+    "mobileTodaySalesBtn"
+  );
+
+mobileTodaySalesBtn
+  ?.addEventListener(
+    "click",
+    async () => {
+      const today =
+        new Date();
+
+      const todayKey =
+        toDateKey(
+          today
+        );
+
+      const isCurrentViewMonth =
+        viewDate.getFullYear() ===
+          today.getFullYear() &&
+        viewDate.getMonth() ===
+          today.getMonth();
+
+      /*
+        別の月を表示中なら、
+        今日の月へ戻してデータを読み込む
+      */
+      if(!isCurrentViewMonth){
+        viewDate =
+          new Date(
+            today.getFullYear(),
+            today.getMonth(),
+            1
+          );
+
+        await loadAndRender();
+      }
+
+      await openSalesEntryForDate(
+        todayKey
+      );
+    }
+  );
 
 dayModal?.addEventListener("keydown", (e)=>{
   if (e.key === "Escape"){
