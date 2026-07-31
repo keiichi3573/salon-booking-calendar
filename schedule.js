@@ -726,13 +726,49 @@ function hasSelectedColorMenu(){
 }
 
 function getSelectedMenuLabels(){
+  const colorTypeLabel =
+    COLOR_TYPES.find(
+      color =>
+        color.id ===
+        selectedColorType
+    )?.label || "";
+
   return [
     ...selectedMenus
   ]
     .map(
-      menuId =>
-        getMenuById(menuId)
-          ?.label
+      menuId => {
+        const menu =
+          getMenuById(menuId);
+
+        if(!menu){
+          return "";
+        }
+
+        const isColorMenu =
+          menuId === "color" ||
+          menuId === "cut_color" ||
+          menuId === "cut_color_basic";
+
+        if(
+          isColorMenu &&
+          colorTypeLabel
+        ){
+          if(
+            menuId === "cut_color" ||
+            menuId === "cut_color_basic"
+          ){
+            return (
+              "カット＋" +
+              colorTypeLabel
+            );
+          }
+
+          return colorTypeLabel;
+        }
+
+        return menu.label;
+      }
     )
     .filter(Boolean);
 }
