@@ -693,6 +693,248 @@ function renderWeeklySummary(){
   });
 }
 
+/* =========================================
+   スマホ：今月の日別売上グラフ
+========================================= */
+
+let mobileDailySalesChartInstance =
+  null;
+
+function renderMobileDailySalesChart(){
+  const canvas =
+    document.getElementById(
+      "mobileDailySalesChart"
+    );
+
+  if(
+    !canvas ||
+    typeof Chart === "undefined"
+  ){
+    return;
+  }
+
+  const first =
+    startOfMonth(
+      viewDate
+    );
+
+  const last =
+    endOfMonth(
+      viewDate
+    );
+
+  const labels = [];
+  const salesData = [];
+
+  for(
+    let day = 1;
+    day <= last.getDate();
+    day++
+  ){
+    const date =
+      new Date(
+        first.getFullYear(),
+        first.getMonth(),
+        day
+      );
+
+    const dayKey =
+      toDateKey(
+        date
+      );
+
+    const row =
+      bookingsDailyMap.get(
+        dayKey
+      ) || {};
+
+    const dailySales =
+      Number(
+        row.tech_sales || 0
+      ) +
+      Number(
+        row.retail_sales || 0
+      );
+
+    labels.push(
+      `${day}日`
+    );
+
+    salesData.push(
+      dailySales
+    );
+  }
+
+  const subTitle =
+    document.getElementById(
+      "mobileSalesChartSub"
+    );
+
+  if(subTitle){
+    subTitle.textContent =
+      `${viewDate.getFullYear()}年` +
+      `${viewDate.getMonth() + 1}月 ` +
+      `技術売上＋店販売上`;
+  }
+
+  if(
+    mobileDailySalesChartInstance
+  ){
+    mobileDailySalesChartInstance
+      .destroy();
+  }
+
+  mobileDailySalesChartInstance =
+    new Chart(
+      canvas,
+      {
+        type:"line",
+
+        data:{
+          labels,
+
+          datasets:[
+            {
+              label:"日別売上",
+
+              data:
+                salesData,
+
+              borderColor:
+                "rgba(230, 139, 45, .95)",
+
+              backgroundColor:
+                "rgba(230, 139, 45, .14)",
+
+              borderWidth:3,
+
+              pointRadius:2.5,
+
+              pointHoverRadius:5,
+
+              pointBackgroundColor:
+                "rgba(230, 139, 45, .95)",
+
+              pointBorderColor:
+                "#ffffff",
+
+              pointBorderWidth:1.5,
+
+              tension:.3,
+
+              fill:true
+            }
+          ]
+        },
+
+        options:{
+          responsive:true,
+
+          maintainAspectRatio:false,
+
+          interaction:{
+            mode:"index",
+            intersect:false
+          },
+
+          plugins:{
+            legend:{
+              display:false
+            },
+
+            tooltip:{
+              backgroundColor:
+                "rgba(255,255,255,.97)",
+
+              titleColor:"#333333",
+              bodyColor:"#333333",
+
+              borderColor:
+                "rgba(0,0,0,.10)",
+
+              borderWidth:1,
+              padding:10,
+
+              callbacks:{
+                label(context){
+                  const value =
+                    Number(
+                      context.parsed.y || 0
+                    );
+
+                  return (
+                    value.toLocaleString(
+                      "ja-JP"
+                    ) +
+                    "円"
+                  );
+                }
+              }
+            }
+          },
+
+          scales:{
+            x:{
+              grid:{
+                display:false
+              },
+
+              ticks:{
+                color:"#756b62",
+
+                font:{
+                  size:10
+                },
+
+                maxRotation:0,
+                autoSkip:true,
+                maxTicksLimit:8
+              }
+            },
+
+            y:{
+              beginAtZero:true,
+
+              grid:{
+                color:
+                  "rgba(0,0,0,.06)"
+              },
+
+              ticks:{
+                color:"#756b62",
+
+                font:{
+                  size:10
+                },
+
+                callback(value){
+                  const number =
+                    Number(value);
+
+                  if(
+                    number >= 10000
+                  ){
+                    return (
+                      Math.round(
+                        number / 10000
+                      ) +
+                      "万"
+                    );
+                  }
+
+                  return number
+                    .toLocaleString(
+                      "ja-JP"
+                    );
+                }
+              }
+            }
+          }
+        }
+      }
+    );
+}
+
 function renderSummaryAndPanel(){
   const first = startOfMonth(viewDate);
   const last = endOfMonth(viewDate);
@@ -1021,7 +1263,14 @@ setSrc("srcTicket",     srcTicket);
 // ★前年比較グラフ
 renderYoYSalesChart();
 
-updateRings(sumSales, unitPrice, goalSales, goalUnitPrice);
+renderMobileDailySalesChart();
+
+updateRings(
+  sumSales,
+  unitPrice,
+  goalSales,
+  goalUnitPrice
+);
 }
 function renderSalesStaffCards(staffRows){
   const salesStaffInputs = document.getElementById("salesStaffInputs");
