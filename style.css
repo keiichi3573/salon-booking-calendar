@@ -1811,3 +1811,61 @@ body{
     font-size:11px !important;
   }
 }
+/* =========================================
+   売上分析ページ：スマホ上部ボタン修正
+========================================= */
+
+@media (max-width:520px){
+
+  .analysisTopbar{
+    display:grid !important;
+    grid-template-columns:1fr 1fr !important;
+    grid-template-areas:
+      "logo logo"
+      "back logout" !important;
+
+    gap:8px !important;
+    padding:10px 12px !important;
+  }
+
+  .analysisTopbar .brandCenter{
+    grid-area:logo !important;
+
+    display:flex !important;
+    justify-content:center !important;
+    align-items:center !important;
+  }
+
+  .analysisTopbar .left{
+    grid-area:back !important;
+    width:100% !important;
+  }
+
+  .analysisTopbar .right{
+    grid-area:logout !important;
+    width:100% !important;
+  }
+
+  .analysisTopbar .left .btn,
+  .analysisTopbar .right .btn{
+    width:100% !important;
+    min-width:0 !important;
+    min-height:42px !important;
+
+    padding:8px 6px !important;
+
+    writing-mode:horizontal-tb !important;
+    text-orientation:mixed !important;
+
+    white-space:nowrap !important;
+
+    font-size:12px !important;
+    line-height:1.2 !important;
+  }
+
+  .analysisTopbar .brandLogo{
+    width:150px !important;
+    max-width:70% !important;
+    height:auto !important;
+  }
+}
