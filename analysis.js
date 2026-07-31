@@ -1405,3 +1405,135 @@ analysisLogoutBtn?.addEventListener(
 
 /* ===== Start ===== */
 checkLogin();
+/* =========================================
+   売上分析：スマホ用タブ切替
+========================================= */
+
+function setupAnalysisMobileTabs(){
+
+  const tabButtons =
+    document.querySelectorAll(
+      ".analysisMobileTab"
+    );
+
+  const tabSections =
+    document.querySelectorAll(
+      ".analysisTabSection"
+    );
+
+  if(
+    tabButtons.length === 0 ||
+    tabSections.length === 0
+  ){
+    return;
+  }
+
+  function activateAnalysisTab(
+    tabName
+  ){
+
+    tabButtons.forEach(
+      button => {
+
+        const isActive =
+          button.dataset
+            .analysisTab ===
+          tabName;
+
+        button.classList.toggle(
+          "active",
+          isActive
+        );
+
+        button.setAttribute(
+          "aria-selected",
+          isActive
+            ? "true"
+            : "false"
+        );
+
+      }
+    );
+
+    tabSections.forEach(
+      section => {
+
+        const isActive =
+          section.dataset
+            .analysisSection ===
+          tabName;
+
+        section.classList.toggle(
+          "active",
+          isActive
+        );
+
+      }
+    );
+
+    /*
+      グラフは非表示中に描画すると
+      サイズが崩れることがあるため、
+      グラフタブを開いた時に再調整
+    */
+    if(
+      tabName === "chart" &&
+      window.yoySalesChartInstance
+    ){
+      requestAnimationFrame(
+        () => {
+          window
+            .yoySalesChartInstance
+            .resize();
+        }
+      );
+    }
+
+    window.scrollTo({
+      top:
+        document
+          .querySelector(
+            ".analysisMobileTabs"
+          )
+          ?.offsetTop || 0,
+
+      behavior:"smooth"
+    });
+  }
+
+  tabButtons.forEach(
+    button => {
+
+      button.setAttribute(
+        "role",
+        "tab"
+      );
+
+      button.addEventListener(
+        "click",
+        () => {
+
+          const tabName =
+            button.dataset
+              .analysisTab;
+
+          if(!tabName){
+            return;
+          }
+
+          activateAnalysisTab(
+            tabName
+          );
+
+        }
+      );
+
+    }
+  );
+
+  activateAnalysisTab(
+    "overview"
+  );
+}
+
+setupAnalysisMobileTabs();
