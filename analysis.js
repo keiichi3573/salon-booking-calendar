@@ -1259,28 +1259,27 @@ function renderSalesChart() {
           }
         },
 
-        scales: {
+                scales: {
           y: {
             beginAtZero: true,
 
-            ticks:{
-  stepSize:50000,
+            ticks: {
+              stepSize: 50000,
+              autoSkip: false,
 
-  callback(value){
-    return (
-      Number(value)
-        .toLocaleString("ja-JP") +
-      "円"
-    );
-  }
-}
+              callback(value) {
+                return (
+                  Number(value).toLocaleString("ja-JP") +
+                  "円"
+                );
+              }
+            }
           }
         }
       }
     }
   );
 }
-
 /* ===== 全体描画 ===== */
 async function loadAndRenderAnalysis() {
   renderMonthTitle();
