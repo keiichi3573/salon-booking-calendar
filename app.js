@@ -1263,8 +1263,6 @@ setSrc("srcTicket",     srcTicket);
 // ★前年比較グラフ
 renderYoYSalesChart();
 
-renderMobileDailySalesChart();
-
 updateRings(
   sumSales,
   unitPrice,
@@ -2914,10 +2912,21 @@ for (const r of compareRows){
   }
 
   await loadDailyMenuMapForMonth();
-　await loadStaffSalesForMonth();
-　renderCalendar();
-　renderSummaryAndPanel();
-  applyDeviceVisibility();
+await loadStaffSalesForMonth();
+
+renderCalendar();
+renderSummaryAndPanel();
+applyDeviceVisibility();
+
+/*
+  スマホ用グラフは、
+  データ読込と画面配置が終わった後に描画
+*/
+requestAnimationFrame(() => {
+  requestAnimationFrame(() => {
+    renderMobileDailySalesChart();
+  });
+});
 }
 
 /* ===== Events ===== */
