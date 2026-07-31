@@ -1514,3 +1514,300 @@ body{
   }
 
 }
+/* =========================================
+   売上分析ページ：スマホ用レイアウト
+========================================= */
+
+.analysisMobileTabs{
+  display:none;
+}
+
+@media (max-width:520px){
+
+  /* 上部ヘッダーを小さく整理 */
+  .analysisTopbar{
+    min-height:auto !important;
+    padding:10px 12px !important;
+
+    display:grid !important;
+    grid-template-columns:auto 1fr auto !important;
+    align-items:center !important;
+    gap:8px !important;
+  }
+
+  .analysisTopbar .brandCenter{
+    min-width:0 !important;
+  }
+
+  .analysisTopbar .brandLogo{
+    width:145px !important;
+    max-width:100% !important;
+    height:auto !important;
+  }
+
+  .analysisTopbar .left,
+  .analysisTopbar .right{
+    min-width:0 !important;
+  }
+
+  .analysisTopbar .btn{
+    min-height:42px !important;
+    padding:0 10px !important;
+
+    writing-mode:horizontal-tb !important;
+    text-orientation:mixed !important;
+
+    white-space:nowrap !important;
+
+    border-radius:12px !important;
+    font-size:12px !important;
+    line-height:1.2 !important;
+  }
+
+  /* ページ全体 */
+  .analysisPage .wrap{
+    padding:14px !important;
+  }
+
+  /* タイトルと月切替 */
+  .analysisPageHeader{
+    display:flex !important;
+    flex-direction:column !important;
+    align-items:stretch !important;
+    gap:12px !important;
+
+    margin-bottom:12px !important;
+  }
+
+  .analysisHeadingBlock{
+    display:flex !important;
+    align-items:flex-end !important;
+    justify-content:space-between !important;
+    gap:10px !important;
+  }
+
+  .analysisPageTitle{
+    margin:0 !important;
+
+    font-size:30px !important;
+    line-height:1.15 !important;
+  }
+
+  .analysisPageSub{
+    margin-top:6px !important;
+
+    font-size:12px !important;
+    line-height:1.5 !important;
+  }
+
+  .analysisMonthNav{
+    width:100% !important;
+
+    display:grid !important;
+    grid-template-columns:48px minmax(0,1fr) 48px !important;
+    align-items:center !important;
+    gap:8px !important;
+
+    margin:0 !important;
+  }
+
+  .analysisMonthNav .navBtn{
+    width:48px !important;
+    min-width:48px !important;
+    height:46px !important;
+    min-height:46px !important;
+  }
+
+  .analysisMonthNav .monthTitle{
+    min-width:0 !important;
+
+    text-align:center !important;
+    font-size:20px !important;
+    font-weight:900 !important;
+  }
+
+  /* スマホ用タブ */
+  .analysisMobileTabs{
+    position:sticky;
+    top:0;
+    z-index:15;
+
+    display:grid;
+    grid-template-columns:repeat(5, minmax(0,1fr));
+    gap:6px;
+
+    margin:0 0 12px;
+    padding:8px;
+
+    background:rgba(239,235,226,.96);
+    border:1px solid #dfd5c5;
+    border-radius:14px;
+
+    backdrop-filter:blur(8px);
+  }
+
+  .analysisMobileTab{
+    min-width:0;
+    min-height:42px;
+
+    padding:6px 3px;
+
+    border:1px solid #d9d2c8;
+    border-radius:10px;
+
+    background:#ffffff;
+    color:#5d554f;
+
+    font-size:11px;
+    font-weight:900;
+
+    cursor:pointer;
+  }
+
+  .analysisMobileTab.active{
+    border-color:#6e9fe1;
+
+    background:#eaf3ff;
+    color:#185fc4;
+
+    box-shadow:
+      inset 0 0 0 1px rgba(60,121,205,.18);
+  }
+
+  /* タブ切替対象 */
+  .analysisPageGrid{
+    display:block !important;
+  }
+
+  .analysisTabSection{
+    display:none !important;
+  }
+
+  .analysisTabSection.active{
+    display:block !important;
+  }
+
+  /* 各パネルをスマホ向けに圧縮 */
+  .analysisPagePanel{
+    width:100% !important;
+
+    margin:0 !important;
+    padding:14px !important;
+
+    border-radius:18px !important;
+  }
+
+  .analysisPagePanel .analysisHead{
+    margin-bottom:8px !important;
+  }
+
+  .analysisPagePanel .analysisTitle{
+    font-size:18px !important;
+  }
+
+  .analysisPagePanel .salesRow{
+    display:grid !important;
+    grid-template-columns:minmax(0,1fr) auto !important;
+    align-items:center !important;
+    gap:10px !important;
+
+    padding:10px 0 !important;
+  }
+
+  .analysisPagePanel .salesRow span{
+    min-width:0 !important;
+
+    font-size:13px !important;
+    line-height:1.35 !important;
+  }
+
+  .analysisPagePanel .salesRow b{
+    white-space:nowrap !important;
+
+    font-size:15px !important;
+  }
+
+  .analysisPagePanel .salesHr{
+    margin:8px 0 !important;
+  }
+
+  /* 週別カードを少し圧縮 */
+  .weeklySummaryBox{
+    display:grid !important;
+    grid-template-columns:1fr !important;
+    gap:10px !important;
+  }
+
+  .weeklySummaryBox > *{
+    padding:12px !important;
+    border-radius:14px !important;
+  }
+
+  /* スタッフ別 */
+  .staffAnalysisBox{
+    display:grid !important;
+    grid-template-columns:1fr !important;
+    gap:12px !important;
+  }
+
+  .staffAnalysisBox > *{
+    padding:14px !important;
+    border-radius:16px !important;
+  }
+
+  /* スタッフ別の円グラフを小さく */
+  .analysisPage .miniRingGrid,
+  .analysisPage .rateRingGrid,
+  .analysisPage .staffRateGrid{
+    display:grid !important;
+    grid-template-columns:repeat(3, minmax(0,1fr)) !important;
+    gap:8px !important;
+  }
+
+  .analysisPage .miniRing,
+  .analysisPage .rateRing,
+  .analysisPage .staffRateRing{
+    width:88px !important;
+    height:88px !important;
+    max-width:100% !important;
+
+    margin-left:auto !important;
+    margin-right:auto !important;
+  }
+
+  .analysisPage .miniRingValue,
+  .analysisPage .rateRingValue,
+  .analysisPage .staffRateValue{
+    font-size:20px !important;
+  }
+
+  /* 前年比 */
+  [data-analysis-section="yoy"]{
+    min-height:0 !important;
+  }
+
+  /* グラフ */
+  [data-analysis-section="chart"]{
+    overflow:hidden !important;
+  }
+
+  .analysisChartWrap{
+    position:relative !important;
+
+    width:100% !important;
+    height:360px !important;
+
+    overflow:hidden !important;
+  }
+
+  .yoySalesChart{
+    width:100% !important;
+    height:100% !important;
+  }
+
+  /* 下部ステータス */
+  .analysisStatus{
+    margin-top:10px !important;
+    font-size:11px !important;
+  }
+}
