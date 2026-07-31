@@ -1492,3 +1492,14 @@ body{
     height:100% !important;
   }
 }
+@media (max-width:520px){
+
+  .rightSide .salesPanel{
+    order:1 !important;
+  }
+
+  .rightSide .mobileSalesChartPanel{
+    order:2 !important;
+  }
+
+}
