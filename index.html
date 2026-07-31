@@ -435,29 +435,107 @@
 
 </main>
     
-　  <!-- ログイン画面 -->
-  <div id="authScreen" class="authScreen hidden">
-    <div class="authCard">
-      <div class="authTitle">予約アプリ ログイン</div>
-      <div class="authSub">ログインすると予約アプリを利用できます</div>
+<!-- ログイン画面 -->
+<div id="authScreen" class="authScreen comfortLoginScreen hidden">
 
-      <div class="fieldRow">
-        <label class="fieldLabel">メールアドレス</label>
-        <input id="loginEmail" class="fieldInput" type="email" autocomplete="username" />
-      </div>
+  <div class="comfortLoginDecoration comfortLoginDecorationOne"></div>
+  <div class="comfortLoginDecoration comfortLoginDecorationTwo"></div>
 
-      <div class="fieldRow">
-        <label class="fieldLabel">パスワード</label>
-        <input id="loginPassword" class="fieldInput" type="password" autocomplete="current-password" />
-      </div>
+  <div class="authCard comfortLoginCard">
 
-      <div class="cardRow">
-        <button id="loginBtn" class="btn primary" type="button">ログイン</button>
-      </div>
-
-      <div id="authHint" class="hint"></div>
+    <div class="comfortLoginLogoWrap">
+      <img
+        class="comfortLoginLogo"
+        src="logo.png"
+        alt="Hair & Make COMFORT"
+      />
     </div>
+
+    <div class="comfortLoginEyebrow">
+      SALON MANAGEMENT SYSTEM
+    </div>
+
+    <div class="authTitle comfortLoginTitle">
+      予約管理ログイン
+    </div>
+
+    <div class="authSub comfortLoginSub">
+      COMFORTの予約・売上管理システム
+    </div>
+
+    <div class="comfortLoginForm">
+
+      <label class="comfortLoginField">
+
+        <span class="comfortLoginLabel">
+          メールアドレス
+        </span>
+
+        <span class="comfortLoginInputWrap">
+
+          <span class="comfortLoginInputIcon">
+            ✉
+          </span>
+
+          <input
+            id="loginEmail"
+            class="fieldInput comfortLoginInput"
+            type="email"
+            autocomplete="username"
+            placeholder="メールアドレスを入力"
+          />
+
+        </span>
+
+      </label>
+
+      <label class="comfortLoginField">
+
+        <span class="comfortLoginLabel">
+          パスワード
+        </span>
+
+        <span class="comfortLoginInputWrap">
+
+          <span class="comfortLoginInputIcon">
+            ●
+          </span>
+
+          <input
+            id="loginPassword"
+            class="fieldInput comfortLoginInput"
+            type="password"
+            autocomplete="current-password"
+            placeholder="パスワードを入力"
+          />
+
+        </span>
+
+      </label>
+
+      <button
+        id="loginBtn"
+        class="btn primary comfortLoginButton"
+        type="button"
+      >
+        <span>ログイン</span>
+        <span class="comfortLoginButtonArrow">→</span>
+      </button>
+
+      <div
+        id="authHint"
+        class="hint comfortLoginHint"
+      ></div>
+
+    </div>
+
+    <div class="comfortLoginFooter">
+      Hair &amp; Make COMFORT
+    </div>
+
   </div>
+
+</div>
   
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
