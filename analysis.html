@@ -2,7 +2,10 @@
 <html lang="ja">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1"
+  />
 
   <title>売上分析 | COMFORT</title>
 
@@ -11,51 +14,163 @@
 
 <body class="analysisPage">
 
-  <header class="topbar">
+  <header class="topbar analysisTopbar">
+
     <div class="left">
-      <button id="backToCalendarBtn" class="btn" type="button">
+
+      <button
+        id="backToCalendarBtn"
+        class="btn"
+        type="button"
+      >
         ← カレンダーへ戻る
       </button>
+
     </div>
 
     <div class="brandCenter">
-      <img class="brandLogo" src="logo.png" alt="COMFORT" />
+
+      <img
+        class="brandLogo"
+        src="logo.png"
+        alt="COMFORT"
+      />
+
     </div>
 
     <div class="right">
-      <button id="analysisLogoutBtn" class="btn hidden" type="button">
+
+      <button
+        id="analysisLogoutBtn"
+        class="btn hidden"
+        type="button"
+      >
         ログアウト
       </button>
+
     </div>
+
   </header>
 
-  <main id="analysisAppShell" class="wrap hidden">
+  <main
+    id="analysisAppShell"
+    class="wrap hidden"
+  >
 
     <div class="analysisPageHeader">
-      <div>
-        <h1 class="analysisPageTitle">売上分析</h1>
+
+      <div class="analysisHeadingBlock">
+
+        <h1 class="analysisPageTitle">
+          売上分析
+        </h1>
+
         <div class="analysisPageSub">
           売上・客数・メニュー・スタッフ実績を確認できます
         </div>
+
       </div>
 
       <div class="monthNav analysisMonthNav">
-        <button id="analysisPrevBtn" class="navBtn" type="button">◀</button>
 
-        <div id="analysisMonthTitle" class="monthTitle">
+        <button
+          id="analysisPrevBtn"
+          class="navBtn"
+          type="button"
+          aria-label="前月"
+        >
+          ◀
+        </button>
+
+        <div
+          id="analysisMonthTitle"
+          class="monthTitle"
+        >
           —
         </div>
 
-        <button id="analysisNextBtn" class="navBtn" type="button">▶</button>
+        <button
+          id="analysisNextBtn"
+          class="navBtn"
+          type="button"
+          aria-label="翌月"
+        >
+          ▶
+        </button>
+
       </div>
+
     </div>
+
+    <!-- =====================================
+         スマホ用 分析切替タブ
+    ====================================== -->
+    <nav
+      class="analysisMobileTabs"
+      aria-label="売上分析の表示切替"
+    >
+
+      <button
+        type="button"
+        class="analysisMobileTab active"
+        data-analysis-tab="overview"
+      >
+        概要
+      </button>
+
+      <button
+        type="button"
+        class="analysisMobileTab"
+        data-analysis-tab="weekly"
+      >
+        週別
+      </button>
+
+      <button
+        type="button"
+        class="analysisMobileTab"
+        data-analysis-tab="staff"
+      >
+        スタッフ
+      </button>
+
+      <button
+        type="button"
+        class="analysisMobileTab"
+        data-analysis-tab="yoy"
+      >
+        前年比
+      </button>
+
+      <button
+        type="button"
+        class="analysisMobileTab"
+        data-analysis-tab="chart"
+      >
+        グラフ
+      </button>
+
+    </nav>
 
     <section class="analysisPageGrid">
 
       <!-- 基本分析 -->
-      <article class="analysisPanel analysisPagePanel">
+      <article
+        class="
+          analysisPanel
+          analysisPagePanel
+          analysisTabSection
+          active
+        "
+        data-analysis-section="overview"
+      >
+
         <div class="analysisHead">
-          <div class="analysisTitle">分析</div>
+
+          <div class="analysisTitle">
+            分析
+          </div>
+
         </div>
 
         <div class="salesRow">
@@ -101,33 +216,76 @@
           <span>月の予想客数</span>
           <b id="projectedCustomers">—</b>
         </div>
+
       </article>
 
       <!-- 週別まとめ -->
-      <article class="analysisPanel analysisPagePanel">
+      <article
+        class="
+          analysisPanel
+          analysisPagePanel
+          analysisTabSection
+        "
+        data-analysis-section="weekly"
+      >
+
         <div class="analysisHead">
-          <div class="analysisTitle">週別まとめ</div>
+
+          <div class="analysisTitle">
+            週別まとめ
+          </div>
+
         </div>
 
-        <div id="weeklySummaryBox" class="weeklySummaryBox"></div>
+        <div
+          id="weeklySummaryBox"
+          class="weeklySummaryBox"
+        ></div>
+
       </article>
 
       <!-- スタッフ別 -->
-      <article class="analysisPanel analysisPagePanel analysisWidePanel">
+      <article
+        class="
+          analysisPanel
+          analysisPagePanel
+          analysisWidePanel
+          analysisTabSection
+        "
+        data-analysis-section="staff"
+      >
+
         <div class="analysisHead">
-          <div class="analysisTitle">スタッフ別（月合計）</div>
+
+          <div class="analysisTitle">
+            スタッフ別（月合計）
+          </div>
+
         </div>
 
         <div
           id="staffAnalysisBox"
           class="staffAnalysisBox newAnalysisLayout"
         ></div>
+
       </article>
 
       <!-- 前年同月比較 -->
-      <article class="analysisPanel analysisPagePanel">
+      <article
+        class="
+          analysisPanel
+          analysisPagePanel
+          analysisTabSection
+        "
+        data-analysis-section="yoy"
+      >
+
         <div class="analysisHead">
-          <div class="analysisTitle">前年同月比較</div>
+
+          <div class="analysisTitle">
+            前年同月比較
+          </div>
+
         </div>
 
         <div class="salesRow">
@@ -149,44 +307,79 @@
           <span>客単価 前年比</span>
           <b id="yoyUnitPrice">—</b>
         </div>
+
       </article>
 
       <!-- 月別売上比較 -->
-      <article class="analysisPanel analysisPagePanel analysisWidePanel">
+      <article
+        class="
+          analysisPanel
+          analysisPagePanel
+          analysisWidePanel
+          analysisTabSection
+        "
+        data-analysis-section="chart"
+      >
+
         <div class="analysisHead">
-          <div class="analysisTitle">月別売上比較グラフ</div>
+
+          <div class="analysisTitle">
+            月別売上比較グラフ
+          </div>
+
         </div>
 
         <div class="analysisChartWrap">
+
           <canvas
             id="yoySalesChart"
             class="yoySalesChart"
           ></canvas>
+
         </div>
+
       </article>
 
     </section>
 
-    <div id="analysisStatus" class="hint analysisStatus">
+    <div
+      id="analysisStatus"
+      class="hint analysisStatus"
+    >
       分析データを読み込んでいます…
     </div>
 
   </main>
 
-  <div id="analysisAuthMessage" class="authScreen hidden">
+  <div
+    id="analysisAuthMessage"
+    class="authScreen hidden"
+  >
+
     <div class="authCard">
-      <div class="authTitle">ログインが必要です</div>
+
+      <div class="authTitle">
+        ログインが必要です
+      </div>
 
       <div class="authSub">
         予約カレンダーからログインして、もう一度売上分析を開いてください。
       </div>
 
       <div class="cardRow">
-        <button id="goToLoginBtn" class="btn primary" type="button">
+
+        <button
+          id="goToLoginBtn"
+          class="btn primary"
+          type="button"
+        >
           予約カレンダーへ
         </button>
+
       </div>
+
     </div>
+
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
