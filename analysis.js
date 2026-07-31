@@ -1260,22 +1260,28 @@ function renderSalesChart() {
         },
 
                 scales: {
-          y: {
-            beginAtZero: true,
+  y: {
+    beginAtZero: true,
 
-            ticks: {
-              stepSize: 50000,
-              autoSkip: false,
+    ticks: {
+      stepSize: 50000,
+      autoSkip: false,
 
-              callback(value) {
-                return (
-                  Number(value).toLocaleString("ja-JP") +
-                  "円"
-                );
-              }
-            }
-          }
+      callback(value) {
+        const number = Number(value);
+
+        if(number % 100000 !== 0){
+          return "";
         }
+
+        return (
+          number.toLocaleString("ja-JP") +
+          "円"
+        );
+      }
+    }
+  }
+}
       }
     }
   );
