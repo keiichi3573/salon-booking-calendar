@@ -1263,14 +1263,17 @@ function renderSalesChart() {
           y: {
             beginAtZero: true,
 
-            ticks: {
-              callback(value) {
-                return (
-                  Number(value).toLocaleString("ja-JP") +
-                  "円"
-                );
-              }
-            }
+            ticks:{
+  stepSize:50000,
+
+  callback(value){
+    return (
+      Number(value)
+        .toLocaleString("ja-JP") +
+      "円"
+    );
+  }
+}
           }
         }
       }
