@@ -39,12 +39,32 @@ const SLOT_MINUTES = 15;
 const START_MINUTES =
   9 * 60 + 30;
 
-const END_MINUTES =
+/*
+  通常メニューの最終受付
+  カットは18:00開始まで可能
+*/
+const LAST_RECEPTION_MINUTES =
   18 * 60;
+
+/*
+  カラー・パーマを含む予約の最終受付
+*/
+const COLOR_PERM_LAST_RECEPTION_MINUTES =
+  17 * 60;
+
+/*
+  予約表を表示する終了時間
+  施術終了が18:00を超えても表示できる
+*/
+const DISPLAY_END_MINUTES =
+  21 * 60 + 30;
 
 const SLOT_COUNT =
   Math.floor(
-    (END_MINUTES - START_MINUTES) /
+    (
+      DISPLAY_END_MINUTES -
+      START_MINUTES
+    ) /
     SLOT_MINUTES
   ) + 1;
 
@@ -758,10 +778,10 @@ function renderTimeOptions(){
   const options = [];
 
   for(
-    let minutes = START_MINUTES;
-    minutes <= END_MINUTES;
-    minutes += SLOT_MINUTES
-  ){
+  let minutes = START_MINUTES;
+  minutes <= LAST_RECEPTION_MINUTES;
+  minutes += SLOT_MINUTES
+){
     const time =
       minutesToTime(minutes);
 
@@ -1169,21 +1189,28 @@ function renderStaffRow(
     slotCell.dataset.time =
       time;
 
-    if(minutes === END_MINUTES){
-      slotCell.classList.add(
-        "scheduleSlotCellClosed"
-      );
-    }else{
-      slotCell.addEventListener(
-        "click",
-        () => {
-          openNewBooking(
-            staff.id,
-            time
-          );
-        }
+    if(
+  minutes >
+  LAST_RECEPTION_MINUTES
+){
+  /*
+    18:15以降は施術表示専用。
+    新しい予約の開始場所にはしない。
+  */
+  slotCell.classList.add(
+    "scheduleSlotCellClosed"
+  );
+}else{
+  slotCell.addEventListener(
+    "click",
+    () => {
+      openNewBooking(
+        staff.id,
+        time
       );
     }
+  );
+}
 
     const startingBookings =
       staffBookings.filter(
@@ -1809,6 +1836,48 @@ function hasBookingOverlap(
 }
 
 /* =========================
+   メニュー別の最終受付
+========================= */
+
+function includesColorOrPermMenu(){
+  const colorOrPermMenuIds =
+    new Set([
+      "color",
+      "perm",
+      "cut_color",
+      "cut_perm",
+      "cut_color_basic",
+      "cut_perm_basic",
+      "color_treatment"
+    ]);
+
+  return [
+    ...selectedMenus
+  ].some(
+    menuId =>
+      colorOrPermMenuIds.has(
+        menuId
+      )
+  );
+}
+
+function getLatestReceptionMinutes(){
+  if(includesColorOrPermMenu()){
+    return (
+      COLOR_PERM_LAST_RECEPTION_MINUTES
+    );
+  }
+
+  return LAST_RECEPTION_MINUTES;
+}
+
+function getLatestReceptionLabel(){
+  return minutesToTime(
+    getLatestReceptionMinutes()
+  );
+}
+
+/* =========================
    保存
 ========================= */
 
@@ -1856,15 +1925,33 @@ async function saveBooking(){
     return;
   }
 
-  if(
-    timeToMinutes(endTime) >
-    END_MINUTES
-  ){
-    formMessage.textContent =
-      "終了予定が18:00を超えています。開始時間かメニューを変更してください。";
+  const selectedStartMinutes =
+  timeToMinutes(
+    startTimeSelect.value
+  );
 
-    return;
-  }
+const latestReceptionMinutes =
+  getLatestReceptionMinutes();
+
+if(
+  selectedStartMinutes >
+  latestReceptionMinutes
+){
+  formMessage.textContent =
+    `このメニューの最終受付は${getLatestReceptionLabel()}です。開始時間を変更してください。`;
+
+  return;
+}
+
+if(
+  timeToMinutes(endTime) >
+  DISPLAY_END_MINUTES
+){
+  formMessage.textContent =
+    "終了予定が予約表の表示時間を超えています。開始時間を変更してください。";
+
+  return;
+}
 
   const bookingData = {
     id:
