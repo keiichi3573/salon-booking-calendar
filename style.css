@@ -1188,3 +1188,131 @@ body{
     font-size:18px;
   }
 }
+/* =========================================
+   スマホ：けい用 売上確認レイアウト
+========================================= */
+
+@media (max-width:520px){
+
+  /* カレンダーと売上パネルの順番を変更 */
+  .topGrid{
+    display:flex !important;
+    flex-direction:column !important;
+    gap:16px !important;
+  }
+
+  /* 売上パネルを日別一覧より先に表示 */
+  .rightSide{
+    display:flex !important;
+    order:1 !important;
+    width:100% !important;
+    height:auto !important;
+    gap:0 !important;
+  }
+
+  .calBody{
+    order:2 !important;
+    width:100% !important;
+  }
+
+  /* スマホでは今後用の空欄は表示しない */
+  .rightSide .futureTop,
+  .rightSide .futureBottom{
+    display:none !important;
+  }
+
+  /* PC用売上パネルをスマホにも表示 */
+  .rightSide .salesPanel{
+    display:block !important;
+    width:100% !important;
+    order:1 !important;
+
+    margin:0 !important;
+    padding:16px 14px !important;
+
+    border-radius:18px !important;
+    box-sizing:border-box !important;
+  }
+
+  /* 売上タイトルと目標額 */
+  .salesHead{
+    display:flex !important;
+    align-items:flex-start !important;
+    justify-content:space-between !important;
+    gap:10px !important;
+    flex-wrap:wrap !important;
+  }
+
+  .salesTitle{
+    font-size:16px !important;
+  }
+
+  .salesGoalInline{
+    display:flex !important;
+    align-items:center !important;
+    gap:6px !important;
+    flex-wrap:wrap !important;
+  }
+
+  /* 2つの円グラフを横並びで維持 */
+  .ringRow{
+    display:grid !important;
+    grid-template-columns:repeat(2, minmax(0,1fr)) !important;
+    gap:10px !important;
+    margin-top:14px !important;
+  }
+
+  .ringBlock{
+    min-width:0 !important;
+  }
+
+  .ringProgress{
+    margin-left:auto !important;
+    margin-right:auto !important;
+  }
+
+  /* 必要売上などの行 */
+  .salesRow{
+    display:grid !important;
+    grid-template-columns:minmax(0,1fr) auto !important;
+    align-items:center !important;
+    gap:10px !important;
+
+    padding:10px 0 !important;
+  }
+
+  .salesRow span{
+    min-width:0 !important;
+    font-size:13px !important;
+    line-height:1.45 !important;
+  }
+
+  .salesRow b{
+    white-space:nowrap !important;
+    font-size:14px !important;
+  }
+
+  .mDailyGoalLine{
+    display:grid !important;
+    grid-template-columns:minmax(0,1fr) auto !important;
+    gap:10px !important;
+    align-items:center !important;
+  }
+
+  /* 売上分析ボタン */
+  .salesPanel .analysisOpenBtn,
+  .salesPanel a[href="analysis.html"],
+  .salesPanel button[data-analysis]{
+    width:100% !important;
+    min-height:52px !important;
+    margin-top:14px !important;
+
+    display:flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+
+    border-radius:13px !important;
+    font-size:15px !important;
+    font-weight:900 !important;
+  }
+}
