@@ -203,14 +203,14 @@ button{
   display:grid;
 
   grid-template-columns:
-    var(--schedule-staff-width)
-    repeat(35, var(--schedule-slot-width));
+  var(--schedule-staff-width)
+  repeat(49, var(--schedule-slot-width));
 
   min-width:
-    calc(
-      var(--schedule-staff-width)
-      + 35 * var(--schedule-slot-width)
-    );
+  calc(
+    var(--schedule-staff-width)
+    + 49 * var(--schedule-slot-width)
+  );
 
   position:relative;
 }
