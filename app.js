@@ -3047,13 +3047,25 @@ async function openSalesEntryForDate(
       "0";
   }
 
-  await loadStaffSalesForDay(
-    dateStr
-  );
+  /*
+  スマホの「今日の売上を入力」から直接開いた場合は、
+  スタッフ一覧がまだ読み込まれていないため取得する
+*/
+if(
+  !editingStaffRows ||
+  editingStaffRows.length === 0
+){
+  editingStaffRows =
+    await fetchStaffsActive();
+}
 
-  renderSalesStaffCards(
-    editingStaffRows || []
-  );
+await loadStaffSalesForDay(
+  dateStr
+);
+
+renderSalesStaffCards(
+  editingStaffRows
+);
 
   const row =
     bookingsDailyMap.get(
