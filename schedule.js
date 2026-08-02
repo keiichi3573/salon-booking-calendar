@@ -950,7 +950,42 @@ function renderColorTypeButtons(){
       .join("");
 }
 
+/* =========================
+   定休日判定
+========================= */
 
+function isScheduleClosedDay(
+  date
+){
+  const dayOfWeek =
+    date.getDay();
+
+  /*
+    毎週月曜日
+  */
+  if(dayOfWeek === 1){
+    return true;
+  }
+
+  /*
+    第1・第3火曜日
+  */
+  if(dayOfWeek === 2){
+    const weekNumber =
+      Math.ceil(
+        date.getDate() / 7
+      );
+
+    if(
+      weekNumber === 1 ||
+      weekNumber === 3
+    ){
+      return true;
+    }
+  }
+
+  return false;
+}
 
 /* =========================
    予約表表示
