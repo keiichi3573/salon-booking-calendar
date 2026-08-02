@@ -2268,3 +2268,162 @@ body{
     min-height:56px !important;
   }
 }
+/* =========================================
+   売上入力：メニュー人数ボタン
+========================================= */
+
+.salesMenuButtonGrid{
+  display:grid;
+  grid-template-columns:repeat(5, minmax(0, 1fr));
+  gap:8px;
+
+  margin-top:2px;
+}
+
+.salesMenuSelectBtn{
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  gap:3px;
+
+  min-width:0;
+  min-height:58px;
+  padding:7px 4px;
+
+  border:1px solid #d9d3cc;
+  border-radius:12px;
+
+  background:#ffffff;
+  color:#5f5751;
+
+  font-size:12px;
+  font-weight:800;
+  line-height:1.2;
+
+  cursor:pointer;
+
+  box-shadow:
+    0 3px 8px rgba(70, 55, 45, .06);
+
+  transition:
+    background .15s ease,
+    border-color .15s ease,
+    color .15s ease,
+    transform .15s ease;
+}
+
+.salesMenuSelectBtn span{
+  display:block;
+  white-space:nowrap;
+}
+
+.salesMenuSelectBtn b{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+
+  min-width:24px;
+  height:24px;
+  padding:0 6px;
+
+  border-radius:999px;
+
+  background:#f0ece8;
+  color:#665d57;
+
+  font-size:13px;
+  font-weight:900;
+}
+
+/* 選択中 */
+.salesMenuSelectBtn.active{
+  border-color:#bb806d;
+
+  background:
+    linear-gradient(
+      135deg,
+      #a66f5e,
+      #c58c78
+    );
+
+  color:#ffffff;
+
+  box-shadow:
+    0 6px 14px rgba(148, 91, 73, .22);
+
+  transform:translateY(-1px);
+}
+
+.salesMenuSelectBtn.active b{
+  background:rgba(255,255,255,.92);
+  color:#9c6655;
+}
+
+/* 人数の－・＋ */
+.salesMenuStepper{
+  width:100%;
+  margin-top:4px;
+
+  display:grid !important;
+  grid-template-columns:60px minmax(60px, 1fr) 60px;
+  align-items:center;
+  gap:10px;
+}
+
+.salesMenuStepper .stepBtn{
+  width:60px;
+  height:48px;
+
+  border-radius:12px;
+
+  font-size:25px;
+  font-weight:800;
+}
+
+.salesMenuStepper .stepValue{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+
+  min-height:48px;
+
+  border:1px solid #ddd5ce;
+  border-radius:12px;
+
+  background:#faf8f6;
+  color:#4f4540;
+
+  font-size:22px;
+  font-weight:900;
+}
+
+/* スマホ */
+@media (max-width:520px){
+
+  .salesMenuButtonGrid{
+    grid-template-columns:repeat(3, minmax(0, 1fr));
+    gap:7px;
+  }
+
+  .salesMenuSelectBtn{
+    min-height:56px;
+    padding:6px 3px;
+
+    font-size:11px;
+  }
+
+  .salesMenuStepper{
+    grid-template-columns:54px minmax(60px, 1fr) 54px;
+    gap:8px;
+  }
+
+  .salesMenuStepper .stepBtn{
+    width:54px;
+    height:46px;
+  }
+
+  .salesMenuStepper .stepValue{
+    min-height:46px;
+  }
+}
