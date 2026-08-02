@@ -1069,13 +1069,14 @@ const isClosedDay =
   }
 
   STAFFS.forEach(
-    staff => {
-      renderStaffRow(
-        staff,
-        currentBookings
-      );
-    }
-  );
+  staff => {
+    renderStaffRow(
+      staff,
+      currentBookings,
+      isClosedDay
+    );
+  }
+);
 }
 
 /* =========================
@@ -1186,7 +1187,8 @@ function getScheduleSlotWidth(){
 
 function renderStaffRow(
   staff,
-  currentBookings
+  currentBookings,
+  isClosedDay
 ){
   const staffBookings =
     currentBookings.filter(
@@ -1272,10 +1274,21 @@ function renderStaffRow(
     slotCell.dataset.time =
       time;
 
-    if(
+if(isClosedDay){
+
+  /*
+    定休日はすべての時間枠を
+    予約入力不可にする
+  */
+  slotCell.classList.add(
+    "scheduleSlotCellClosedDay"
+  );
+
+}else if(
   minutes >
   LAST_RECEPTION_MINUTES
 ){
+
   /*
     18:15以降は施術表示専用。
     新しい予約の開始場所にはしない。
@@ -1283,7 +1296,9 @@ function renderStaffRow(
   slotCell.classList.add(
     "scheduleSlotCellClosed"
   );
+
 }else{
+
   slotCell.addEventListener(
     "click",
     () => {
@@ -1293,6 +1308,7 @@ function renderStaffRow(
       );
     }
   );
+
 }
 
     const startingBookings =
