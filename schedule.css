@@ -1083,3 +1083,84 @@ button{
   height:30px;
 }
 }
+/* =========================================
+   予約表：定休日表示
+========================================= */
+
+.scheduleGridClosedDay{
+  position:relative;
+}
+
+/* 定休日の予約枠 */
+.scheduleSlotCellClosedDay{
+  position:relative;
+
+  background:
+    repeating-linear-gradient(
+      -45deg,
+      #f1f1f1,
+      #f1f1f1 10px,
+      #e8e8e8 10px,
+      #e8e8e8 20px
+    ) !important;
+
+  cursor:not-allowed !important;
+}
+
+/* スタッフ名側も少し落ち着いた表示 */
+.scheduleGridClosedDay
+.scheduleStaffCell{
+  background:#ece9e5 !important;
+  color:#8b817a !important;
+}
+
+/* 時刻欄 */
+.scheduleGridClosedDay
+.scheduleTimeCell{
+  background:#f3f1ee !important;
+  color:#aaa19a !important;
+}
+
+/* 予約表全体に「定休日」を表示 */
+.scheduleGridClosedDay::after{
+  content:"定休日";
+
+  position:absolute;
+  top:50%;
+  left:50%;
+  z-index:20;
+
+  padding:18px 42px;
+
+  border:2px solid rgba(145,105,95,.28);
+  border-radius:18px;
+
+  background:rgba(255,255,255,.90);
+  color:#8f675d;
+
+  font-size:32px;
+  font-weight:900;
+  letter-spacing:.18em;
+
+  box-shadow:
+    0 14px 35px rgba(78,60,54,.14);
+
+  transform:translate(-50%,-50%);
+
+  pointer-events:none;
+}
+
+/* スマホ */
+@media (max-width:520px){
+
+  .scheduleGridClosedDay::after{
+    position:fixed;
+    top:50%;
+    left:50%;
+
+    padding:14px 26px;
+
+    font-size:24px;
+    white-space:nowrap;
+  }
+}
