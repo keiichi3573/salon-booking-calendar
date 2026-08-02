@@ -1323,6 +1323,17 @@ input.value =
 
 input.placeholder = "0";
 
+      input.addEventListener(
+  "focus",
+  () => {
+    requestAnimationFrame(
+      () => {
+        input.select();
+      }
+    );
+  }
+);
+
       input.addEventListener("input", () => {
         const v = Math.max(0, Number(input.value || 0));
         onChange(v);
