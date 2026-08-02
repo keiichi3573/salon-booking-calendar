@@ -1321,8 +1321,6 @@ input.value =
     ? String(initialNumber)
     : "";
 
-input.placeholder = "0";
-
       input.addEventListener(
   "focus",
   () => {
