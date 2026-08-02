@@ -1361,104 +1361,234 @@ if (showMenuInputs) {
     { key: "spa",    label: "スパ" },
   ];
 
-let selectedMenuKey =
-  menuKeys[0].key;
+  let selectedMenuKey =
+    menuKeys[0].key;
 
-const menuLabel =
-  document.createElement("div");
+  const menuLabel =
+    document.createElement("div");
 
-menuLabel.className =
-  "fieldLabel";
+  menuLabel.className =
+    "fieldLabel";
 
-menuLabel.textContent =
-  "メニュー人数";
+  menuLabel.textContent =
+    "メニュー人数";
 
-const menuButtonGrid =
-  document.createElement("div");
+  const menuButtonGrid =
+    document.createElement("div");
 
-menuButtonGrid.className =
-  "salesMenuButtonGrid";
+  menuButtonGrid.className =
+    "salesMenuButtonGrid";
 
-const menuButtonsMap =
-  new Map();
+  const menuButtonsMap =
+    new Map();
 
-const updateMenuButtons = () => {
-  menuKeys.forEach(menu => {
-    const button =
-      menuButtonsMap.get(menu.key);
+  const menuStepper =
+    document.createElement("div");
 
-    if(!button){
-      return;
-    }
+  menuStepper.className =
+    "stepper salesMenuStepper";
 
-    const value =
-      Number(
-        cur.menus?.[menu.key] || 0
-      );
-
-    button.classList.toggle(
-      "active",
-      menu.key === selectedMenuKey
-    );
-
-    button.innerHTML =
-      `<span>${menu.label}</span>` +
-      `<b>${value}</b>`;
-  });
-};
-
-menuKeys.forEach(menu => {
-  const button =
+  const minus =
     document.createElement("button");
 
-  button.type =
-    "button";
+  minus.type = "button";
+  minus.className = "stepBtn";
+  minus.textContent = "−";
 
-  button.className =
-    "salesMenuSelectBtn";
+  const val =
+    document.createElement("div");
 
-  button.addEventListener(
+  val.className = "stepValue";
+
+  const plus =
+    document.createElement("button");
+
+  plus.type = "button";
+  plus.className = "stepBtn";
+  plus.textContent = "＋";
+
+  const hint =
+    document.createElement("div");
+
+  hint.className = "hint";
+
+  const getMenuVal = key =>
+    Number(
+      cur.menus?.[key] || 0
+    );
+
+  const setMenuVal = (
+    key,
+    value
+  ) => {
+    cur.menus[key] =
+      Math.max(
+        0,
+        Math.floor(
+          Number(value || 0)
+        )
+      );
+  };
+
+  const updateMenuButtons = () => {
+    menuKeys.forEach(menu => {
+      const button =
+        menuButtonsMap.get(
+          menu.key
+        );
+
+      if(!button){
+        return;
+      }
+
+      const value =
+        getMenuVal(
+          menu.key
+        );
+
+      button.classList.toggle(
+        "active",
+        menu.key ===
+          selectedMenuKey
+      );
+
+      button.innerHTML =
+        `<span>${menu.label}</span>` +
+        `<b>${value}</b>`;
+    });
+  };
+
+  const syncMenu = () => {
+    const value =
+      getMenuVal(
+        selectedMenuKey
+      );
+
+    val.textContent =
+      String(value);
+
+    minus.disabled =
+      value <= 0;
+
+    const customers =
+      Number(
+        cur.customers || 0
+      );
+
+    if(
+      customers > 0 &&
+      value > customers
+    ){
+      hint.textContent =
+        `⚠ ${value}人は客数（${customers}）を超えています`;
+
+      hint.classList.add("ng");
+      hint.classList.remove("ok");
+
+    }else{
+
+      hint.textContent =
+        customers > 0
+          ? `${value} / 客数${customers}（${Math.round((value / customers) * 100)}%）`
+          : `${value}（客数を先に入力）`;
+
+      hint.classList.remove("ng");
+      hint.classList.add("ok");
+    }
+
+    updateMenuButtons();
+  };
+
+  menuKeys.forEach(menu => {
+    const button =
+      document.createElement("button");
+
+    button.type = "button";
+
+    button.className =
+      "salesMenuSelectBtn";
+
+    button.addEventListener(
+      "click",
+      () => {
+        selectedMenuKey =
+          menu.key;
+
+        syncMenu();
+      }
+    );
+
+    menuButtonsMap.set(
+      menu.key,
+      button
+    );
+
+    menuButtonGrid.appendChild(
+      button
+    );
+  });
+
+  minus.addEventListener(
     "click",
     () => {
-      selectedMenuKey =
-        menu.key;
+      const value =
+        getMenuVal(
+          selectedMenuKey
+        );
 
-      updateMenuButtons();
+      setMenuVal(
+        selectedMenuKey,
+        value - 1
+      );
+
       syncMenu();
     }
   );
 
-  menuButtonsMap.set(
-    menu.key,
-    button
+  plus.addEventListener(
+    "click",
+    () => {
+      const value =
+        getMenuVal(
+          selectedMenuKey
+        );
+
+      setMenuVal(
+        selectedMenuKey,
+        value + 1
+      );
+
+      syncMenu();
+    }
   );
 
-  menuButtonGrid.appendChild(
-    button
+  menuStepper.appendChild(
+    minus
   );
-});
 
-  minus.addEventListener("click", () => {
-    const v = getMenuVal(selectedMenuKey);
-    setMenuVal(selectedMenuKey, v - 1);
-    syncMenu();
-  });
+  menuStepper.appendChild(
+    val
+  );
 
-  plus.addEventListener("click", () => {
-    const v = getMenuVal(selectedMenuKey);
-    setMenuVal(selectedMenuKey, v + 1);
-    syncMenu();
-  });
+  menuStepper.appendChild(
+    plus
+  );
 
-  menuRow.appendChild(menuLabel);
-  menuRow.appendChild(menuSelect);
-  wrap.appendChild(menuRow);
+  wrap.appendChild(
+    menuLabel
+  );
 
-  menuStepper.appendChild(minus);
-  menuStepper.appendChild(val);
-  menuStepper.appendChild(plus);
-  wrap.appendChild(menuStepper);
-  wrap.appendChild(hint);
+  wrap.appendChild(
+    menuButtonGrid
+  );
+
+  wrap.appendChild(
+    menuStepper
+  );
+
+  wrap.appendChild(
+    hint
+  );
 
   syncMenu();
 }
