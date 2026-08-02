@@ -1313,7 +1313,15 @@ if (!cur.menus) cur.menus = {};
       input.inputMode = "numeric";
       input.min = "0";
       input.step = "1";
-      input.value = String(Number(initial || 0));
+      const initialNumber =
+  Number(initial || 0);
+
+input.value =
+  initialNumber > 0
+    ? String(initialNumber)
+    : "";
+
+input.placeholder = "0";
 
       input.addEventListener("input", () => {
         const v = Math.max(0, Number(input.value || 0));
