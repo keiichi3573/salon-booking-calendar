@@ -1361,69 +1361,82 @@ if (showMenuInputs) {
     { key: "spa",    label: "スパ" },
   ];
 
-  let selectedMenuKey = menuKeys[0].key;
+let selectedMenuKey =
+  menuKeys[0].key;
 
-  const menuRow = document.createElement("div");
-  menuRow.className = "fieldRow";
+const menuLabel =
+  document.createElement("div");
 
-  const menuLabel = document.createElement("label");
-  menuLabel.className = "fieldLabel";
-  menuLabel.textContent = "メニュー人数";
+menuLabel.className =
+  "fieldLabel";
 
-  const menuSelect = document.createElement("select");
-  menuSelect.className = "fieldSelect";
-  menuKeys.forEach(m => {
-    const opt = document.createElement("option");
-    opt.value = m.key;
-    opt.textContent = m.label;
-    menuSelect.appendChild(opt);
-  });
+menuLabel.textContent =
+  "メニュー人数";
 
-  const menuStepper = document.createElement("div");
-  menuStepper.className = "stepper";
+const menuButtonGrid =
+  document.createElement("div");
 
-  const minus = document.createElement("button");
-  minus.type = "button";
-  minus.className = "stepBtn";
-  minus.textContent = "−";
+menuButtonGrid.className =
+  "salesMenuButtonGrid";
 
-  const val = document.createElement("div");
-  val.className = "stepValue";
+const menuButtonsMap =
+  new Map();
 
-  const plus = document.createElement("button");
-  plus.type = "button";
-  plus.className = "stepBtn";
-  plus.textContent = "＋";
+const updateMenuButtons = () => {
+  menuKeys.forEach(menu => {
+    const button =
+      menuButtonsMap.get(menu.key);
 
-  const hint = document.createElement("div");
-  hint.className = "hint";
-
-  const getMenuVal = (k) => Number(cur.menus?.[k] || 0);
-  const setMenuVal = (k, v) => {
-    cur.menus[k] = Math.max(0, Math.floor(Number(v || 0)));
-  };
-
-  const syncMenu = () => {
-    const v = getMenuVal(selectedMenuKey);
-    val.textContent = String(v);
-    minus.disabled = (v <= 0);
-
-    const cus = Number(cur.customers || 0);
-    if (cus > 0 && v > cus){
-      hint.textContent = `⚠ ${v}人は客数（${cus}）を超えています`;
-      hint.classList.add("ng");
-      hint.classList.remove("ok");
-    } else {
-      hint.textContent = cus > 0 ? `${v} / 客数${cus}（${Math.round((v/cus)*100)}%）` : `${v}（客数を先に入力）`;
-      hint.classList.remove("ng");
-      hint.classList.add("ok");
+    if(!button){
+      return;
     }
-  };
 
-  menuSelect.addEventListener("change", () => {
-    selectedMenuKey = menuSelect.value;
-    syncMenu();
+    const value =
+      Number(
+        cur.menus?.[menu.key] || 0
+      );
+
+    button.classList.toggle(
+      "active",
+      menu.key === selectedMenuKey
+    );
+
+    button.innerHTML =
+      `<span>${menu.label}</span>` +
+      `<b>${value}</b>`;
   });
+};
+
+menuKeys.forEach(menu => {
+  const button =
+    document.createElement("button");
+
+  button.type =
+    "button";
+
+  button.className =
+    "salesMenuSelectBtn";
+
+  button.addEventListener(
+    "click",
+    () => {
+      selectedMenuKey =
+        menu.key;
+
+      updateMenuButtons();
+      syncMenu();
+    }
+  );
+
+  menuButtonsMap.set(
+    menu.key,
+    button
+  );
+
+  menuButtonGrid.appendChild(
+    button
+  );
+});
 
   minus.addEventListener("click", () => {
     const v = getMenuVal(selectedMenuKey);
