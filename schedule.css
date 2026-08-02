@@ -1167,7 +1167,7 @@ button{
 /* 定休日表示を画面中央に固定 */
 .scheduleGridClosedDay::after{
   position:fixed !important;
-  top:43% !important;
+  top:40% !important;
   left:50% !important;
 
   transform:
