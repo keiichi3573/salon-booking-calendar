@@ -998,6 +998,11 @@ function renderSchedule(){
   const currentDateKey =
     toDateKey(viewDate);
 
+const isClosedDay =
+  isScheduleClosedDay(
+    viewDate
+  );
+  
   const currentBookings =
     bookings.filter(
       booking =>
@@ -1008,9 +1013,16 @@ function renderSchedule(){
     );
 
   daySummary.textContent =
-    `予約 ${currentBookings.length}件`;
+  isClosedDay
+    ? "定休日"
+    : `予約 ${currentBookings.length}件`;
 
   scheduleGrid.innerHTML = "";
+
+  scheduleGrid.classList.toggle(
+  "scheduleGridClosedDay",
+  isClosedDay
+);
 
   const cornerCell =
     document.createElement("div");
