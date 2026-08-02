@@ -1164,3 +1164,12 @@ button{
     white-space:nowrap;
   }
 }
+/* 定休日表示を画面中央に固定 */
+.scheduleGridClosedDay::after{
+  position:fixed !important;
+  top:50% !important;
+  left:50% !important;
+
+  transform:
+    translate(-50%, -50%) !important;
+}
