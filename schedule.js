@@ -968,17 +968,28 @@ function isScheduleClosedDay(
   }
 
   /*
-    第1・第3火曜日
+    第1・第3月曜日の翌日の火曜日
   */
   if(dayOfWeek === 2){
-    const weekNumber =
+
+    const previousDay =
+      new Date(
+        date.getFullYear(),
+        date.getMonth(),
+        date.getDate() - 1
+      );
+
+    const previousDayWeekNumber =
       Math.ceil(
-        date.getDate() / 7
+        previousDay.getDate() / 7
       );
 
     if(
-      weekNumber === 1 ||
-      weekNumber === 3
+      previousDay.getDay() === 1 &&
+      (
+        previousDayWeekNumber === 1 ||
+        previousDayWeekNumber === 3
+      )
     ){
       return true;
     }
