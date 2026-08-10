@@ -85,14 +85,40 @@ function applyDeviceVisibility(){
 */
 function isClosedDay(date){
   const dow = date.getDay();
-  if (dow === 1) return true; // Monday
-  if (dow === 2){
-    const weekIndex = Math.floor((date.getDate() - 1) / 7) + 1; // 1..5
-    if (weekIndex === 1 || weekIndex === 3) return true;
+
+  // 毎週月曜日
+  if(dow === 1){
+    return true;
   }
+
+  // 第1・第3月曜日の翌日の火曜日
+  if(dow === 2){
+
+    const previousDay =
+      new Date(
+        date.getFullYear(),
+        date.getMonth(),
+        date.getDate() - 1
+      );
+
+    const previousDayWeekNumber =
+      Math.ceil(
+        previousDay.getDate() / 7
+      );
+
+    if(
+      previousDay.getDay() === 1 &&
+      (
+        previousDayWeekNumber === 1 ||
+        previousDayWeekNumber === 3
+      )
+    ){
+      return true;
+    }
+  }
+
   return false;
 }
-
 function businessDaysInMonth(viewDate){
   const first = startOfMonth(viewDate);
   const last  = endOfMonth(viewDate);
