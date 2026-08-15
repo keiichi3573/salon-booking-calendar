@@ -588,6 +588,29 @@
 <script src="config.js"></script>
   
 <script>
+  const SUPABASE_URL =
+  window.APP_CONFIG
+    ?.SUPABASE_URL;
+
+const SUPABASE_ANON_KEY =
+  window.APP_CONFIG
+    ?.SUPABASE_ANON_KEY;
+
+if(
+  !SUPABASE_URL ||
+  !SUPABASE_ANON_KEY
+){
+  throw new Error(
+    "Supabase設定が読み込めていません。config.jsを確認してください。"
+  );
+}
+
+const sb =
+  window.supabase
+    .createClient(
+      SUPABASE_URL,
+      SUPABASE_ANON_KEY
+    );
   let selectedStaff = "";
 
   function showStaffStep() {
