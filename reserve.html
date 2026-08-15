@@ -842,10 +842,25 @@ async function renderAvailableTimeOptions() {
   container.innerHTML = "";
 
   const startMinutes =
-    9 * 60 + 30;
+  9 * 60 + 30;
 
-  const lastStartMinutes =
-    18 * 60;
+const colorPermMenus = [
+  "カラー",
+  "パーマ",
+  "カット＋カラー",
+  "カット＋パーマ",
+  "カット＋カラー＋ベーシックT",
+  "カット＋パーマ＋ベーシックT",
+  "カラー＋トリートメント"
+];
+
+const lastStartMinutes =
+  colorPermMenus.includes(selectedMenu)
+    ? 17 * 60
+    : 18 * 60;
+
+const displayEndMinutes =
+  21 * 60 + 30;
 
   for (
     let minutes = startMinutes;
@@ -854,6 +869,10 @@ async function renderAvailableTimeOptions() {
   ) {
     const candidateEnd =
       minutes + selectedMenuMinutes;
+
+    if (candidateEnd > displayEndMinutes) {
+  continue;
+}
 
     const overlap =
       bookedSlots.some(slot =>
