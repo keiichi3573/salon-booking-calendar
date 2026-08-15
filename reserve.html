@@ -751,7 +751,7 @@ function selectDate(value) {
 
   document.getElementById("selectedDateArea").hidden = false;
 
-renderTemporaryTimeOptions();
+renderAvailableTimeOptions();
 
 document.getElementById("timeStep").hidden = false;
 
@@ -764,34 +764,112 @@ document.getElementById("timeStep").scrollIntoView({
 
   let selectedTime = "";
 
-function renderTemporaryTimeOptions() {
-  const container = document.getElementById("timeOptions");
+function timeToMinutes(time) {
+  const [hour, minute] =
+    String(time)
+      .slice(0, 5)
+      .split(":")
+      .map(Number);
+
+  return hour * 60 + minute;
+}
+
+function minutesToTime(minutes) {
+  const hour =
+    Math.floor(minutes / 60);
+
+  const minute =
+    minutes % 60;
+
+  return (
+    `${String(hour).padStart(2, "0")}:` +
+    `${String(minute).padStart(2, "0")}`
+  );
+}
+
+async function renderAvailableTimeOptions() {
+  const container =
+    document.getElementById("timeOptions");
+
+  container.innerHTML =
+    "空き時間を確認しています…";
+
+  const staffId =
+    selectedStaff === "北村 美穂"
+      ? "kitamura"
+      : selectedStaff === "山崎 錦子"
+        ? "yamazaki"
+        : "";
+
+  if (!staffId) {
+    container.innerHTML =
+      "指名なしの空き時間表示は現在準備中です。";
+
+    return;
+  }
+
+  const {
+    data,
+    error
+  } = await sb.rpc(
+    "get_public_appointment_slots",
+    {
+      p_date: selectedDate,
+      p_staff_id: staffId
+    }
+  );
+
+  if (error) {
+    console.error(
+      "空き時間取得エラー:",
+      error
+    );
+
+    container.innerHTML =
+      "空き時間を取得できませんでした。";
+
+    return;
+  }
+
+  const bookedSlots =
+    (data || []).map(row => ({
+      start:
+        timeToMinutes(row.start_time),
+      end:
+        timeToMinutes(row.end_time)
+    }));
 
   container.innerHTML = "";
 
-  const times = [
-    "09:30",
-    "10:00",
-    "10:30",
-    "11:00",
-    "11:30",
-    "12:00",
-    "12:30",
-    "13:00",
-    "13:30",
-    "14:00",
-    "14:30",
-    "15:00",
-    "15:30",
-    "16:00",
-    "16:30",
-    "17:00",
-    "17:30",
-    "18:00"
-  ];
+  const startMinutes =
+    9 * 60 + 30;
 
-  times.forEach(time => {
-    const button = document.createElement("button");
+  const lastStartMinutes =
+    18 * 60;
+
+  for (
+    let minutes = startMinutes;
+    minutes <= lastStartMinutes;
+    minutes += 15
+  ) {
+    const candidateEnd =
+      minutes + selectedMenuMinutes;
+
+    const overlap =
+      bookedSlots.some(slot =>
+        minutes < slot.end &&
+        candidateEnd > slot.start
+      );
+
+    if (overlap) {
+      continue;
+    }
+
+    const button =
+      document.createElement("button");
+
+    const time =
+      minutesToTime(minutes);
 
     button.type = "button";
     button.className = "time-button";
@@ -802,7 +880,12 @@ function renderTemporaryTimeOptions() {
     };
 
     container.appendChild(button);
-  });
+  }
+
+  if (!container.children.length) {
+    container.innerHTML =
+      "この日は予約できる時間がありません。";
+  }
 }
 
 function selectTime(button, time) {
