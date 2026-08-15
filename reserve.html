@@ -601,6 +601,35 @@ document.getElementById("dateStep").scrollIntoView({
 
   let selectedDate = "";
 
+function isSalonClosed(date) {
+  const day = date.getDay();
+
+  // 毎週月曜日
+  if (day === 1) {
+    return true;
+  }
+
+  // 火曜日だけ追加判定
+  if (day === 2) {
+    const previousDay = new Date(date);
+    previousDay.setDate(date.getDate() - 1);
+
+    const previousMondayDate = previousDay.getDate();
+
+    // 第1月曜日の翌日
+    if (previousMondayDate >= 1 && previousMondayDate <= 7) {
+      return true;
+    }
+
+    // 第3月曜日の翌日
+    if (previousMondayDate >= 15 && previousMondayDate <= 21) {
+      return true;
+    }
+  }
+
+  return false;
+}
+
 function selectDate(value) {
   selectedDate = value;
 
@@ -610,6 +639,16 @@ function selectDate(value) {
   }
 
   const date = new Date(selectedDate + "T00:00:00");
+
+  if (isSalonClosed(date)) {
+    alert("選択された日は定休日です。別の日を選択してください。");
+
+    document.getElementById("reservationDate").value = "";
+    selectedDate = "";
+    document.getElementById("selectedDateArea").hidden = true;
+
+    return;
+  }
 
   const formattedDate =
     `${date.getFullYear()}年` +
