@@ -122,6 +122,42 @@
       transform: scale(0.99);
     }
 
+    .staff-step {
+  margin-top: 28px;
+}
+
+.step-title {
+  margin: 0 0 18px;
+  text-align: center;
+  font-size: 18px;
+  color: #6f5548;
+}
+
+.staff-options {
+  display: grid;
+  gap: 12px;
+}
+
+.staff-button {
+  width: 100%;
+  padding: 16px 18px;
+  border: 1px solid #dfc7bd;
+  border-radius: 14px;
+  background: #fffaf7;
+  color: #5f4a41;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.staff-button:active {
+  transform: scale(0.99);
+}
+
+.staff-button.free {
+  background: #f4ede8;
+}
+
     @media (min-width: 700px) {
       .page {
         padding-top: 48px;
@@ -193,12 +229,50 @@
         この画面は動作確認用です。
       </div>
 
-      <button class="start-button" type="button">
-        予約を始める
-      </button>
+      <button
+  class="start-button"
+  type="button"
+  onclick="showStaffStep()"
+>
+  予約を始める
+</button>
+
+<section id="staffStep" class="staff-step" hidden>
+  <h3 class="step-title">担当スタッフを選択してください</h3>
+
+  <div class="staff-options">
+
+    <button class="staff-button" type="button">
+      北村 美穂
+    </button>
+
+    <button class="staff-button" type="button">
+      山崎 錦子
+    </button>
+
+    <button class="staff-button free" type="button">
+      指名なし
+    </button>
+
+  </div>
+</section>
 
     </section>
 
   </main>
+
+<script>
+  function showStaffStep() {
+    const staffStep = document.getElementById("staffStep");
+
+    staffStep.hidden = false;
+
+    staffStep.scrollIntoView({
+      behavior: "smooth",
+      block: "start"
+    });
+  }
+</script>
+  
 </body>
 </html>
