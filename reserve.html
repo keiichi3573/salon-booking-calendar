@@ -238,6 +238,44 @@
   font-size: 14px;
   color: #6f5548;
 }
+
+    .time-step {
+  margin-top: 32px;
+}
+
+.time-options {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.time-button {
+  width: 100%;
+  padding: 14px 8px;
+  border: 1px solid #dfc7bd;
+  border-radius: 12px;
+  background: #fffaf7;
+  color: #5f4a41;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.time-button.selected {
+  background: #b9857f;
+  border-color: #b9857f;
+  color: #fff;
+}
+
+.selected-time-area {
+  margin-top: 18px;
+  padding: 12px 16px;
+  border-radius: 12px;
+  background: #f4ede8;
+  text-align: center;
+  font-size: 14px;
+  color: #6f5548;
+}
     
     @media (min-width: 700px) {
       .page {
@@ -522,6 +560,20 @@
     選択中：
     <strong id="selectedDateText"></strong>
   </div>
+
+<section id="timeStep" class="time-step" hidden>
+  <h3 class="step-title">時間を選択してください</h3>
+
+  <div id="timeOptions" class="time-options">
+    <!-- 空き時間をJavaScriptで表示 -->
+  </div>
+
+  <div id="selectedTimeArea" class="selected-time-area" hidden>
+    選択中：
+    <strong id="selectedTimeText"></strong>
+  </div>
+</section>
+  
 </section>
   
 </section>
@@ -671,6 +723,76 @@ function selectDate(value) {
     formattedDate;
 
   document.getElementById("selectedDateArea").hidden = false;
+
+renderTemporaryTimeOptions();
+
+document.getElementById("timeStep").hidden = false;
+
+document.getElementById("timeStep").scrollIntoView({
+  behavior: "smooth",
+  block: "start"
+});
+  
+}
+
+  let selectedTime = "";
+
+function renderTemporaryTimeOptions() {
+  const container = document.getElementById("timeOptions");
+
+  container.innerHTML = "";
+
+  const times = [
+    "09:30",
+    "10:00",
+    "10:30",
+    "11:00",
+    "11:30",
+    "12:00",
+    "12:30",
+    "13:00",
+    "13:30",
+    "14:00",
+    "14:30",
+    "15:00",
+    "15:30",
+    "16:00",
+    "16:30",
+    "17:00",
+    "17:30",
+    "18:00"
+  ];
+
+  times.forEach(time => {
+    const button = document.createElement("button");
+
+    button.type = "button";
+    button.className = "time-button";
+    button.textContent = time;
+
+    button.onclick = () => {
+      selectTime(button, time);
+    };
+
+    container.appendChild(button);
+  });
+}
+
+function selectTime(button, time) {
+  document
+    .querySelectorAll(".time-button")
+    .forEach(btn => {
+      btn.classList.remove("selected");
+    });
+
+  button.classList.add("selected");
+
+  selectedTime = time;
+
+  document.getElementById("selectedTimeText").textContent =
+    selectedTime;
+
+  document.getElementById("selectedTimeArea").hidden = false;
 }
 
 document.addEventListener("DOMContentLoaded", () => {
