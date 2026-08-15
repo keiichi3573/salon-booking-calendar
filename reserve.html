@@ -530,6 +530,7 @@ document.getElementById("menuStep").scrollIntoView({
   }
 
 let selectedMenu = "";
+let selectedMenuMinutes = 0;
 
 function selectMenu(button) {
   document
@@ -541,6 +542,7 @@ function selectMenu(button) {
   button.classList.add("selected");
 
   selectedMenu = button.dataset.menu;
+  selectedMenuMinutes = Number(button.dataset.minutes);
 
   document.getElementById("selectedMenuName").textContent =
     selectedMenu;
