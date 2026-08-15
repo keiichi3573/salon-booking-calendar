@@ -611,46 +611,6 @@ const sb =
       SUPABASE_URL,
       SUPABASE_ANON_KEY
     );
-
-async function testPublicAppointmentSlots() {
-  const today = new Date();
-
-  const year = today.getFullYear();
-  const month = String(today.getMonth() + 1).padStart(2, "0");
-  const day = String(today.getDate()).padStart(2, "0");
-
-  const todayString = `${year}-${month}-${day}`;
-
-  const {
-    data,
-    error
-  } = await sb.rpc(
-    "get_public_appointment_slots",
-    {
-      p_date: todayString,
-      p_staff_id: "kitamura"
-    }
-  );
-
-  if (error) {
-    alert(
-      "空き時間取得テスト：エラー\n" +
-      error.message
-    );
-
-    console.error(error);
-    return;
-  }
-
-  alert(
-    `空き時間取得テスト成功\n北村さんの本日の予約：${data.length}件`
-  );
-
-  console.log(
-    "public appointment slots:",
-    data
-  );
-}
   
   let selectedStaff = "";
 
@@ -862,10 +822,8 @@ function selectTime(button, time) {
   document.getElementById("selectedTimeArea").hidden = false;
 }
 
-document.addEventListener("DOMContentLoaded", async () => {
+document.addEventListener("DOMContentLoaded", () => {
   setMinimumReservationDate();
-
-  await testPublicAppointmentSlots();
 });
 </script>
   
