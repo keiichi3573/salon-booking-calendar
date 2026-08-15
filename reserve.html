@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>ご予約 | Hair & Make COMFORT</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Hiragino Kaku Gothic ProN",
+        "Yu Gothic",
+        sans-serif;
+      background: #f8f4ef;
+      color: #4f4039;
+    }
+
+    .page {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 24px 16px 48px;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+
+    .shop-name {
+      margin: 0;
+      font-size: 28px;
+      letter-spacing: 0.08em;
+      color: #6f5548;
+    }
+
+    .shop-sub {
+      margin-top: 6px;
+      font-size: 13px;
+      color: #9a8276;
+    }
+
+    .card {
+      background: #fff;
+      border-radius: 18px;
+      padding: 24px 20px;
+      box-shadow: 0 8px 24px rgba(90, 70, 60, 0.08);
+    }
+
+    .title {
+      margin: 0 0 8px;
+      text-align: center;
+      font-size: 22px;
+      color: #6f5548;
+    }
+
+    .description {
+      margin: 0 0 24px;
+      text-align: center;
+      font-size: 14px;
+      line-height: 1.8;
+      color: #7d6a61;
+    }
+
+    .step-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .step {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 16px;
+      border: 1px solid #eadfd8;
+      border-radius: 14px;
+      background: #fffaf7;
+    }
+
+    .step-number {
+      width: 34px;
+      height: 34px;
+      flex: 0 0 34px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: #d8b5a6;
+      color: #fff;
+      font-weight: 700;
+    }
+
+    .step-text {
+      font-size: 15px;
+      font-weight: 600;
+    }
+
+    .notice {
+      margin-top: 22px;
+      padding: 14px 16px;
+      border-radius: 12px;
+      background: #f4ede8;
+      font-size: 13px;
+      line-height: 1.7;
+      color: #75635a;
+    }
+
+    .start-button {
+      width: 100%;
+      margin-top: 24px;
+      padding: 17px 20px;
+      border: none;
+      border-radius: 14px;
+      background: #b9857f;
+      color: #fff;
+      font-size: 17px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .start-button:active {
+      transform: scale(0.99);
+    }
+
+    @media (min-width: 700px) {
+      .page {
+        padding-top: 48px;
+      }
+
+      .card {
+        padding: 34px 36px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="page">
+
+    <header class="header">
+      <h1 class="shop-name">COMFORT</h1>
+      <div class="shop-sub">Hair & Make COMFORT</div>
+    </header>
+
+    <section class="card">
+
+      <h2 class="title">ご予約</h2>
+
+      <p class="description">
+        画面の案内に沿って<br>
+        ご希望の内容を選択してください。
+      </p>
+
+      <div class="step-list">
+
+        <div class="step">
+          <div class="step-number">1</div>
+          <div class="step-text">スタッフを選択</div>
+        </div>
+
+        <div class="step">
+          <div class="step-number">2</div>
+          <div class="step-text">メニューを選択</div>
+        </div>
+
+        <div class="step">
+          <div class="step-number">3</div>
+          <div class="step-text">日付を選択</div>
+        </div>
+
+        <div class="step">
+          <div class="step-number">4</div>
+          <div class="step-text">空いている時間を選択</div>
+        </div>
+
+        <div class="step">
+          <div class="step-number">5</div>
+          <div class="step-text">お名前を入力</div>
+        </div>
+
+        <div class="step">
+          <div class="step-number">6</div>
+          <div class="step-text">予約内容を確認</div>
+        </div>
+
+      </div>
+
+      <div class="notice">
+        ※ 現在は予約ページを準備中です。<br>
+        この画面は動作確認用です。
+      </div>
+
+      <button class="start-button" type="button">
+        予約を始める
+      </button>
+
+    </section>
+
+  </main>
+</body>
+</html>
