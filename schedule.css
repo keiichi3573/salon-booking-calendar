@@ -129,12 +129,36 @@ button{
   background:#f7f9fc;
 }
 
+.scheduleTopbar .scheduleBtnGhost:hover{
+  background:#ead3ca;
+  border-color:#a66f69;
+  color:#67433f;
+}
+
 .scheduleTopbar .scheduleBtnGhost{
   min-height:42px;
-  padding:8px 14px;
+  width:fit-content;
+  min-width:0;
+  padding:8px 16px;
+
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+
+  justify-self:start;
+  flex:0 0 auto;
+
+  border:1px solid #b9857f;
   border-radius:12px;
+
+  background:#f4e5df;
+  color:#76524d;
+
   font-size:14px;
   font-weight:700;
+
+  box-shadow:
+    0 3px 8px rgba(90, 65, 55, .10);
 }
 
 .scheduleBtnDanger{
