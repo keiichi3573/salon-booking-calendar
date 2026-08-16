@@ -3017,11 +3017,33 @@ async function signInApp(){
   }
 
   if (authHint) authHint.textContent = "";
-  if (authScreen) authScreen.classList.add("hidden");
-  if (appShell) appShell.classList.remove("hidden");
-  if (logoutBtn) logoutBtn.classList.remove("hidden");
 
-  await loadAndRender();
+if (isIPadDevice()){
+  window.location.href = "schedule.html";
+  return;
+}
+
+if (authScreen) authScreen.classList.add("hidden");
+if (appShell) appShell.classList.remove("hidden");
+if (logoutBtn) logoutBtn.classList.remove("hidden");
+
+await loadAndRender();
+}
+
+function isIPadDevice(){
+  const userAgent =
+    navigator.userAgent || "";
+
+  const platform =
+    navigator.platform || "";
+
+  return (
+    /iPad/i.test(userAgent) ||
+    (
+      platform === "MacIntel" &&
+      navigator.maxTouchPoints > 1
+    )
+  );
 }
 
 async function signOutApp(){
