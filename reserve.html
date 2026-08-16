@@ -763,6 +763,7 @@ document.getElementById("timeStep").scrollIntoView({
 }
 
   let selectedTime = "";
+let selectedAssignedStaffId = "";
 
 function timeToMinutes(time) {
   const [hour, minute] =
@@ -1031,6 +1032,9 @@ function selectTime(button, time) {
   button.classList.add("selected");
 
   selectedTime = time;
+
+  selectedAssignedStaffId =
+    button.dataset.staffId || "";
 
   document.getElementById("selectedTimeText").textContent =
     selectedTime;
