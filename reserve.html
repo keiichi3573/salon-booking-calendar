@@ -309,6 +309,39 @@
   cursor: pointer;
 }
 
+.confirm-step {
+  margin-top: 32px;
+}
+
+.confirm-card {
+  padding: 18px;
+  border: 1px solid #eadfd8;
+  border-radius: 14px;
+  background: #fffaf7;
+}
+
+.confirm-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 0;
+  border-bottom: 1px solid #eadfd8;
+}
+
+.confirm-row:last-child {
+  border-bottom: none;
+}
+
+.confirm-row span {
+  color: #8a7469;
+  font-size: 14px;
+}
+
+.confirm-row strong {
+  text-align: right;
+  color: #5f4a41;
+}    
+
 .confirm-button:active {
   transform: scale(0.99);
 }
@@ -627,6 +660,44 @@
     onclick="showConfirmStep()"
   >
     予約内容を確認する
+  </button>
+</section>
+
+<section id="confirmStep" class="confirm-step" hidden>
+  <h3 class="step-title">予約内容をご確認ください</h3>
+
+  <div class="confirm-card">
+    <div class="confirm-row">
+      <span>担当</span>
+      <strong id="confirmStaff"></strong>
+    </div>
+
+    <div class="confirm-row">
+      <span>メニュー</span>
+      <strong id="confirmMenu"></strong>
+    </div>
+
+    <div class="confirm-row">
+      <span>日付</span>
+      <strong id="confirmDate"></strong>
+    </div>
+
+    <div class="confirm-row">
+      <span>時間</span>
+      <strong id="confirmTime"></strong>
+    </div>
+
+    <div class="confirm-row">
+      <span>お名前</span>
+      <strong id="confirmName"></strong>
+    </div>
+  </div>
+
+  <button
+    class="confirm-button"
+    type="button"
+  >
+    この内容で予約する
   </button>
 </section>
   
@@ -1105,6 +1176,51 @@ document.getElementById("nameStep").scrollIntoView({
   block: "start"
 });
 }
+
+function showConfirmStep() {
+  const customerName =
+    document
+      .getElementById("customerName")
+      .value
+      .trim();
+
+  if (!customerName) {
+    alert("お名前を入力してください。");
+    document.getElementById("customerName").focus();
+    return;
+  }
+
+  let staffLabel = selectedStaff;
+
+  if (
+    selectedStaff === "指名なし" &&
+    selectedAssignedStaffId
+  ) {
+    staffLabel = "指名なし";
+  }
+
+  document.getElementById("confirmStaff").textContent =
+    staffLabel;
+
+  document.getElementById("confirmMenu").textContent =
+    selectedMenu;
+
+  document.getElementById("confirmDate").textContent =
+    document.getElementById("selectedDateText").textContent;
+
+  document.getElementById("confirmTime").textContent =
+    selectedTime;
+
+  document.getElementById("confirmName").textContent =
+    customerName;
+
+  document.getElementById("confirmStep").hidden = false;
+
+  document.getElementById("confirmStep").scrollIntoView({
+    behavior: "smooth",
+    block: "start"
+  });
+}  
 
 document.addEventListener("DOMContentLoaded", () => {
   setMinimumReservationDate();
