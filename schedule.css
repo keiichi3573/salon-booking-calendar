@@ -1662,3 +1662,259 @@ body{
   font-size:9px;
   font-weight:700;
 }
+/* =========================================
+   COMFORT 予約表 最終デザイン
+   STEP3：予約入力モーダル
+========================================= */
+
+.scheduleModalBackdrop{
+  background:
+    rgba(62,50,43,.34);
+
+  backdrop-filter:
+    blur(3px);
+}
+
+/* モーダル本体 */
+.scheduleModalCard{
+  width:min(780px, 94vw);
+  max-height:92vh;
+
+  padding:30px 30px 26px;
+
+  border:
+    1px solid #e5ddd6;
+
+  border-radius:24px;
+
+  background:
+    linear-gradient(
+      180deg,
+      #fffefd 0%,
+      #fbf8f5 100%
+    );
+
+  box-shadow:
+    0 28px 80px
+    rgba(66,50,41,.22);
+}
+
+/* 閉じる */
+.scheduleModalClose{
+  top:18px;
+  right:20px;
+
+  color:#9a887c;
+
+  font-size:32px;
+  font-weight:400;
+}
+
+/* タイトル */
+.scheduleModalHeader h2{
+  color:#493d36;
+
+  font-size:26px;
+  font-weight:900;
+
+  letter-spacing:.03em;
+}
+
+/* 説明文 */
+.scheduleModalHeader p{
+  margin-top:8px;
+  margin-bottom:24px;
+
+  color:#93847a;
+
+  font-size:13px;
+  line-height:1.7;
+}
+
+/* 入力項目タイトル */
+.scheduleField > span,
+.scheduleMenuSection h3{
+  color:#56483f;
+
+  font-size:14px;
+  font-weight:900;
+}
+
+/* 入力欄 */
+.scheduleField input,
+.scheduleField select,
+.scheduleField textarea,
+.scheduleReadOnlyValue{
+  min-height:54px;
+
+  border:
+    1px solid #ded4cc;
+
+  border-radius:14px;
+
+  background:#fff;
+
+  padding:13px 15px;
+
+  color:#51443d;
+
+  box-shadow:
+    inset 0 1px 2px
+    rgba(66,50,41,.03);
+
+  transition:
+    border-color .15s ease,
+    box-shadow .15s ease;
+}
+
+.scheduleField input:focus,
+.scheduleField select:focus,
+.scheduleField textarea:focus{
+  outline:none;
+
+  border-color:#9bb3ca;
+
+  box-shadow:
+    0 0 0 3px
+    rgba(95,132,168,.10);
+}
+
+.scheduleReadOnlyValue{
+  background:#f6f2ee;
+}
+
+/* 新規・既存など */
+.scheduleSegment{
+  min-height:54px;
+
+  border:
+    1px solid #ddd2c9;
+
+  border-radius:14px;
+
+  background:
+    linear-gradient(
+      180deg,
+      #ffffff 0%,
+      #f7f3ef 100%
+    );
+
+  color:#6b5c53;
+
+  box-shadow:
+    0 3px 8px
+    rgba(70,55,46,.06);
+}
+
+.scheduleSegment.active{
+  border-color:#789cc1;
+
+  background:
+    linear-gradient(
+      180deg,
+      #ffffff 0%,
+      #edf4fb 100%
+    );
+
+  color:#416b9c;
+
+  box-shadow:
+    0 4px 12px
+    rgba(65,107,156,.13),
+    inset 0 0 0 1px
+    rgba(85,127,174,.22);
+}
+
+/* メニューボタン */
+.scheduleMenuBtn{
+  min-height:92px;
+
+  border:
+    1px solid #ded4cc;
+
+  border-radius:16px;
+
+  background:
+    linear-gradient(
+      180deg,
+      #fff 0%,
+      #f8f5f2 100%
+    );
+
+  box-shadow:
+    0 4px 10px
+    rgba(72,57,48,.06);
+}
+
+.scheduleMenuBtn.active{
+  border-color:#6e94bd;
+
+  background:
+    linear-gradient(
+      180deg,
+      #ffffff 0%,
+      #edf4fb 100%
+    );
+
+  box-shadow:
+    0 5px 14px
+    rgba(65,107,156,.14),
+    inset 0 0 0 1px
+    rgba(65,107,156,.20);
+}
+
+/* メニュー名 */
+.scheduleMenuLabel{
+  color:#51443d;
+}
+
+/* 下部アクション */
+.scheduleModalActions{
+  margin-top:24px;
+  padding-top:20px;
+
+  border-top:
+    1px solid #ebe4de;
+}
+
+/* キャンセル系 */
+.scheduleModalActions .scheduleBtnGhost{
+  background:
+    linear-gradient(
+      180deg,
+      #fff 0%,
+      #f4efeb 100%
+    );
+
+  color:#6b5a50;
+
+  border-color:#ddd2c9;
+}
+
+/* 保存ボタン */
+.scheduleModalActions .scheduleBtnPrimary{
+  background:
+    linear-gradient(
+      180deg,
+      #789cc4 0%,
+      #4f79a8 100%
+    );
+
+  border-color:#557faa;
+
+  color:#fff;
+
+  box-shadow:
+    0 7px 16px
+    rgba(65,107,156,.22);
+}
+
+/* スマホ */
+@media (max-width:760px){
+
+  .scheduleModalCard{
+    width:95vw;
+    padding:24px 16px 20px;
+    border-radius:20px;
+  }
+}
