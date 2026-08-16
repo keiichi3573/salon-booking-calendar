@@ -1417,3 +1417,248 @@ body{
 .scheduleStaffCell{
   background:#fffdfa;
 }
+/* =========================================
+   COMFORT 予約表 最終デザイン
+   STEP2：スタッフ欄・時間欄・予約カード
+========================================= */
+
+/* グリッド線を少し柔らかく */
+.scheduleCornerCell,
+.scheduleTimeCell,
+.scheduleStaffCell,
+.scheduleSlotCell{
+  border-right:1px solid #e8e1da;
+  border-bottom:1px solid #e8e1da;
+}
+
+/* 左上「スタッフ」 */
+.scheduleCornerCell{
+  background:#f4efea;
+  color:#55473f;
+
+  font-size:14px;
+  font-weight:900;
+
+  padding:13px 14px;
+}
+
+/* 時刻欄 */
+.scheduleTimeCell{
+  background:#f7f3ef;
+  color:#86776d;
+
+  font-size:10px;
+  padding:11px 0;
+
+  letter-spacing:.01em;
+}
+
+.scheduleTimeCellMajor{
+  color:#54473f;
+  font-weight:900;
+}
+
+/* スタッフ欄 */
+.scheduleStaffCell{
+  background:
+    linear-gradient(
+      180deg,
+      #fffdfa 0%,
+      #faf6f2 100%
+    );
+
+  padding:16px 13px;
+
+  box-shadow:
+    inset -4px 0 10px
+    rgba(77,58,47,.025);
+}
+
+.scheduleStaffName{
+  color:#493d36;
+
+  font-size:15px;
+  font-weight:900;
+
+  letter-spacing:.01em;
+}
+
+.scheduleStaffMeta{
+  color:#918277;
+  font-size:11px;
+  margin-top:5px;
+}
+
+/* 予約件数バッジ */
+.scheduleStaffBadge{
+  margin-top:9px;
+
+  padding:4px 8px;
+
+  background:#eef3f7;
+  color:#587694;
+
+  border:
+    1px solid #dbe5ed;
+
+  font-size:10px;
+  font-weight:800;
+
+  box-shadow:none;
+}
+
+/* 空き時間マス */
+.scheduleSlotCell{
+  background:#fffefa;
+
+  transition:
+    background .12s ease,
+    box-shadow .12s ease;
+}
+
+/* 1時間ごとの縦線 */
+.scheduleSlotCellHour{
+  border-left:
+    1px solid #d3c9c1;
+}
+
+/* 空き時間 hover */
+.scheduleSlotCell:hover{
+  background:#f9f5f1;
+
+  box-shadow:
+    inset 0 0 0 1px
+    rgba(177,139,122,.16);
+}
+
+/* 受付終了枠 */
+.scheduleSlotCellClosed{
+  background:#f2efec;
+}
+
+/* =========================
+   予約カード
+========================= */
+
+.scheduleBookingBlock{
+  top:8px;
+  height:88px;
+
+  padding:9px 11px;
+
+  border-radius:12px;
+
+  border:
+    1px solid rgba(113,127,145,.18);
+
+  box-shadow:
+    0 5px 13px
+    rgba(70,61,55,.09),
+    inset 0 1px 0
+    rgba(255,255,255,.60);
+
+  transition:
+    transform .12s ease,
+    box-shadow .12s ease;
+}
+
+.scheduleBookingBlock:hover{
+  transform:translateY(-1px);
+
+  box-shadow:
+    0 8px 18px
+    rgba(70,61,55,.13),
+    inset 0 1px 0
+    rgba(255,255,255,.70);
+}
+
+/* 新規 */
+.scheduleBookingBlockNew{
+  background:
+    linear-gradient(
+      135deg,
+      #f8e8e5 0%,
+      #f4dedb 100%
+    );
+
+  border-color:#e8c6c0;
+}
+
+/* 既存 */
+.scheduleBookingBlockRepeat{
+  background:
+    linear-gradient(
+      135deg,
+      #edf4fa 0%,
+      #dce9f5 100%
+    );
+
+  border-color:#c5d7e7;
+}
+
+/* 来店済 */
+.scheduleBookingBlockVisited{
+  background:
+    linear-gradient(
+      135deg,
+      #edf4ed 0%,
+      #dfeade 100%
+    );
+
+  border-color:#c8d9c6;
+}
+
+/* キャンセル */
+.scheduleBookingBlockCancelled{
+  background:#efedea;
+  border-color:#ded9d4;
+
+  color:#968a82;
+
+  opacity:.75;
+}
+
+/* お客様名 */
+.scheduleBookingName{
+  color:#413730;
+
+  font-size:13px;
+  font-weight:900;
+}
+
+/* 時間 */
+.scheduleBookingTime{
+  color:#756960;
+  font-size:10px;
+}
+
+/* メニュー */
+.scheduleBookingMenu{
+  color:#50443c;
+
+  font-size:11px;
+  font-weight:800;
+
+  margin-top:6px;
+}
+
+/* タグ */
+.scheduleBookingTags{
+  margin-top:6px;
+}
+
+.scheduleTag{
+  padding:2px 6px;
+
+  border:
+    1px solid
+    rgba(126,108,95,.10);
+
+  background:
+    rgba(255,255,255,.72);
+
+  color:#6e6056;
+
+  font-size:9px;
+  font-weight:700;
+}
