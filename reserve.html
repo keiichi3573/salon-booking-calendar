@@ -276,6 +276,42 @@
   font-size: 14px;
   color: #6f5548;
 }
+
+    .name-step {
+  margin-top: 32px;
+}
+
+.name-input {
+  width: 100%;
+  padding: 16px 18px;
+  border: 1px solid #dfc7bd;
+  border-radius: 14px;
+  background: #fffaf7;
+  color: #5f4a41;
+  font-size: 16px;
+}
+
+.name-input:focus {
+  outline: none;
+  border-color: #b9857f;
+}
+
+.confirm-button {
+  width: 100%;
+  margin-top: 18px;
+  padding: 17px 20px;
+  border: none;
+  border-radius: 14px;
+  background: #b9857f;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.confirm-button:active {
+  transform: scale(0.99);
+}
     
     @media (min-width: 700px) {
       .page {
@@ -572,6 +608,28 @@
     選択中：
     <strong id="selectedTimeText"></strong>
   </div>
+
+<section id="nameStep" class="name-step" hidden>
+  <h3 class="step-title">お名前を入力してください</h3>
+
+  <input
+    id="customerName"
+    class="name-input"
+    type="text"
+    placeholder="例：山田 花子"
+    autocomplete="name"
+  >
+
+  <button
+    id="confirmButton"
+    class="confirm-button"
+    type="button"
+    onclick="showConfirmStep()"
+  >
+    予約内容を確認する
+  </button>
+</section>
+  
 </section>
   
 </section>
@@ -1040,6 +1098,12 @@ function selectTime(button, time) {
     selectedTime;
 
   document.getElementById("selectedTimeArea").hidden = false;
+  document.getElementById("nameStep").hidden = false;
+
+document.getElementById("nameStep").scrollIntoView({
+  behavior: "smooth",
+  block: "start"
+});
 }
 
 document.addEventListener("DOMContentLoaded", () => {
