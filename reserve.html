@@ -794,19 +794,57 @@ async function renderAvailableTimeOptions() {
   container.innerHTML =
     "空き時間を確認しています…";
 
-  const staffId =
-    selectedStaff === "北村 美穂"
-      ? "kitamura"
-      : selectedStaff === "山崎 錦子"
-        ? "yamazaki"
-        : "";
+  let bookedData = [];
 
-  if (!staffId) {
+if (selectedStaff === "指名なし") {
+  const [
+    kitamuraResult,
+    yamazakiResult
+  ] = await Promise.all([
+    sb.rpc(
+      "get_public_appointment_slots",
+      {
+        p_date: selectedDate,
+        p_staff_id: "kitamura"
+      }
+    ),
+    sb.rpc(
+      "get_public_appointment_slots",
+      {
+        p_date: selectedDate,
+        p_staff_id: "yamazaki"
+      }
+    )
+  ]);
+
+  if (
+    kitamuraResult.error ||
+    yamazakiResult.error
+  ) {
+    console.error(
+      "空き時間取得エラー:",
+      kitamuraResult.error ||
+      yamazakiResult.error
+    );
+
     container.innerHTML =
-      "指名なしの空き時間表示は現在準備中です。";
+      "空き時間を取得できませんでした。";
 
     return;
   }
+
+  bookedData = {
+    kitamura:
+      kitamuraResult.data || [],
+    yamazaki:
+      yamazakiResult.data || []
+  };
+
+} else {
+  const staffId =
+    selectedStaff === "北村 美穂"
+      ? "kitamura"
+      : "yamazaki";
 
   const {
     data,
@@ -831,13 +869,51 @@ async function renderAvailableTimeOptions() {
     return;
   }
 
-  const bookedSlots =
-    (data || []).map(row => ({
+  bookedData = data || [];
+}
+
+  if (error) {
+    console.error(
+      "空き時間取得エラー:",
+      error
+    );
+
+    container.innerHTML =
+      "空き時間を取得できませんでした。";
+
+    return;
+  }
+
+  let bookedSlots = [];
+
+if (selectedStaff === "指名なし") {
+  bookedSlots = {
+    kitamura:
+      bookedData.kitamura.map(row => ({
+        start:
+          timeToMinutes(row.start_time),
+        end:
+          timeToMinutes(row.end_time)
+      })),
+
+    yamazaki:
+      bookedData.yamazaki.map(row => ({
+        start:
+          timeToMinutes(row.start_time),
+        end:
+          timeToMinutes(row.end_time)
+      }))
+  };
+
+} else {
+  bookedSlots =
+    bookedData.map(row => ({
       start:
         timeToMinutes(row.start_time),
       end:
         timeToMinutes(row.end_time)
     }));
+}
 
   container.innerHTML = "";
 
@@ -874,15 +950,64 @@ const displayEndMinutes =
   continue;
 }
 
-    const overlap =
-      bookedSlots.some(slot =>
-        minutes < slot.end &&
-        candidateEnd > slot.start
-      );
+    let availableStaffId = "";
 
-    if (overlap) {
-      continue;
-    }
+if (selectedStaff === "指名なし") {
+  const kitamuraOverlap =
+    bookedSlots.kitamura.some(slot =>
+      minutes < slot.end &&
+      candidateEnd > slot.start
+    );
+
+  const yamazakiOverlap =
+    bookedSlots.yamazaki.some(slot =>
+      minutes < slot.end &&
+      candidateEnd > slot.start
+    );
+
+  if (
+    kitamuraOverlap &&
+    yamazakiOverlap
+  ) {
+    continue;
+  }
+
+  if (
+    !kitamuraOverlap &&
+    yamazakiOverlap
+  ) {
+    availableStaffId = "kitamura";
+
+  } else if (
+    kitamuraOverlap &&
+    !yamazakiOverlap
+  ) {
+    availableStaffId = "yamazaki";
+
+  } else {
+    availableStaffId =
+      bookedData.kitamura.length <=
+      bookedData.yamazaki.length
+        ? "kitamura"
+        : "yamazaki";
+  }
+
+} else {
+  const overlap =
+    bookedSlots.some(slot =>
+      minutes < slot.end &&
+      candidateEnd > slot.start
+    );
+
+  if (overlap) {
+    continue;
+  }
+
+  availableStaffId =
+    selectedStaff === "北村 美穂"
+      ? "kitamura"
+      : "yamazaki";
+}
 
     const button =
       document.createElement("button");
@@ -893,6 +1018,8 @@ const displayEndMinutes =
     button.type = "button";
     button.className = "time-button";
     button.textContent = time;
+    button.dataset.staffId =
+  availableStaffId;
 
     button.onclick = () => {
       selectTime(button, time);
