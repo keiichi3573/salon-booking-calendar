@@ -1222,6 +1222,130 @@ function showConfirmStep() {
     behavior: "smooth",
     block: "start"
   });
+}
+
+async function savePublicBooking() {
+  const button =
+    document.getElementById(
+      "savePublicBookingButton"
+    );
+
+  const customerName =
+    document
+      .getElementById("customerName")
+      .value
+      .trim();
+
+  if (!customerName) {
+    alert("お名前を入力してください。");
+    return;
+  }
+
+  if (
+    !selectedDate ||
+    !selectedTime ||
+    !selectedMenu ||
+    !selectedAssignedStaffId
+  ) {
+    alert(
+      "予約内容を確認できませんでした。最初から選択し直してください。"
+    );
+    return;
+  }
+
+  const startMinutes =
+    timeToMinutes(selectedTime);
+
+  const endMinutes =
+    startMinutes +
+    selectedMenuMinutes;
+
+  const endTime =
+    minutesToTime(endMinutes);
+
+  const nomination =
+    selectedStaff === "指名なし"
+      ? "free"
+      : "nomination";
+
+  button.disabled = true;
+  button.textContent = "予約しています…";
+
+  try {
+    const {
+      data,
+      error
+    } = await sb.rpc(
+      "create_public_appointment",
+      {
+        p_date:
+          selectedDate,
+
+        p_staff_id:
+          selectedAssignedStaffId,
+
+        p_customer_name:
+          customerName,
+
+        p_start_time:
+          selectedTime,
+
+        p_end_time:
+          endTime,
+
+        p_menu_label:
+          selectedMenu,
+
+        p_nomination:
+          nomination
+      }
+    );
+
+    if (error) {
+      throw error;
+    }
+
+    console.log(
+      "予約完了:",
+      data
+    );
+
+    button.textContent =
+      "予約が完了しました";
+
+    alert(
+      "ご予約を承りました。\nありがとうございます。"
+    );
+
+  } catch (error) {
+    console.error(
+      "予約保存エラー:",
+      error
+    );
+
+    button.disabled = false;
+    button.textContent =
+      "この内容で予約する";
+
+    if (
+      String(error.message)
+        .includes(
+          "time slot is already booked"
+        )
+    ) {
+      alert(
+        "申し訳ありません。この時間は先ほど予約が入りました。\n別の時間を選択してください。"
+      );
+
+      await renderAvailableTimeOptions();
+
+      return;
+    }
+
+    alert(
+      "予約を保存できませんでした。\n時間をおいてもう一度お試しください。"
+    );
+  }
 }  
 
 document.addEventListener("DOMContentLoaded", () => {
