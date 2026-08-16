@@ -1205,3 +1205,215 @@ button{
   transform:
     translate(-50%, -50%) !important;
 }
+/* =========================================
+   COMFORT 予約表 最終デザイン
+   STEP1：ページ・ヘッダー・日付・外枠
+========================================= */
+
+body{
+  background:
+    linear-gradient(
+      180deg,
+      #faf8f5 0%,
+      #f5f1ec 100%
+    );
+  color:#493f38;
+}
+
+/* 上部ヘッダー */
+.scheduleTopbar{
+  padding:14px 22px;
+
+  background:
+    rgba(255,253,250,.96);
+
+  border-bottom:
+    1px solid #e8dfd7;
+
+  box-shadow:
+    0 4px 18px
+    rgba(83,64,52,.06);
+}
+
+/* 店名 */
+.scheduleBrand{
+  color:#53463e;
+  font-size:16px;
+  font-weight:800;
+  letter-spacing:.08em;
+}
+
+/* カレンダーへ戻る */
+.scheduleTopbar .scheduleBtnGhost{
+  min-height:42px;
+  width:auto;
+  padding:0 15px;
+
+  border:
+    1px solid #cda99c;
+
+  border-radius:12px;
+
+  background:
+    linear-gradient(
+      180deg,
+      #fffaf7 0%,
+      #f3e5df 100%
+    );
+
+  color:#76564e;
+
+  font-size:13px;
+  font-weight:800;
+
+  box-shadow:
+    0 4px 10px
+    rgba(105,76,65,.10);
+}
+
+.scheduleTopbar .scheduleBtnGhost:hover{
+  background:#eedbd3;
+  border-color:#b98779;
+  color:#63463f;
+}
+
+/* 予約追加 */
+.scheduleTopbar .scheduleBtnPrimary{
+  min-height:44px;
+  padding:0 20px;
+
+  border-radius:12px;
+
+  border-color:#6285ae;
+
+  background:
+    linear-gradient(
+      180deg,
+      #7ea1c9 0%,
+      #557fae 100%
+    );
+
+  box-shadow:
+    0 5px 14px
+    rgba(66,105,150,.20);
+}
+
+/* ページ本体 */
+.schedulePage{
+  max-width:1550px;
+  padding:24px 22px 30px;
+}
+
+/* 日付まわり */
+.scheduleToolbar{
+  margin-bottom:18px;
+  padding:18px 20px;
+
+  border:
+    1px solid #e8dfd7;
+
+  border-radius:18px;
+
+  background:
+    rgba(255,253,250,.92);
+
+  box-shadow:
+    0 8px 24px
+    rgba(79,62,51,.07);
+}
+
+.scheduleDateNav{
+  gap:10px;
+}
+
+/* 前日・翌日 */
+.scheduleDateNav .scheduleIconBtn{
+  width:44px;
+  height:44px;
+  min-height:44px;
+
+  border:
+    1px solid #ded4cc;
+
+  border-radius:12px;
+
+  background:
+    linear-gradient(
+      180deg,
+      #ffffff 0%,
+      #f6f2ee 100%
+    );
+
+  color:#6c5e55;
+
+  box-shadow:
+    0 3px 9px
+    rgba(76,61,51,.07);
+}
+
+/* 今日ボタン */
+.scheduleDateNav .scheduleBtnGhost{
+  min-height:44px;
+  padding:0 18px;
+
+  border:
+    1px solid #d7c8be;
+
+  border-radius:12px;
+
+  background:#fffdfb;
+
+  color:#66584f;
+
+  box-shadow:
+    0 3px 9px
+    rgba(76,61,51,.06);
+}
+
+/* 日付 */
+.scheduleDateTitle{
+  color:#493d36;
+  font-size:24px;
+  font-weight:900;
+  letter-spacing:.02em;
+}
+
+/* 予約○件 */
+.scheduleSummary{
+  padding:7px 13px;
+
+  border-radius:999px;
+
+  background:#edf3f8;
+  color:#537395;
+
+  font-size:13px;
+  font-weight:800;
+}
+
+/* 予約表の外枠 */
+.scheduleCard{
+  border:
+    1px solid #e2d9d1;
+
+  border-radius:20px;
+
+  background:#fffdfb;
+
+  box-shadow:
+    0 14px 36px
+    rgba(72,57,48,.10);
+
+  overflow:hidden;
+}
+
+/* 表上部 */
+.scheduleCornerCell,
+.scheduleTimeCell{
+  background:#f5f1ed;
+}
+
+/* 左スタッフ欄 */
+.scheduleStaffCell{
+  background:#fffdfa;
+}
