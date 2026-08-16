@@ -129,6 +129,14 @@ button{
   background:#f7f9fc;
 }
 
+.scheduleTopbar .scheduleBtnGhost{
+  min-height:42px;
+  padding:8px 14px;
+  border-radius:12px;
+  font-size:14px;
+  font-weight:700;
+}
+
 .scheduleBtnDanger{
   background:var(--schedule-danger-soft);
   border-color:#efcaca;
