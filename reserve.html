@@ -857,9 +857,6 @@ if (selectedStaff === "指名なし") {
     }
   );
 
-  bookedData = data || [];
-}
-
   if (error) {
     console.error(
       "空き時間取得エラー:",
@@ -872,8 +869,10 @@ if (selectedStaff === "指名なし") {
     return;
   }
 
-  let bookedSlots = [];
+  bookedData = data || [];
+}
 
+let bookedSlots = [];
 if (selectedStaff === "指名なし") {
   bookedSlots = {
     kitamura:
