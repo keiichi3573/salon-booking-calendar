@@ -857,18 +857,6 @@ if (selectedStaff === "指名なし") {
     }
   );
 
-  if (error) {
-    console.error(
-      "空き時間取得エラー:",
-      error
-    );
-
-    container.innerHTML =
-      "空き時間を取得できませんでした。";
-
-    return;
-  }
-
   bookedData = data || [];
 }
 
