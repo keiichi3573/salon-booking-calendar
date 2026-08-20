@@ -63,21 +63,21 @@
       color: #7d6a61;
     }
 
-    .tutorial-list {
+    .tutorial-flow {
   display: grid;
-  gap: 12px;
-  margin-top: 20px;
+  gap: 5px;
+  margin-top: 16px;
 }
 
-.tutorial-card {
+.tutorial-mini {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 12px;
 
-  padding: 15px 16px;
+  padding: 10px 14px;
 
   border: 1px solid #eadfd8;
-  border-radius: 16px;
+  border-radius: 13px;
 
   background:
     linear-gradient(
@@ -85,15 +85,12 @@
       #fffdfb 0%,
       #faf4f0 100%
     );
-
-  box-shadow:
-    0 4px 12px rgba(90, 70, 60, 0.05);
 }
 
-.tutorial-icon {
-  width: 44px;
-  height: 44px;
-  flex: 0 0 44px;
+.tutorial-mini .tutorial-icon {
+  width: 34px;
+  height: 34px;
+  flex: 0 0 34px;
 
   display: flex;
   align-items: center;
@@ -102,26 +99,39 @@
   border-radius: 50%;
 
   background: #f1ded6;
-  color: #76564e;
 
-  font-size: 21px;
+  font-size: 17px;
 }
 
-.tutorial-content {
-  flex: 1;
+.tutorial-mini-text {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
 }
 
-.tutorial-title {
+.tutorial-mini-text strong {
   color: #5f4a41;
-  font-size: 15px;
-  font-weight: 700;
-  margin-bottom: 3px;
+  font-size: 14px;
 }
 
-.tutorial-text {
+.tutorial-mini-text span {
   color: #8a756a;
   font-size: 12px;
-  line-height: 1.6;
+}
+
+.tutorial-arrow {
+  height: 15px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  color: #c49b8d;
+
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1;
 }
 
 .tutorial-note {
@@ -452,70 +462,67 @@
   かんたん6ステップでご予約いただけます
 </p>
 
-<div class="tutorial-list">
+<div class="tutorial-flow">
 
-  <div class="tutorial-card">
+  <div class="tutorial-mini">
     <div class="tutorial-icon">👤</div>
-    <div class="tutorial-content">
-      <div class="tutorial-title">1. スタッフを選ぶ</div>
-      <div class="tutorial-text">
-        担当スタッフ、または「指名なし」をお選びください
-      </div>
+    <div class="tutorial-mini-text">
+      <strong>1. スタッフ</strong>
+      <span>担当を選択</span>
     </div>
   </div>
 
-  <div class="tutorial-card">
+  <div class="tutorial-arrow">↓</div>
+
+  <div class="tutorial-mini">
     <div class="tutorial-icon">✂️</div>
-    <div class="tutorial-content">
-      <div class="tutorial-title">2. メニューを選ぶ</div>
-      <div class="tutorial-text">
-        カット・カラー・パーマなど、ご希望のメニューを選択します
-      </div>
+    <div class="tutorial-mini-text">
+      <strong>2. メニュー</strong>
+      <span>施術内容を選択</span>
     </div>
   </div>
 
-  <div class="tutorial-card">
+  <div class="tutorial-arrow">↓</div>
+
+  <div class="tutorial-mini">
     <div class="tutorial-icon">📅</div>
-    <div class="tutorial-content">
-      <div class="tutorial-title">3. 日付を選ぶ</div>
-      <div class="tutorial-text">
-        ご来店希望日をカレンダーからお選びください
-      </div>
+    <div class="tutorial-mini-text">
+      <strong>3. 日付</strong>
+      <span>希望日を選択</span>
     </div>
   </div>
 
-  <div class="tutorial-card">
+  <div class="tutorial-arrow">↓</div>
+
+  <div class="tutorial-mini">
     <div class="tutorial-icon">🕒</div>
-    <div class="tutorial-content">
-      <div class="tutorial-title">4. 空いている時間を選ぶ</div>
-      <div class="tutorial-text">
-        ご予約可能な時間だけが表示されます
-      </div>
+    <div class="tutorial-mini-text">
+      <strong>4. 時間</strong>
+      <span>空いている時間を選択</span>
     </div>
   </div>
 
-  <div class="tutorial-card">
+  <div class="tutorial-arrow">↓</div>
+
+  <div class="tutorial-mini">
     <div class="tutorial-icon">✏️</div>
-    <div class="tutorial-content">
-      <div class="tutorial-title">5. お名前を入力</div>
-      <div class="tutorial-text">
-        ご予約されるお客様のお名前をご入力ください
-      </div>
+    <div class="tutorial-mini-text">
+      <strong>5. お名前</strong>
+      <span>お名前を入力</span>
     </div>
   </div>
 
-  <div class="tutorial-card">
+  <div class="tutorial-arrow">↓</div>
+
+  <div class="tutorial-mini">
     <div class="tutorial-icon">✓</div>
-    <div class="tutorial-content">
-      <div class="tutorial-title">6. 内容を確認して完了</div>
-      <div class="tutorial-text">
-        最後に予約内容を確認して「この内容で予約する」を押してください
-      </div>
+    <div class="tutorial-mini-text">
+      <strong>6. 確認</strong>
+      <span>内容確認で予約完了</span>
     </div>
   </div>
 
 </div>
-
 <div class="tutorial-note">
   空き時間は最新の予約状況から自動で表示されます。
 </div>
