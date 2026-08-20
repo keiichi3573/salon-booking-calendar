@@ -63,6 +63,81 @@
       color: #7d6a61;
     }
 
+    .tutorial-list {
+  display: grid;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.tutorial-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+
+  padding: 15px 16px;
+
+  border: 1px solid #eadfd8;
+  border-radius: 16px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #fffdfb 0%,
+      #faf4f0 100%
+    );
+
+  box-shadow:
+    0 4px 12px rgba(90, 70, 60, 0.05);
+}
+
+.tutorial-icon {
+  width: 44px;
+  height: 44px;
+  flex: 0 0 44px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  background: #f1ded6;
+  color: #76564e;
+
+  font-size: 21px;
+}
+
+.tutorial-content {
+  flex: 1;
+}
+
+.tutorial-title {
+  color: #5f4a41;
+  font-size: 15px;
+  font-weight: 700;
+  margin-bottom: 3px;
+}
+
+.tutorial-text {
+  color: #8a756a;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.tutorial-note {
+  margin-top: 18px;
+  padding: 12px 14px;
+
+  border-radius: 12px;
+
+  background: #f4ede8;
+  color: #75635a;
+
+  font-size: 12px;
+  line-height: 1.6;
+  text-align: center;
+}
+
     .step-list {
       display: grid;
       gap: 12px;
@@ -373,50 +448,77 @@
 
       <h2 class="title">ご予約</h2>
 
-      <p class="description">
-        画面の案内に沿って<br>
-        ご希望の内容を選択してください。
-      </p>
+<p class="description">
+  かんたん6ステップでご予約いただけます
+</p>
 
-      <div class="step-list">
+<div class="tutorial-list">
 
-        <div class="step">
-          <div class="step-number">1</div>
-          <div class="step-text">スタッフを選択</div>
-        </div>
-
-        <div class="step">
-          <div class="step-number">2</div>
-          <div class="step-text">メニューを選択</div>
-        </div>
-
-        <div class="step">
-          <div class="step-number">3</div>
-          <div class="step-text">日付を選択</div>
-        </div>
-
-        <div class="step">
-          <div class="step-number">4</div>
-          <div class="step-text">空いている時間を選択</div>
-        </div>
-
-        <div class="step">
-          <div class="step-number">5</div>
-          <div class="step-text">お名前を入力</div>
-        </div>
-
-        <div class="step">
-          <div class="step-number">6</div>
-          <div class="step-text">予約内容を確認</div>
-        </div>
-
+  <div class="tutorial-card">
+    <div class="tutorial-icon">👤</div>
+    <div class="tutorial-content">
+      <div class="tutorial-title">1. スタッフを選ぶ</div>
+      <div class="tutorial-text">
+        担当スタッフ、または「指名なし」をお選びください
       </div>
+    </div>
+  </div>
 
-      <div class="notice">
-        ※ 現在は予約ページを準備中です。<br>
-        この画面は動作確認用です。
+  <div class="tutorial-card">
+    <div class="tutorial-icon">✂️</div>
+    <div class="tutorial-content">
+      <div class="tutorial-title">2. メニューを選ぶ</div>
+      <div class="tutorial-text">
+        カット・カラー・パーマなど、ご希望のメニューを選択します
       </div>
+    </div>
+  </div>
 
+  <div class="tutorial-card">
+    <div class="tutorial-icon">📅</div>
+    <div class="tutorial-content">
+      <div class="tutorial-title">3. 日付を選ぶ</div>
+      <div class="tutorial-text">
+        ご来店希望日をカレンダーからお選びください
+      </div>
+    </div>
+  </div>
+
+  <div class="tutorial-card">
+    <div class="tutorial-icon">🕒</div>
+    <div class="tutorial-content">
+      <div class="tutorial-title">4. 空いている時間を選ぶ</div>
+      <div class="tutorial-text">
+        ご予約可能な時間だけが表示されます
+      </div>
+    </div>
+  </div>
+
+  <div class="tutorial-card">
+    <div class="tutorial-icon">✏️</div>
+    <div class="tutorial-content">
+      <div class="tutorial-title">5. お名前を入力</div>
+      <div class="tutorial-text">
+        ご予約されるお客様のお名前をご入力ください
+      </div>
+    </div>
+  </div>
+
+  <div class="tutorial-card">
+    <div class="tutorial-icon">✓</div>
+    <div class="tutorial-content">
+      <div class="tutorial-title">6. 内容を確認して完了</div>
+      <div class="tutorial-text">
+        最後に予約内容を確認して「この内容で予約する」を押してください
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="tutorial-note">
+  空き時間は最新の予約状況から自動で表示されます。
+</div>
       <button
   class="start-button"
   type="button"
