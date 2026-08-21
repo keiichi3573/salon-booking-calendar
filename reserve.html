@@ -560,6 +560,66 @@ gap: 8px;
   margin-top: 32px;
 }
 
+ .customer-info-header {
+  margin-bottom: 18px;
+  text-align: center;
+}
+
+.customer-step-label {
+  display: inline-block;
+  margin-bottom: 5px;
+
+  color: #b9857f;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+.customer-info-title {
+  margin-bottom: 5px;
+}
+
+.customer-info-description {
+  margin: 0;
+
+  color: #8a756a;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.customer-field {
+  padding: 16px;
+
+  border: 1px solid #eadfd8;
+  border-radius: 14px;
+
+  background: #fffaf7;
+}
+
+.customer-field label {
+  display: block;
+  margin-bottom: 8px;
+
+  color: #5f4a41;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.required-label {
+  display: inline-block;
+
+  margin-left: 5px;
+  padding: 2px 6px;
+
+  border-radius: 10px;
+
+  background: #f1ded6;
+  color: #9c6c64;
+
+  font-size: 9px;
+  font-weight: 700;
+}   
+
 .name-input {
   width: 100%;
   padding: 16px 18px;
@@ -1095,15 +1155,31 @@ gap: 8px;
 </div>
 
 <section id="nameStep" class="name-step" hidden>
-  <h3 class="step-title">お名前を入力してください</h3>
 
-  <input
-    id="customerName"
-    class="name-input"
-    type="text"
-    placeholder="例：山田 花子"
-    autocomplete="name"
-  >
+  <div class="customer-info-header">
+    <span class="customer-step-label">STEP 5</span>
+    <h3 class="step-title customer-info-title">
+      お客様情報
+    </h3>
+    <p class="customer-info-description">
+      ご予約される方のお名前をご入力ください
+    </p>
+  </div>
+
+  <div class="customer-field">
+    <label for="customerName">
+      お名前
+      <span class="required-label">必須</span>
+    </label>
+
+    <input
+      id="customerName"
+      class="name-input"
+      type="text"
+      placeholder="例：山田 花子"
+      autocomplete="name"
+    >
+  </div>
 
   <button
     id="confirmButton"
@@ -1113,6 +1189,7 @@ gap: 8px;
   >
     予約内容を確認する
   </button>
+
 </section>
 
 <section id="confirmStep" class="confirm-step" hidden>
