@@ -725,7 +725,7 @@ gap: 8px;
   かんたん6ステップでご予約いただけます
 </p>
 
-<div class="tutorial-grid">
+<div id="reservationTutorial" class="tutorial-grid">
 
   <div class="tutorial-column">
 
@@ -795,7 +795,7 @@ gap: 8px;
 
 </div>
 
-<div class="tutorial-note">
+<div id="reservationTutorialNote" class="tutorial-note">
   空き時間は最新の予約状況から自動で表示されます。
 </div>
       <button
@@ -1171,6 +1171,24 @@ const sb =
 
   const menuStep =
     document.getElementById("menuStep");
+
+  const tutorial =
+  document.getElementById(
+    "reservationTutorial"
+  );
+
+const tutorialNote =
+  document.getElementById(
+    "reservationTutorialNote"
+  );
+
+if (tutorial) {
+  tutorial.style.display = "none";
+}
+
+if (tutorialNote) {
+  tutorialNote.style.display = "none";
+}  
 
   /*
     現在menuStepはstaffStepの内側にあるため、
