@@ -529,7 +529,7 @@
       <button
   class="start-button"
   type="button"
-  onclick="showStaffStep()"
+  onclick="showMenuStep()"
 >
   予約を始める
 </button>
@@ -864,6 +864,18 @@ const sb =
       block: "start"
     });
   }
+
+  function showMenuStep() {
+  const menuStep =
+    document.getElementById("menuStep");
+
+  menuStep.hidden = false;
+
+  menuStep.scrollIntoView({
+    behavior: "smooth",
+    block: "start"
+  });
+}
 
   function selectStaff(button) {
     document
