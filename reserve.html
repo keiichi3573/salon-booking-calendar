@@ -1299,23 +1299,30 @@ gap: 8px;
 <div class="booking-calendar">
 
   <div class="calendar-header">
+
     <button
       type="button"
       class="calendar-nav-button"
+      onclick="changeCalendarMonth(-1)"
+      aria-label="前の月"
     >
       ‹
     </button>
 
-    <div class="calendar-month-title">
-      2026年8月
-    </div>
+    <div
+      id="calendarMonthTitle"
+      class="calendar-month-title"
+    ></div>
 
     <button
       type="button"
       class="calendar-nav-button"
+      onclick="changeCalendarMonth(1)"
+      aria-label="次の月"
     >
       ›
     </button>
+
   </div>
 
   <div class="calendar-weekdays">
@@ -1328,52 +1335,10 @@ gap: 8px;
     <div class="saturday">土</div>
   </div>
 
-  <div class="calendar-days">
-
-    <button type="button" class="calendar-day empty"></button>
-    <button type="button" class="calendar-day empty"></button>
-    <button type="button" class="calendar-day empty"></button>
-    <button type="button" class="calendar-day empty"></button>
-    <button type="button" class="calendar-day empty"></button>
-
-    <button type="button" class="calendar-day">1</button>
-    <button type="button" class="calendar-day">2</button>
-
-    <button type="button" class="calendar-day">3</button>
-    <button type="button" class="calendar-day closed">4</button>
-    <button type="button" class="calendar-day">5</button>
-    <button type="button" class="calendar-day">6</button>
-    <button type="button" class="calendar-day">7</button>
-    <button type="button" class="calendar-day">8</button>
-    <button type="button" class="calendar-day">9</button>
-
-    <button type="button" class="calendar-day">10</button>
-    <button type="button" class="calendar-day closed">11</button>
-    <button type="button" class="calendar-day">12</button>
-    <button type="button" class="calendar-day">13</button>
-    <button type="button" class="calendar-day">14</button>
-    <button type="button" class="calendar-day">15</button>
-    <button type="button" class="calendar-day">16</button>
-
-    <button type="button" class="calendar-day">17</button>
-    <button type="button" class="calendar-day closed">18</button>
-    <button type="button" class="calendar-day">19</button>
-    <button type="button" class="calendar-day">20</button>
-    <button type="button" class="calendar-day">21</button>
-    <button type="button" class="calendar-day">22</button>
-    <button type="button" class="calendar-day">23</button>
-
-    <button type="button" class="calendar-day">24</button>
-    <button type="button" class="calendar-day closed">25</button>
-    <button type="button" class="calendar-day">26</button>
-    <button type="button" class="calendar-day">27</button>
-    <button type="button" class="calendar-day">28</button>
-    <button type="button" class="calendar-day">29</button>
-    <button type="button" class="calendar-day">30</button>
-
-    <button type="button" class="calendar-day">31</button>
-
-  </div>
+  <div
+    id="calendarDays"
+    class="calendar-days"
+  ></div>
 
 </div>
   
@@ -1976,6 +1941,128 @@ if (menuTitle) {
   
   let selectedDate = "";
 
+  let calendarCurrentDate =
+  new Date();
+
+calendarCurrentDate.setDate(1);
+
+function renderBookingCalendar() {
+  const title =
+    document.getElementById(
+      "calendarMonthTitle"
+    );
+
+  const daysContainer =
+    document.getElementById(
+      "calendarDays"
+    );
+
+  if (!title || !daysContainer) {
+    return;
+  }
+
+  const year =
+    calendarCurrentDate.getFullYear();
+
+  const month =
+    calendarCurrentDate.getMonth();
+
+  title.textContent =
+    `${year}年${month + 1}月`;
+
+  daysContainer.innerHTML = "";
+
+  const firstDay =
+    new Date(
+      year,
+      month,
+      1
+    ).getDay();
+
+  const lastDate =
+    new Date(
+      year,
+      month + 1,
+      0
+    ).getDate();
+
+  /*
+    月初までの空白
+  */
+  for (
+    let i = 0;
+    i < firstDay;
+    i++
+  ) {
+    const empty =
+      document.createElement(
+        "div"
+      );
+
+    empty.className =
+      "calendar-day empty";
+
+    daysContainer.appendChild(
+      empty
+    );
+  }
+
+  /*
+    日付を生成
+  */
+  for (
+    let day = 1;
+    day <= lastDate;
+    day++
+  ) {
+    const date =
+      new Date(
+        year,
+        month,
+        day
+      );
+
+    const button =
+      document.createElement(
+        "button"
+      );
+
+    button.type = "button";
+
+    button.className =
+      "calendar-day";
+
+    button.textContent =
+      String(day);
+
+    /*
+      定休日表示
+    */
+    if (isSalonClosed(date)) {
+      button.classList.add(
+        "closed"
+      );
+
+      button.disabled = true;
+    }
+
+    daysContainer.appendChild(
+      button
+    );
+  }
+}
+
+  function changeCalendarMonth(
+  direction
+) {
+  calendarCurrentDate.setMonth(
+    calendarCurrentDate.getMonth()
+      + direction
+  );
+
+  renderBookingCalendar();
+}
+  
   function setMinimumReservationDate() {
   const today = new Date();
 
@@ -2731,9 +2818,13 @@ async function savePublicBooking() {
   }
 }  
 
-document.addEventListener("DOMContentLoaded", () => {
-  setMinimumReservationDate();
-});
+document.addEventListener(
+  "DOMContentLoaded",
+  () => {
+    setMinimumReservationDate();
+    renderBookingCalendar();
+  }
+);
 </script>
   
 </body>
