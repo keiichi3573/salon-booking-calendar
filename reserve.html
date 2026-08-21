@@ -911,28 +911,36 @@ const sb =
 }
 
   function selectStaff(button) {
-    document
-      .querySelectorAll(".staff-button")
-      .forEach(btn => {
-        btn.classList.remove("selected");
-      });
+  document
+    .querySelectorAll(".staff-button")
+    .forEach(btn => {
+      btn.classList.remove("selected");
+    });
 
-    button.classList.add("selected");
+  button.classList.add("selected");
 
-    selectedStaff = button.dataset.staff;
+  selectedStaff =
+    button.dataset.staff;
 
-    document.getElementById("selectedStaffName").textContent =
-      selectedStaff;
+  document.getElementById(
+    "selectedStaffName"
+  ).textContent = selectedStaff;
 
-    document.getElementById("selectedStaffArea").hidden = false;
+  document.getElementById(
+    "selectedStaffArea"
+  ).hidden = false;
 
-    document.getElementById("menuStep").hidden = false;
+  document.getElementById(
+    "dateStep"
+  ).hidden = false;
 
-document.getElementById("menuStep").scrollIntoView({
-  behavior: "smooth",
-  block: "start"
-});
-  }
+  document.getElementById(
+    "dateStep"
+  ).scrollIntoView({
+    behavior: "smooth",
+    block: "start"
+  });
+}
 
 let selectedMenu = "";
 let selectedMenuMinutes = 0;
@@ -947,20 +955,44 @@ function selectMenu(button) {
   button.classList.add("selected");
 
   selectedMenu = button.dataset.menu;
-  selectedMenuMinutes = Number(button.dataset.minutes);
+  selectedMenuMinutes =
+    Number(button.dataset.minutes);
 
-  document.getElementById("selectedMenuName").textContent =
-    selectedMenu;
+  document.getElementById(
+    "selectedMenuName"
+  ).textContent = selectedMenu;
 
-  document.getElementById("selectedMenuArea").hidden = false;
+  document.getElementById(
+    "selectedMenuArea"
+  ).hidden = false;
 
-document.getElementById("dateStep").hidden = false;
+  const staffStep =
+    document.getElementById("staffStep");
 
-document.getElementById("dateStep").scrollIntoView({
-  behavior: "smooth",
-  block: "start"
-});
-  
+  const staffTitle =
+    staffStep.querySelector(
+      ":scope > .step-title"
+    );
+
+  const staffOptions =
+    staffStep.querySelector(
+      ":scope > .staff-options"
+    );
+
+  if (staffTitle) {
+    staffTitle.hidden = false;
+  }
+
+  if (staffOptions) {
+    staffOptions.hidden = false;
+  }
+
+  if (staffTitle) {
+    staffTitle.scrollIntoView({
+      behavior: "smooth",
+      block: "start"
+    });
+  }
 }
 
   let selectedDate = "";
