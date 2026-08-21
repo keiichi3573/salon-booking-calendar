@@ -2319,11 +2319,71 @@ function showConfirmStep() {
       .value
       .trim();
 
-  if (!customerName) {
-    alert("お名前を入力してください。");
-    document.getElementById("customerName").focus();
-    return;
-  }
+  const customerPhone =
+  document
+    .getElementById("customerPhone")
+    .value
+    .trim();
+
+const customerBirthMonth =
+  document
+    .getElementById("customerBirthMonth")
+    .value;
+
+  if (!selectedCustomerType) {
+  alert(
+    "「初めてのご来店」または「ご来店あり」を選択してください。"
+  );
+  return;
+}
+
+if (!customerName) {
+  alert("お名前を入力してください。");
+
+  document
+    .getElementById("customerName")
+    .focus();
+
+  return;
+}
+
+if (!customerPhone) {
+  alert("電話番号を入力してください。");
+
+  document
+    .getElementById("customerPhone")
+    .focus();
+
+  return;
+}
+
+const normalizedPhone =
+  customerPhone.replace(
+    /[\s\-ー]/g,
+    ""
+  );
+
+if (!/^\d{10,11}$/.test(normalizedPhone)) {
+  alert(
+    "電話番号を10〜11桁の数字で入力してください。"
+  );
+
+  document
+    .getElementById("customerPhone")
+    .focus();
+
+  return;
+}
+
+if (!customerBirthMonth) {
+  alert("誕生月を選択してください。");
+
+  document
+    .getElementById("customerBirthMonth")
+    .focus();
+
+  return;
+}
 
   let staffLabel = selectedStaff;
 
