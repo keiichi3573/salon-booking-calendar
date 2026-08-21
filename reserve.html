@@ -1372,11 +1372,9 @@ gap: 8px;
 </div>
   
   <input
-    id="reservationDate"
-    class="date-input"
-    type="date"
-    onchange="selectDate(this.value)"
-  >
+  id="reservationDate"
+  type="hidden"
+>
 
   <div id="selectedDateArea" class="selected-date-area" hidden>
   <span class="selected-check">✓</span>
@@ -2275,9 +2273,18 @@ const dateTitle =
     "#dateStep > .step-title"
   );
 
+  const bookingCalendar =
+  document.querySelector(
+    "#dateStep .booking-calendar"
+  );
+
 if (dateInput) {
   dateInput.style.display = "none";
 }
+
+if (bookingCalendar) {
+  bookingCalendar.style.display = "none";
+}  
 
 if (dateTitle) {
   dateTitle.style.display = "none";
@@ -2295,9 +2302,9 @@ document.getElementById("timeStep").scrollIntoView({
 }
 
 function changeDateSelection() {
-  const dateInput =
-    document.getElementById(
-      "reservationDate"
+  const bookingCalendar =
+    document.querySelector(
+      "#dateStep .booking-calendar"
     );
 
   const dateTitle =
@@ -2305,8 +2312,8 @@ function changeDateSelection() {
       "#dateStep > .step-title"
     );
 
-  if (dateInput) {
-    dateInput.style.display = "";
+  if (bookingCalendar) {
+    bookingCalendar.style.display = "";
   }
 
   if (dateTitle) {
@@ -2317,13 +2324,18 @@ function changeDateSelection() {
     "selectedDateArea"
   ).hidden = true;
 
+  /*
+    現在選択している月を再表示
+  */
+  renderBookingCalendar();
+
   if (dateTitle) {
     dateTitle.scrollIntoView({
       behavior: "smooth",
       block: "start"
     });
   }
-}  
+}
 
 　let selectedCustomerType = "";
   
