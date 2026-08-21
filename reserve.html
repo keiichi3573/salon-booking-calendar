@@ -148,16 +148,16 @@
 }
 
 .tutorial-down {
-  height: 22px;
+  height: 26px;
 
   display: flex;
   align-items: center;
   justify-content: center;
 
-  color: #b9857f;
+  color: #a96f67;
 
-  font-size: 18px;
-  font-weight: 700;
+  font-size: 24px;
+  font-weight: 900;
   line-height: 1;
 }
 
@@ -230,6 +230,15 @@
   white-space: nowrap;
 }
 
+.tutorial-small-text small {
+  display: block;
+  margin-top: 2px;
+
+  color: #b9857f;
+  font-size: 9px;
+  font-weight: 700;
+}
+    
 /* STEP2 → STEP3、STEP4 → STEP5 は下向きにする */
     
 .tutorial-last {
@@ -716,12 +725,13 @@
     <div class="tutorial-down">↓</div>
 
     <div class="tutorial-small">
-      <div class="tutorial-small-icon">📅</div>
-      <div class="tutorial-small-text">
-        <strong>STEP 3</strong>
-        <span>日付</span>
-      </div>
-    </div>
+  <div class="tutorial-small-icon">📅</div>
+  <div class="tutorial-small-text">
+    <strong>STEP 3</strong>
+    <span>日付</span>
+    <small>次は STEP 4</small>
+  </div>
+</div>
 
   </div>
 
@@ -760,9 +770,6 @@
 
 </div>
 
-<div class="tutorial-step-note">
-  日付を選ぶと、予約可能な時間が表示されます
-</div>
 <div class="tutorial-note">
   空き時間は最新の予約状況から自動で表示されます。
 </div>
