@@ -1144,6 +1144,33 @@ function isSalonClosed(date) {
 function selectDate(value) {
   selectedDate = value;
 
+  /*
+  日付を選び直した場合は、
+  時間以降の選択内容をリセットする
+*/
+selectedTime = "";
+selectedAssignedStaffId = "";
+
+document.getElementById(
+  "timeOptions"
+).innerHTML = "";
+
+document.getElementById(
+  "selectedTimeArea"
+).hidden = true;
+
+document.getElementById(
+  "nameStep"
+).hidden = true;
+
+document.getElementById(
+  "customerName"
+).value = "";
+
+document.getElementById(
+  "confirmStep"
+).hidden = true;
+
   if (!selectedDate) {
     document.getElementById("selectedDateArea").hidden = true;
     return;
