@@ -1349,17 +1349,22 @@ document.getElementById(
     "selectedMenuArea"
   ).hidden = false;
 
+  const menuOptions =
   document.querySelector(
-  "#menuStep .menu-options"
-).hidden = true;
+    "#menuStep .menu-options"
+  );
 
 const menuTitle =
   document.querySelector(
     "#menuStep > .step-title"
   );
 
+if (menuOptions) {
+  menuOptions.style.display = "none";
+}
+
 if (menuTitle) {
-  menuTitle.hidden = true;
+  menuTitle.style.display = "none";
 }
 
   const staffStep =
@@ -1402,11 +1407,11 @@ function changeMenuSelection() {
       "#menuStep > .step-title"
     );
 
-  menuOptions.hidden = false;
+  menuOptions.style.display = "grid";
 
-  if (menuTitle) {
-    menuTitle.hidden = false;
-  }
+if (menuTitle) {
+  menuTitle.style.display = "";
+}
 
   document.getElementById(
     "selectedMenuArea"
