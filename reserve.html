@@ -547,6 +547,10 @@ gap: 8px;
   text-align: center;
   font-size: 14px;
   color: #6f5548;
+
+  display: flex;
+align-items: center;
+gap: 8px;
 }
 
     .name-step {
@@ -1071,9 +1075,21 @@ gap: 8px;
   </div>
 
   <div id="selectedTimeArea" class="selected-time-area" hidden>
-    選択中：
+  <span class="selected-check">✓</span>
+
+  <span>
+    時間：
     <strong id="selectedTimeText"></strong>
-  </div>
+  </span>
+
+  <button
+    class="change-selection-button"
+    type="button"
+    onclick="changeTimeSelection()"
+  >
+    変更
+  </button>
+</div>
 
 <section id="nameStep" class="name-step" hidden>
   <h3 class="step-title">お名前を入力してください</h3>
@@ -1952,6 +1968,25 @@ function selectTime(button, time) {
     selectedTime;
 
   document.getElementById("selectedTimeArea").hidden = false;
+
+　const timeOptions =
+  document.getElementById(
+    "timeOptions"
+  );
+
+const timeTitle =
+  document.querySelector(
+    "#timeStep > .step-title"
+  );
+
+if (timeOptions) {
+  timeOptions.style.display = "none";
+}
+
+if (timeTitle) {
+  timeTitle.style.display = "none";
+}
+  
   document.getElementById("nameStep").hidden = false;
 
 document.getElementById("nameStep").scrollIntoView({
@@ -1959,6 +1994,54 @@ document.getElementById("nameStep").scrollIntoView({
   block: "start"
 });
 }
+
+function changeTimeSelection() {
+  const timeOptions =
+    document.getElementById(
+      "timeOptions"
+    );
+
+  const timeTitle =
+    document.querySelector(
+      "#timeStep > .step-title"
+    );
+
+  if (timeOptions) {
+    timeOptions.style.display = "grid";
+  }
+
+  if (timeTitle) {
+    timeTitle.style.display = "";
+  }
+
+  document.getElementById(
+    "selectedTimeArea"
+  ).hidden = true;
+
+  document.getElementById(
+    "nameStep"
+  ).hidden = true;
+
+  document.getElementById(
+    "confirmStep"
+  ).hidden = true;
+
+  selectedTime = "";
+  selectedAssignedStaffId = "";
+
+  document
+    .querySelectorAll(".time-button")
+    .forEach(btn => {
+      btn.classList.remove("selected");
+    });
+
+  if (timeTitle) {
+    timeTitle.scrollIntoView({
+      behavior: "smooth",
+      block: "start"
+    });
+  }
+}  
 
 function showConfirmStep() {
   const customerName =
