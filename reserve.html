@@ -596,6 +596,38 @@ gap: 8px;
   background: #fffaf7;
 }
 
+ .customer-type-field {
+  margin-bottom: 12px;
+}
+
+.customer-type-options {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+}
+
+.customer-type-button {
+  width: 100%;
+  padding: 12px 8px;
+
+  border: 1px solid #dfc7bd;
+  border-radius: 12px;
+
+  background: #fff;
+  color: #6f5548;
+
+  font-size: 13px;
+  font-weight: 700;
+
+  cursor: pointer;
+}
+
+.customer-type-button.selected {
+  border-color: #b9857f;
+  background: #b9857f;
+  color: #fff;
+}   
+
 .customer-field label {
   display: block;
   margin-bottom: 8px;
@@ -1166,6 +1198,37 @@ gap: 8px;
     </p>
   </div>
 
+　<div class="customer-field customer-type-field">
+
+  <label>
+    ご来店について
+    <span class="required-label">必須</span>
+  </label>
+
+  <div class="customer-type-options">
+
+    <button
+      class="customer-type-button"
+      type="button"
+      data-customer-type="new"
+      onclick="selectCustomerType(this)"
+    >
+      初めてのご来店
+    </button>
+
+    <button
+      class="customer-type-button"
+      type="button"
+      data-customer-type="repeat"
+      onclick="selectCustomerType(this)"
+    >
+      ご来店あり
+    </button>
+
+  </div>
+
+</div>
+  
   <div class="customer-field">
     <label for="customerName">
       お名前
@@ -1770,6 +1833,8 @@ function changeDateSelection() {
   }
 }  
 
+　let selectedCustomerType = "";
+  
   let selectedTime = "";
 let selectedAssignedStaffId = "";
 
@@ -2123,6 +2188,19 @@ function changeTimeSelection() {
   }
 }  
 
+function selectCustomerType(button) {
+  document
+    .querySelectorAll(".customer-type-button")
+    .forEach(btn => {
+      btn.classList.remove("selected");
+    });
+
+  button.classList.add("selected");
+
+  selectedCustomerType =
+    button.dataset.customerType;
+}
+  
 function showConfirmStep() {
   const customerName =
     document
