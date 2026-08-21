@@ -137,7 +137,10 @@
 .tutorial-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 8px;
+
+  column-gap: 8px;
+  row-gap: 22px;
+
   margin-top: 16px;
 }
 
@@ -214,8 +217,28 @@
   font-size: 15px;
   font-weight: 700;
   line-height: 1;
+
+  box-shadow:
+    0 2px 5px rgba(120, 85, 75, 0.10);
 }
 
+/* STEP2 → STEP3、STEP4 → STEP5 は下向きにする */
+.tutorial-small:nth-child(2) .tutorial-next,
+.tutorial-small:nth-child(4) .tutorial-next {
+  position: absolute;
+
+  left: 50%;
+  bottom: -18px;
+
+  margin-left: 0;
+
+  transform:
+    translateX(-50%)
+    rotate(90deg);
+
+  z-index: 2;
+}
+    
 .tutorial-last {
   background: #f7efeb;
 }
