@@ -942,6 +942,42 @@ const sb =
   selectedStaff =
     button.dataset.staff;
 
+  /*
+  スタッフを選び直した場合は、
+  日付以降の選択内容をリセットする
+*/
+selectedDate = "";
+selectedTime = "";
+selectedAssignedStaffId = "";
+
+document.getElementById(
+  "reservationDate"
+).value = "";
+
+document.getElementById(
+  "selectedDateArea"
+).hidden = true;
+
+document.getElementById(
+  "timeStep"
+).hidden = true;
+
+document.getElementById(
+  "timeOptions"
+).innerHTML = "";
+
+document.getElementById(
+  "selectedTimeArea"
+).hidden = true;
+
+document.getElementById(
+  "nameStep"
+).hidden = true;
+
+document.getElementById(
+  "confirmStep"
+).hidden = true;  
+
   document.getElementById(
     "selectedStaffName"
   ).textContent = selectedStaff;
