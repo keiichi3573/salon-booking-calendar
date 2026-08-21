@@ -586,6 +586,86 @@
 .confirm-button:active {
   transform: scale(0.99);
 }
+
+@media (max-width: 699px) {
+
+  .page {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+
+  .card {
+    padding: 20px 14px;
+    border-radius: 16px;
+  }
+
+  .title {
+    font-size: 20px;
+  }
+
+  .description {
+    font-size: 12px;
+    margin-bottom: 16px;
+  }
+
+  .tutorial-grid {
+    column-gap: 6px;
+    row-gap: 20px;
+  }
+
+  .tutorial-small {
+    min-height: 50px;
+    padding: 8px 9px;
+    gap: 6px;
+    border-radius: 11px;
+  }
+
+  .tutorial-small-icon {
+    width: 28px;
+    height: 28px;
+    flex: 0 0 28px;
+    font-size: 14px;
+  }
+
+  .tutorial-small-text strong {
+    font-size: 9px;
+    margin-bottom: 1px;
+  }
+
+  .tutorial-small-text span {
+    font-size: 12px;
+  }
+
+  .tutorial-next {
+    width: 22px;
+    height: 22px;
+    flex: 0 0 22px;
+    font-size: 13px;
+  }
+
+  .tutorial-small:nth-child(2) .tutorial-next,
+  .tutorial-small:nth-child(4) .tutorial-next {
+    bottom: -17px;
+  }
+
+  .tutorial-note {
+    margin-top: 16px;
+    padding: 10px 8px;
+    font-size: 11px;
+  }
+
+  .start-button {
+    margin-top: 20px;
+    padding: 16px 18px;
+    font-size: 15px;
+    border-radius: 14px;
+  }
+
+  .start-button::after {
+    right: 16px;
+    font-size: 23px;
+  }
+}
     
     @media (min-width: 700px) {
       .page {
