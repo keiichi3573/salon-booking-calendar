@@ -595,6 +595,35 @@ gap: 8px;
   text-decoration: line-through;
 }
 
+ .calendar-day.selected {
+  border-color: #b9857f;
+
+  background:
+    linear-gradient(
+      135deg,
+      #c99991 0%,
+      #b77d75 100%
+    );
+
+  color: #fff;
+
+  box-shadow:
+    0 4px 10px
+    rgba(150, 100, 90, 0.20);
+
+  transform:
+    scale(1.06);
+}
+
+.calendar-day.past {
+  border-color: transparent;
+
+  background: #f5f2ef;
+  color: #c8bfba;
+
+  cursor: default;
+}   
+
 .calendar-day.empty {
   visibility: hidden;
 }
@@ -2035,6 +2064,39 @@ function renderBookingCalendar() {
     button.textContent =
       String(day);
 
+    const dateString =
+  `${year}-` +
+  `${String(month + 1).padStart(2, "0")}-` +
+  `${String(day).padStart(2, "0")}`;
+
+button.dataset.date =
+  dateString;
+
+    const today =
+  new Date();
+
+today.setHours(
+  0,
+  0,
+  0,
+  0
+);
+
+const targetDate =
+  new Date(
+    year,
+    month,
+    day
+  );
+
+if (targetDate < today) {
+  button.classList.add(
+    "past"
+  );
+
+  button.disabled = true;
+}
+
     /*
       定休日表示
     */
@@ -2046,10 +2108,52 @@ function renderBookingCalendar() {
       button.disabled = true;
     }
 
+    if (!button.disabled) {
+  button.onclick = () => {
+    selectCalendarDate(
+      button,
+      dateString
+    );
+  };
+}
+
     daysContainer.appendChild(
       button
     );
   }
+}
+
+  function selectCalendarDate(
+  button,
+  dateString
+) {
+  document
+    .querySelectorAll(
+      ".calendar-day"
+    )
+    .forEach(dayButton => {
+      dayButton.classList.remove(
+        "selected"
+      );
+    });
+
+  button.classList.add(
+    "selected"
+  );
+
+  const reservationDate =
+    document.getElementById(
+      "reservationDate"
+    );
+
+  if (reservationDate) {
+    reservationDate.value =
+      dateString;
+  }
+
+  selectDate(
+    dateString
+  );
 }
 
   function changeCalendarMonth(
