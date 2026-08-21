@@ -134,6 +134,67 @@
   line-height: 1;
 }
 
+.tutorial-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.tutorial-small {
+  position: relative;
+
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  min-height: 54px;
+  padding: 9px 12px;
+
+  border: 1px solid #eadfd8;
+  border-radius: 12px;
+
+  background: #fffaf7;
+}
+
+.tutorial-small-icon {
+  width: 30px;
+  height: 30px;
+  flex: 0 0 30px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+  background: #f1ded6;
+
+  font-size: 15px;
+}
+
+.tutorial-small-text {
+  min-width: 0;
+}
+
+.tutorial-small-text strong {
+  color: #5f4a41;
+  font-size: 13px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.tutorial-next {
+  margin-left: auto;
+
+  color: #c49b8d;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.tutorial-last {
+  background: #f7efeb;
+}
+    
 .tutorial-note {
   margin-top: 18px;
   padding: 12px 14px;
