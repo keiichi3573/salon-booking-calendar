@@ -866,9 +866,42 @@ const sb =
   }
 
   function showMenuStep() {
+  const staffStep =
+    document.getElementById("staffStep");
+
   const menuStep =
     document.getElementById("menuStep");
 
+  /*
+    現在menuStepはstaffStepの内側にあるため、
+    親要素も表示する
+  */
+  staffStep.hidden = false;
+
+  /*
+    最初はスタッフ選択部分だけ隠す
+  */
+  const staffTitle =
+    staffStep.querySelector(":scope > .step-title");
+
+  const staffOptions =
+    staffStep.querySelector(":scope > .staff-options");
+
+  if (staffTitle) {
+    staffTitle.hidden = true;
+  }
+
+  if (staffOptions) {
+    staffOptions.hidden = true;
+  }
+
+  document.getElementById(
+    "selectedStaffArea"
+  ).hidden = true;
+
+  /*
+    メニューを表示
+  */
   menuStep.hidden = false;
 
   menuStep.scrollIntoView({
