@@ -456,7 +456,32 @@
   text-align: center;
   font-size: 14px;
   color: #6f5548;
+
+  display: flex;
+align-items: center;
+gap: 8px;
 }
+
+ .selected-check {
+  color: #a9756d;
+  font-weight: 800;
+}
+
+.change-selection-button {
+  margin-left: auto;
+  padding: 6px 11px;
+
+  border: 1px solid #d9beb5;
+  border-radius: 20px;
+
+  background: #fff;
+  color: #9b6d65;
+
+  font-size: 12px;
+  font-weight: 700;
+
+  cursor: pointer;
+}   
 
     .date-step {
   margin-top: 32px;
@@ -931,14 +956,22 @@
 
   </div>
 
-  <div
-    id="selectedMenuArea"
-    class="selected-menu-area"
-    hidden
-  >
-    選択中：
+  <div id="selectedMenuArea" class="selected-menu-area" hidden>
+  <span class="selected-check">✓</span>
+
+  <span>
+    メニュー：
     <strong id="selectedMenuName"></strong>
-  </div>
+  </span>
+
+  <button
+    class="change-selection-button"
+    type="button"
+    onclick="changeMenuSelection()"
+  >
+    変更
+  </button>
+</div>
 
 </section>
 
@@ -1316,6 +1349,19 @@ document.getElementById(
     "selectedMenuArea"
   ).hidden = false;
 
+  document.querySelector(
+  "#menuStep .menu-options"
+).hidden = true;
+
+const menuTitle =
+  document.querySelector(
+    "#menuStep > .step-title"
+  );
+
+if (menuTitle) {
+  menuTitle.hidden = true;
+}
+
   const staffStep =
     document.getElementById("staffStep");
 
@@ -1345,6 +1391,33 @@ document.getElementById(
   }
 }
 
+function changeMenuSelection() {
+  const menuOptions =
+    document.querySelector(
+      "#menuStep .menu-options"
+    );
+
+  const menuTitle =
+    document.querySelector(
+      "#menuStep > .step-title"
+    );
+
+  menuOptions.hidden = false;
+
+  if (menuTitle) {
+    menuTitle.hidden = false;
+  }
+
+  document.getElementById(
+    "selectedMenuArea"
+  ).hidden = true;
+
+  menuTitle?.scrollIntoView({
+    behavior: "smooth",
+    block: "start"
+  });
+}
+  
   let selectedDate = "";
 
   function setMinimumReservationDate() {
