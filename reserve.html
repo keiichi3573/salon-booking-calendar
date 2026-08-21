@@ -650,8 +650,27 @@ gap: 8px;
 
   font-size: 9px;
   font-weight: 700;
-}   
+}
+    
+.optional-label {
+  display: inline-block;
 
+  margin-left: 5px;
+  padding: 2px 6px;
+
+  border-radius: 10px;
+
+  background: #eee8e4;
+  color: #8a756a;
+
+  font-size: 9px;
+  font-weight: 700;
+}
+
+.birthday-field {
+  margin-top: 12px;
+}
+    
 .name-input {
   width: 100%;
   padding: 16px 18px;
@@ -1243,6 +1262,21 @@ gap: 8px;
       autocomplete="name"
     >
   </div>
+
+  <div class="customer-field birthday-field">
+
+  <label for="customerBirthday">
+    誕生日
+    <span class="optional-label">任意</span>
+  </label>
+
+  <input
+    id="customerBirthday"
+    class="name-input"
+    type="date"
+  >
+
+</div>
 
   <button
     id="confirmButton"
