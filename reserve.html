@@ -1013,14 +1013,22 @@ gap: 8px;
 
   </div>
 
-  <div
-    id="selectedStaffArea"
-    class="selected-staff-area"
-    hidden
-  >
-    選択中：
+  <div id="selectedStaffArea" class="selected-staff-area" hidden>
+  <span class="selected-check">✓</span>
+
+  <span>
+    スタッフ：
     <strong id="selectedStaffName"></strong>
-  </div>
+  </span>
+
+  <button
+    class="change-selection-button"
+    type="button"
+    onclick="changeStaffSelection()"
+  >
+    変更
+  </button>
+</div>
 
 </section>
 
@@ -1284,6 +1292,24 @@ document.getElementById(
     "selectedStaffArea"
   ).hidden = false;
 
+  const staffOptions =
+  document.querySelector(
+    "#staffStep .staff-options"
+  );
+
+const staffTitle =
+  document.querySelector(
+    "#staffStep > .step-title"
+  );
+
+if (staffOptions) {
+  staffOptions.style.display = "none";
+}
+
+if (staffTitle) {
+  staffTitle.style.display = "none";
+}  
+
   document.getElementById(
     "dateStep"
   ).hidden = false;
@@ -1295,6 +1321,37 @@ document.getElementById(
     block: "start"
   });
 }
+
+function changeStaffSelection() {
+  const staffOptions =
+    document.querySelector(
+      "#staffStep .staff-options"
+    );
+
+  const staffTitle =
+    document.querySelector(
+      "#staffStep > .step-title"
+    );
+
+  if (staffOptions) {
+    staffOptions.style.display = "grid";
+  }
+
+  if (staffTitle) {
+    staffTitle.style.display = "";
+  }
+
+  document.getElementById(
+    "selectedStaffArea"
+  ).hidden = true;
+
+  if (staffTitle) {
+    staffTitle.scrollIntoView({
+      behavior: "smooth",
+      block: "start"
+    });
+  }
+}  
 
 let selectedMenu = "";
 let selectedMenuMinutes = 0;
