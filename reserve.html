@@ -490,6 +490,115 @@ gap: 8px;
   margin-top: 32px;
 }
 
+.booking-calendar {
+  margin-bottom: 16px;
+  padding: 16px;
+
+  border: 1px solid #eadfd8;
+  border-radius: 18px;
+
+  background:
+    linear-gradient(
+      180deg,
+      #fffdfb 0%,
+      #fbf5f1 100%
+    );
+
+  box-shadow:
+    0 6px 18px rgba(90, 70, 60, 0.06);
+}
+
+.calendar-header {
+  display: grid;
+  grid-template-columns: 40px 1fr 40px;
+  align-items: center;
+
+  margin-bottom: 14px;
+}
+
+.calendar-month-title {
+  text-align: center;
+
+  color: #6f5548;
+  font-size: 17px;
+  font-weight: 700;
+}
+
+.calendar-nav-button {
+  width: 36px;
+  height: 36px;
+
+  border: 1px solid #e4d4cc;
+  border-radius: 50%;
+
+  background: #fff;
+  color: #a66f67;
+
+  font-size: 24px;
+  line-height: 1;
+
+  cursor: pointer;
+}
+
+.calendar-weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+
+  margin-bottom: 7px;
+
+  color: #8a756a;
+  font-size: 11px;
+  font-weight: 700;
+  text-align: center;
+}
+
+.calendar-weekdays .sunday {
+  color: #c07c78;
+}
+
+.calendar-weekdays .saturday {
+  color: #7f91ad;
+}
+
+.calendar-days {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 6px;
+}
+
+.calendar-day {
+  aspect-ratio: 1 / 1;
+
+  border: 1px solid #eadfd8;
+  border-radius: 50%;
+
+  background: #fff;
+  color: #5f4a41;
+
+  font-size: 13px;
+  font-weight: 700;
+
+  cursor: pointer;
+}
+
+.calendar-day:hover {
+  border-color: #d5aaa0;
+  background: #fff8f5;
+}
+
+.calendar-day.closed {
+  border-color: transparent;
+
+  background: #eee9e5;
+  color: #b4a8a2;
+
+  text-decoration: line-through;
+}
+
+.calendar-day.empty {
+  visibility: hidden;
+}
+    
 .date-input {
   width: 100%;
   padding: 16px 18px;
@@ -1187,6 +1296,87 @@ gap: 8px;
 <section id="dateStep" class="date-step" hidden>
   <h3 class="step-title">日付を選択してください</h3>
 
+<div class="booking-calendar">
+
+  <div class="calendar-header">
+    <button
+      type="button"
+      class="calendar-nav-button"
+    >
+      ‹
+    </button>
+
+    <div class="calendar-month-title">
+      2026年8月
+    </div>
+
+    <button
+      type="button"
+      class="calendar-nav-button"
+    >
+      ›
+    </button>
+  </div>
+
+  <div class="calendar-weekdays">
+    <div class="sunday">日</div>
+    <div>月</div>
+    <div>火</div>
+    <div>水</div>
+    <div>木</div>
+    <div>金</div>
+    <div class="saturday">土</div>
+  </div>
+
+  <div class="calendar-days">
+
+    <button type="button" class="calendar-day empty"></button>
+    <button type="button" class="calendar-day empty"></button>
+    <button type="button" class="calendar-day empty"></button>
+    <button type="button" class="calendar-day empty"></button>
+    <button type="button" class="calendar-day empty"></button>
+
+    <button type="button" class="calendar-day">1</button>
+    <button type="button" class="calendar-day">2</button>
+
+    <button type="button" class="calendar-day">3</button>
+    <button type="button" class="calendar-day closed">4</button>
+    <button type="button" class="calendar-day">5</button>
+    <button type="button" class="calendar-day">6</button>
+    <button type="button" class="calendar-day">7</button>
+    <button type="button" class="calendar-day">8</button>
+    <button type="button" class="calendar-day">9</button>
+
+    <button type="button" class="calendar-day">10</button>
+    <button type="button" class="calendar-day closed">11</button>
+    <button type="button" class="calendar-day">12</button>
+    <button type="button" class="calendar-day">13</button>
+    <button type="button" class="calendar-day">14</button>
+    <button type="button" class="calendar-day">15</button>
+    <button type="button" class="calendar-day">16</button>
+
+    <button type="button" class="calendar-day">17</button>
+    <button type="button" class="calendar-day closed">18</button>
+    <button type="button" class="calendar-day">19</button>
+    <button type="button" class="calendar-day">20</button>
+    <button type="button" class="calendar-day">21</button>
+    <button type="button" class="calendar-day">22</button>
+    <button type="button" class="calendar-day">23</button>
+
+    <button type="button" class="calendar-day">24</button>
+    <button type="button" class="calendar-day closed">25</button>
+    <button type="button" class="calendar-day">26</button>
+    <button type="button" class="calendar-day">27</button>
+    <button type="button" class="calendar-day">28</button>
+    <button type="button" class="calendar-day">29</button>
+    <button type="button" class="calendar-day">30</button>
+
+    <button type="button" class="calendar-day">31</button>
+
+  </div>
+
+</div>
+  
   <input
     id="reservationDate"
     class="date-input"
