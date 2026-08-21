@@ -505,6 +505,10 @@ gap: 8px;
   text-align: center;
   font-size: 14px;
   color: #6f5548;
+
+  display: flex;
+align-items: center;
+gap: 8px;
 }
 
     .time-step {
@@ -1043,9 +1047,21 @@ gap: 8px;
   >
 
   <div id="selectedDateArea" class="selected-date-area" hidden>
-    選択中：
+  <span class="selected-check">✓</span>
+
+  <span>
+    日付：
     <strong id="selectedDateText"></strong>
-  </div>
+  </span>
+
+  <button
+    class="change-selection-button"
+    type="button"
+    onclick="changeDateSelection()"
+  >
+    変更
+  </button>
+</div>
 
 <section id="timeStep" class="time-step" hidden>
   <h3 class="step-title">時間を選択してください</h3>
@@ -1598,6 +1614,24 @@ document.getElementById(
 
   document.getElementById("selectedDateArea").hidden = false;
 
+  const dateInput =
+  document.getElementById(
+    "reservationDate"
+  );
+
+const dateTitle =
+  document.querySelector(
+    "#dateStep > .step-title"
+  );
+
+if (dateInput) {
+  dateInput.style.display = "none";
+}
+
+if (dateTitle) {
+  dateTitle.style.display = "none";
+}
+
 renderAvailableTimeOptions();
 
 document.getElementById("timeStep").hidden = false;
@@ -1608,6 +1642,37 @@ document.getElementById("timeStep").scrollIntoView({
 });
   
 }
+
+function changeDateSelection() {
+  const dateInput =
+    document.getElementById(
+      "reservationDate"
+    );
+
+  const dateTitle =
+    document.querySelector(
+      "#dateStep > .step-title"
+    );
+
+  if (dateInput) {
+    dateInput.style.display = "";
+  }
+
+  if (dateTitle) {
+    dateTitle.style.display = "";
+  }
+
+  document.getElementById(
+    "selectedDateArea"
+  ).hidden = true;
+
+  if (dateTitle) {
+    dateTitle.scrollIntoView({
+      behavior: "smooth",
+      block: "start"
+    });
+  }
+}  
 
   let selectedTime = "";
 let selectedAssignedStaffId = "";
