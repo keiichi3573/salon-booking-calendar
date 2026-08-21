@@ -978,6 +978,53 @@ function selectMenu(button) {
   selectedMenuMinutes =
     Number(button.dataset.minutes);
 
+  /*
+  メニューを選び直した場合は、
+  それ以降の選択内容をリセットする
+*/
+selectedStaff = "";
+selectedDate = "";
+selectedTime = "";
+selectedAssignedStaffId = "";
+
+document
+  .querySelectorAll(".staff-button")
+  .forEach(btn => {
+    btn.classList.remove("selected");
+  });
+
+document.getElementById(
+  "selectedStaffArea"
+).hidden = true;
+
+document.getElementById(
+  "reservationDate"
+).value = "";
+
+document.getElementById(
+  "selectedDateArea"
+).hidden = true;
+
+document.getElementById(
+  "timeStep"
+).hidden = true;
+
+document.getElementById(
+  "timeOptions"
+).innerHTML = "";
+
+document.getElementById(
+  "selectedTimeArea"
+).hidden = true;
+
+document.getElementById(
+  "nameStep"
+).hidden = true;
+
+document.getElementById(
+  "confirmStep"
+).hidden = true;
+
   document.getElementById(
     "selectedMenuName"
   ).textContent = selectedMenu;
