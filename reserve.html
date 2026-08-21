@@ -177,6 +177,18 @@
 }
 
 .tutorial-small-text strong {
+  display: block;
+  margin-bottom: 2px;
+
+  color: #b9857f;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+.tutorial-small-text span {
+  display: block;
+
   color: #5f4a41;
   font-size: 13px;
   font-weight: 700;
@@ -184,11 +196,24 @@
 }
 
 .tutorial-next {
+  width: 25px;
+  height: 25px;
+  flex: 0 0 25px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
   margin-left: auto;
 
-  color: #c49b8d;
-  font-size: 14px;
+  border-radius: 50%;
+  background: #ead8d0;
+
+  color: #9f7067;
+
+  font-size: 15px;
   font-weight: 700;
+  line-height: 1;
 }
 
 .tutorial-last {
@@ -252,17 +277,64 @@
     }
 
     .start-button {
-      width: 100%;
-      margin-top: 24px;
-      padding: 17px 20px;
-      border: none;
-      border-radius: 14px;
-      background: #b9857f;
-      color: #fff;
-      font-size: 17px;
-      font-weight: 700;
-      cursor: pointer;
-    }
+  position: relative;
+
+  width: 100%;
+  margin-top: 24px;
+  padding: 18px 24px;
+
+  border: 1px solid rgba(161, 111, 102, 0.22);
+  border-radius: 16px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #bd8d86 0%,
+      #a9746d 100%
+    );
+
+  color: #fff;
+
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+
+  box-shadow:
+    0 8px 18px rgba(135, 91, 82, 0.18),
+    inset 0 1px 0 rgba(255, 255, 255, 0.28);
+
+  cursor: pointer;
+
+  transition:
+    transform 0.18s ease,
+    box-shadow 0.18s ease;
+}
+
+.start-button::after {
+  content: "›";
+
+  position: absolute;
+  right: 20px;
+  top: 50%;
+
+  transform: translateY(-52%);
+
+  font-size: 26px;
+  font-weight: 300;
+  line-height: 1;
+}
+
+.start-button:hover {
+  transform: translateY(-1px);
+
+  box-shadow:
+    0 10px 22px rgba(135, 91, 82, 0.24),
+    inset 0 1px 0 rgba(255, 255, 255, 0.30);
+}
+
+.start-button:active {
+  transform: translateY(1px);
+}
 
     .start-button:active {
       transform: scale(0.99);
