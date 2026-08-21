@@ -671,6 +671,32 @@ gap: 8px;
   margin-top: 12px;
 }
 
+ .note-field {
+  margin-top: 12px;
+}
+
+.note-input {
+  width: 100%;
+  padding: 14px 16px;
+
+  border: 1px solid #dfc7bd;
+  border-radius: 14px;
+
+  background: #fffaf7;
+  color: #5f4a41;
+
+  font-family: inherit;
+  font-size: 14px;
+  line-height: 1.6;
+
+  resize: vertical;
+}
+
+.note-input:focus {
+  outline: none;
+  border-color: #b9857f;
+}   
+
  .phone-field {
   margin-top: 12px;
 }   
@@ -1310,6 +1336,22 @@ gap: 8px;
     <option value="11">11月</option>
     <option value="12">12月</option>
   </select>
+
+</div>
+
+  <div class="customer-field note-field">
+
+  <label for="customerNote">
+    備考
+    <span class="optional-label">任意</span>
+  </label>
+
+  <textarea
+    id="customerNote"
+    class="note-input"
+    rows="4"
+    placeholder="ご希望や事前に伝えておきたいことがあればご入力ください"
+  ></textarea>
 
 </div>
 
