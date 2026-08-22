@@ -431,14 +431,28 @@ gap: 8px;
 
 .menu-button {
   width: 100%;
-  padding: 16px 18px;
-  border: 1px solid #dfc7bd;
-  border-radius: 14px;
-  background: #fffaf7;
+  padding: 14px 16px;
+  border: 1px solid #dfcfc7;
+  border-radius: 16px;
+
+  background:
+    linear-gradient(
+      180deg,
+      #fffdfb 0%,
+      #fbf5f1 100%
+    );
+
   color: #5f4a41;
-  font-size: 16px;
-  font-weight: 600;
   cursor: pointer;
+
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  text-align: left;
+
+  box-shadow:
+    0 6px 16px rgba(90, 70, 60, 0.07);
 }
 
 .menu-button:active {
@@ -446,9 +460,82 @@ gap: 8px;
 }
 
 .menu-button.selected {
-  background: #b9857f;
-  border-color: #b9857f;
+  background:
+    linear-gradient(
+      135deg,
+      #c99991 0%,
+      #b77d75 100%
+    );
+
+  border-color: #b77d75;
   color: #fff;
+
+  box-shadow:
+    0 8px 18px rgba(150, 100, 90, 0.18);
+}
+
+.menu-icon-badge {
+  width: 52px;
+  height: 52px;
+  flex: 0 0 52px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 16px;
+
+  background: #f4e5df;
+
+  font-size: 24px;
+  line-height: 1;
+}
+
+.menu-button.selected .menu-icon-badge {
+  background: rgba(255, 255, 255, 0.22);
+}
+
+.menu-texts {
+  min-width: 0;
+  flex: 1;
+
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.menu-main {
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.35;
+
+  word-break: break-word;
+}
+
+.menu-meta {
+  align-self: flex-start;
+
+  padding: 4px 9px;
+  border-radius: 999px;
+
+  background: #fff;
+  border: 1px solid #eadfd8;
+
+  font-size: 11px;
+  font-weight: 700;
+  color: #8a756a;
+}
+
+.menu-button.selected .menu-meta {
+  background: rgba(255, 255, 255, 0.22);
+  border-color: rgba(255, 255, 255, 0.28);
+  color: #fff;
+}
+
+@media (min-width: 700px) {
+  .menu-options {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 .selected-menu-area {
@@ -1844,6 +1931,77 @@ function changeStaffSelection() {
   }
 }  
 
+function getMenuIcon(menuName) {
+  switch (menuName) {
+    case "カット":
+      return "✂️";
+
+    case "カラー":
+      return "🎨";
+
+    case "パーマ":
+      return "〰️";
+
+    case "カット＋カラー":
+      return "✂️🎨";
+
+    case "カット＋パーマ":
+      return "✂️〰️";
+
+    case "カット＋カラー＋ベーシックT":
+      return "✂️🎨✨";
+
+    case "カット＋パーマ＋ベーシックT":
+      return "✂️〰️✨";
+
+    case "カラー＋トリートメント":
+      return "🎨✨";
+
+    case "ヘッドスパ":
+      return "🌿";
+
+    case "ベーシックT":
+      return "✨";
+
+    case "プラセンタT":
+      return "💧";
+
+    case "ツヤ恋T":
+      return "💎";
+
+    case "炭酸シャンプー":
+      return "🫧";
+
+    case "縮毛矯正":
+      return "➖";
+
+    default:
+      return "✨";
+  }
+}
+
+function enhanceMenuButtons() {
+  document
+    .querySelectorAll(".menu-button")
+    .forEach(button => {
+      const menuName =
+        button.dataset.menu || "";
+
+      const minutes =
+        button.dataset.minutes || "";
+
+      const icon =
+        getMenuIcon(menuName);
+
+      button.innerHTML =
+        `<span class="menu-icon-badge">${icon}</span>` +
+        `<span class="menu-texts">` +
+          `<span class="menu-main">${menuName}</span>` +
+          `<span class="menu-meta">${minutes}分</span>` +
+        `</span>`;
+    });
+}
+  
 let selectedMenu = "";
 let selectedMenuMinutes = 0;
 
@@ -2982,6 +3140,8 @@ document.addEventListener(
   () => {
     setMinimumReservationDate();
     renderBookingCalendar();
+    enhanceMenuButtons();
+    
   }
 );
 </script>
