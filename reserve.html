@@ -474,6 +474,82 @@ gap: 8px;
     0 8px 18px rgba(150, 100, 90, 0.18);
 }
 
+.menu-button-with-icon {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+
+  padding: 13px 15px;
+
+  text-align: left;
+
+  box-shadow:
+    0 5px 14px rgba(90, 70, 60, 0.06);
+}
+
+.menu-image-box {
+  width: 52px;
+  height: 52px;
+  flex: 0 0 52px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 14px;
+
+  background: #f5e9e3;
+}
+
+.menu-image {
+  display: block;
+
+  width: 36px;
+  height: 36px;
+
+  object-fit: contain;
+}
+
+.menu-info {
+  min-width: 0;
+  flex: 1;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 4px;
+}
+
+.menu-name {
+  color: inherit;
+
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.menu-time {
+  color: #9a8176;
+
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.menu-button.selected .menu-time {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.menu-select-arrow {
+  color: #c0958b;
+
+  font-size: 24px;
+  font-weight: 300;
+  line-height: 1;
+}
+
+.menu-button.selected .menu-select-arrow {
+  color: #fff;
+}    
+
 .menu-icon-badge {
   width: 52px;
   height: 52px;
