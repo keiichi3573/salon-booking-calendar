@@ -1215,14 +1215,34 @@ gap: 8px;
   <div class="menu-options">
 
     <button
-      class="menu-button"
-      type="button"
-      data-menu="カット"
-      data-minutes="75"
-      onclick="selectMenu(this)"
+  class="menu-button menu-button-with-icon"
+  type="button"
+  data-menu="カット"
+  data-minutes="75"
+  onclick="selectMenu(this)"
+>
+  <span class="menu-image-box">
+    <img
+      src="icon-cut.png"
+      alt=""
+      class="menu-image"
     >
+  </span>
+
+  <span class="menu-info">
+    <strong class="menu-name">
       カット
-    </button>
+    </strong>
+
+    <span class="menu-time">
+      約75分
+    </span>
+  </span>
+
+  <span class="menu-select-arrow">
+    ›
+  </span>
+</button>
 
     <button
       class="menu-button"
