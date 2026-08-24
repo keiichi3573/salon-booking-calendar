@@ -503,6 +503,18 @@ gap: 8px;
   gap: 2px;
 }
 
+.menu-image-triple {
+  width: 92px;
+  height: 58px;
+  flex-direction: row;
+  gap: 1px;
+}
+
+.menu-image-triple .menu-image {
+  width: 28px;
+  height: 28px;
+}    
+
 .menu-image-pair .menu-image {
   width: 34px;
   height: 34px;
@@ -1461,14 +1473,45 @@ gap: 8px;
 </button>
 
     <button
-      class="menu-button"
-      type="button"
-      data-menu="カット＋カラー＋ベーシックT"
-      data-minutes="165"
-      onclick="selectMenu(this)"
+  class="menu-button"
+  type="button"
+  data-menu="カット＋カラー＋ベーシックT"
+  data-minutes="165"
+  onclick="selectMenu(this)"
+>
+  <span class="menu-image-box menu-image-triple">
+
+    <img
+      src="icon-cut.png"
+      alt="カット"
+      class="menu-image"
     >
-      カット＋カラー＋ベーシックT
-    </button>
+
+    <img
+      src="icon-color.png"
+      alt="カラー"
+      class="menu-image"
+    >
+
+    <img
+      src="icon-treatment.png"
+      alt="トリートメント"
+      class="menu-image"
+    >
+
+  </span>
+
+  <span class="menu-info">
+    <span class="menu-name">
+      カット＋カラー＋<br>
+      ベーシックトリートメント
+    </span>
+
+    <span class="menu-time">
+      約165分
+    </span>
+  </span>
+</button>
 
     <button
       class="menu-button"
