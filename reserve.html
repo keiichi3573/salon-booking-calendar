@@ -496,6 +496,18 @@ gap: 8px;
   background: #f5e9e3;
 }
 
+.menu-image-pair {
+  width: 78px;
+  height: 58px;
+  flex-direction: row;
+  gap: 2px;
+}
+
+.menu-image-pair .menu-image {
+  width: 34px;
+  height: 34px;
+}    
+
 .menu-image {
   width: 44px;
   height: 44px;
@@ -1381,14 +1393,38 @@ gap: 8px;
 </button>
 
     <button
-      class="menu-button"
-      type="button"
-      data-menu="カット＋カラー"
-      data-minutes="150"
-      onclick="selectMenu(this)"
+  class="menu-button"
+  type="button"
+  data-menu="カット＋カラー"
+  data-minutes="150"
+  onclick="selectMenu(this)"
+>
+  <span class="menu-image-box menu-image-pair">
+
+    <img
+      src="icon-cut.png"
+      alt="カット"
+      class="menu-image"
     >
+
+    <img
+      src="icon-color.png"
+      alt="カラー"
+      class="menu-image"
+    >
+
+  </span>
+
+  <span class="menu-info">
+    <span class="menu-name">
       カット＋カラー
-    </button>
+    </span>
+
+    <span class="menu-time">
+      約150分
+    </span>
+  </span>
+</button>
 
     <button
       class="menu-button"
