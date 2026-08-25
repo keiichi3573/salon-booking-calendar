@@ -3116,8 +3116,41 @@ if (selectedStaff === "指名なし") {
 
   container.innerHTML = "";
 
-  const startMinutes =
+  let startMinutes =
   9 * 60 + 30;
+
+/*
+  当日の予約は、
+  現在時刻より前を表示しない
+*/
+const now =
+  new Date();
+
+const todayString =
+  `${now.getFullYear()}-` +
+  `${String(now.getMonth() + 1).padStart(2, "0")}-` +
+  `${String(now.getDate()).padStart(2, "0")}`;
+
+if (selectedDate === todayString) {
+  const currentMinutes =
+    now.getHours() * 60 +
+    now.getMinutes();
+
+  /*
+    次の15分単位まで繰り上げる
+    例：10:18 → 10:30
+  */
+  const nextQuarter =
+    Math.ceil(
+      currentMinutes / 15
+    ) * 15;
+
+  startMinutes =
+    Math.max(
+      startMinutes,
+      nextQuarter
+    );
+}
 
 const colorPermMenus = [
   "カラー",
