@@ -3133,17 +3133,24 @@ const todayString =
 
 if (selectedDate === todayString) {
   const currentMinutes =
-    now.getHours() * 60 +
-    now.getMinutes();
+  now.getHours() * 60 +
+  now.getMinutes();
 
-  /*
-    次の15分単位まで繰り上げる
-    例：10:18 → 10:30
-  */
-  const nextQuarter =
-    Math.ceil(
-      currentMinutes / 15
-    ) * 15;
+/*
+  当日予約は現在時刻から
+  60分後以降を受付する
+*/
+const bookingBufferMinutes =
+  currentMinutes + 60;
+
+/*
+  60分後の時刻を、
+  次の15分単位まで繰り上げる
+*/
+const nextQuarter =
+  Math.ceil(
+    bookingBufferMinutes / 15
+  ) * 15;
 
   startMinutes =
     Math.max(
