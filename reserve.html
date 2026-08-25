@@ -2098,6 +2098,27 @@ gap: 8px;
       <span>お名前</span>
       <strong id="confirmName"></strong>
     </div>
+
+　　<div class="confirm-row">
+  <span>ご来店について</span>
+  <strong id="confirmCustomerType"></strong>
+</div>
+
+<div class="confirm-row">
+  <span>電話番号</span>
+  <strong id="confirmPhone"></strong>
+</div>
+
+<div class="confirm-row">
+  <span>誕生月</span>
+  <strong id="confirmBirthMonth"></strong>
+</div>
+
+<div class="confirm-row">
+  <span>備考</span>
+  <strong id="confirmNote"></strong>
+</div>
+    
   </div>
 
   <button
@@ -3336,6 +3357,12 @@ const customerBirthMonth =
     .getElementById("customerBirthMonth")
     .value;
 
+  const customerNote =
+  document
+    .getElementById("customerNote")
+    .value
+    .trim();
+
   if (!selectedCustomerType) {
   alert(
     "「初めてのご来店」または「ご来店あり」を選択してください。"
@@ -3414,6 +3441,29 @@ if (!customerBirthMonth) {
 
   document.getElementById("confirmName").textContent =
     customerName;
+
+  const customerTypeLabel =
+  selectedCustomerType === "new"
+    ? "初めてのご来店"
+    : "ご来店あり";
+
+document.getElementById(
+  "confirmCustomerType"
+).textContent = customerTypeLabel;
+
+document.getElementById(
+  "confirmPhone"
+).textContent = customerPhone;
+
+document.getElementById(
+  "confirmBirthMonth"
+).textContent =
+  `${customerBirthMonth}月`;
+
+document.getElementById(
+  "confirmNote"
+).textContent =
+  customerNote || "なし";
 
   document.getElementById("confirmStep").hidden = false;
 
