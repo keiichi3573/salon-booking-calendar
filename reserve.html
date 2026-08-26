@@ -3525,6 +3525,25 @@ async function savePublicBooking() {
       .value
       .trim();
 
+  const customerPhone =
+  document
+    .getElementById("customerPhone")
+    .value
+    .trim();
+
+const customerBirthMonth =
+  Number(
+    document
+      .getElementById("customerBirthMonth")
+      .value
+  );
+
+const customerNote =
+  document
+    .getElementById("customerNote")
+    .value
+    .trim();
+
   if (!customerName) {
     alert("お名前を入力してください。");
     return;
@@ -3583,10 +3602,22 @@ async function savePublicBooking() {
           endTime,
 
         p_menu_label:
-          selectedMenu,
+  selectedMenu,
 
-        p_nomination:
-          nomination
+p_nomination:
+  nomination,
+
+p_customer_type:
+  selectedCustomerType,
+
+p_customer_phone:
+  customerPhone,
+
+p_birth_month:
+  customerBirthMonth,
+
+p_note:
+  customerNote
       }
     );
 
