@@ -2212,6 +2212,88 @@ if(
 }
 
 /* =========================
+   清算済み
+========================= */
+
+async function markBookingVisited(){
+
+  if(!editingBookingId){
+    return;
+  }
+
+  const booking =
+    bookings.find(
+      row =>
+        row.id ===
+        editingBookingId
+    );
+
+  if(!booking){
+    return;
+  }
+
+  const confirmed =
+    window.confirm(
+      `${booking.customerName} 様を清算済みにしますか？`
+    );
+
+  if(!confirmed){
+    return;
+  }
+
+  visitedBookingBtn.disabled =
+    true;
+
+  visitedBookingBtn.textContent =
+    "処理中…";
+
+  try{
+
+    const {
+      data,
+      error
+    } =
+      await sb.rpc(
+        "mark_appointment_visited",
+        {
+          p_appointment_id:
+            editingBookingId
+        }
+      );
+
+    if(error){
+      throw error;
+    }
+
+    await loadBookingsFromSupabase();
+
+    closeBookingModal();
+
+    renderSchedule();
+
+  }catch(error){
+
+    console.error(
+      "清算済み処理エラー:",
+      error
+    );
+
+    formMessage.textContent =
+      "清算済みに変更できませんでした。";
+
+  }finally{
+
+    visitedBookingBtn.disabled =
+      false;
+
+    visitedBookingBtn.textContent =
+      "清算済みにする";
+
+  }
+
+}
+
+/* =========================
    キャンセル
 ========================= */
 
@@ -2470,6 +2552,12 @@ function setupEvents(){
   cancelBookingBtn.addEventListener(
     "click",
     cancelBooking
+  );
+
+  visitedBookingBtn
+  ?.addEventListener(
+    "click",
+    markBookingVisited
   );
 
   document.addEventListener(
