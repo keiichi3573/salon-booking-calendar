@@ -404,12 +404,13 @@
     郵便番号
   </span>
 
-  <span
-    id="customerDetailPostalCode"
-    class="customerInfoValue"
-  >
-    —
-  </span>
+  <input
+    id="customerDetailPostalCodeInput"
+    class="fieldInput"
+    type="text"
+    inputmode="numeric"
+    placeholder="例：3998205"
+  />
 
 </div>
 
@@ -419,12 +420,12 @@
     住所
   </span>
 
-  <span
-    id="customerDetailAddress"
-    class="customerInfoValue"
-  >
-    —
-  </span>
+  <input
+    id="customerDetailAddressInput"
+    class="fieldInput"
+    type="text"
+    placeholder="例：安曇野市豊科..."
+  />
 
 </div>
 
@@ -517,6 +518,18 @@
           </span>
 
         </div>
+
+      </div>
+
+      <div style="margin-top:16px; text-align:right;">
+
+        <button
+          id="saveCustomerAddressBtn"
+          class="btn primary"
+          type="button"
+        >
+          住所情報を保存
+        </button>
 
       </div>
 
