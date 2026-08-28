@@ -2878,6 +2878,32 @@ async function cancelBooking(){
       throw error;
     }
 
+    /*
+  清算済み予約をキャンセルした場合は
+  顧客の来店実績を再計算
+*/
+if(
+  booking.status === "visited" &&
+  booking.customerId
+){
+
+  const {
+    error: recalculateError
+  } =
+    await sb.rpc(
+      "recalculate_customer_visits",
+      {
+        p_customer_id:
+          booking.customerId
+      }
+    );
+
+  if(recalculateError){
+    throw recalculateError;
+  }
+
+}
+
     await loadBookingsFromSupabase();
 
     closeBookingModal();
