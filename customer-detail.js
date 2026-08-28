@@ -89,6 +89,10 @@ function renderCustomer(
     customer.primary_staff_id ===
     "yamazaki"
       ? "山崎"
+      :
+    customer.primary_staff_id ===
+    "takeuchi"
+      ? "竹内"
       : "—";
 
   const setText =
@@ -149,6 +153,186 @@ function renderCustomer(
     "customerDetailFirstSource",
     customer.first_source ?? "—"
   );
+
+}
+
+/* =========================
+   予約履歴取得
+========================= */
+
+async function loadCustomerHistory(
+  customerId
+){
+
+  const {
+    data,
+    error
+  } =
+    await sb
+      .from("appointments")
+      .select(`
+        id,
+        appointment_date,
+        start_time,
+        staff_id,
+        menu_labels,
+        status,
+        source,
+        note
+      `)
+      .eq(
+        "customer_id",
+        customerId
+      )
+      .order(
+        "appointment_date",
+        {
+          ascending: false
+        }
+      )
+      .order(
+        "start_time",
+        {
+          ascending: false
+        }
+      );
+
+  if(error){
+    throw error;
+  }
+
+  return data ?? [];
+
+}
+
+/* =========================
+   予約履歴表示
+========================= */
+
+function renderCustomerHistory(
+  history
+){
+
+  const loading =
+    document.getElementById(
+      "customerHistoryLoading"
+    );
+
+  const empty =
+    document.getElementById(
+      "customerHistoryEmpty"
+    );
+
+  const list =
+    document.getElementById(
+      "customerHistoryList"
+    );
+
+  loading
+    ?.classList
+    .add("hidden");
+
+  if(!empty || !list){
+    return;
+  }
+
+  list.innerHTML = "";
+
+  if(history.length === 0){
+
+    empty
+      .classList
+      .remove("hidden");
+
+    list
+      .classList
+      .add("hidden");
+
+    return;
+
+  }
+
+  empty
+    .classList
+    .add("hidden");
+
+  list
+    .classList
+    .remove("hidden");
+
+  for(
+    const appointment
+    of history
+  ){
+
+    const staffName =
+      appointment.staff_id ===
+      "kitamura"
+        ? "北村"
+        :
+      appointment.staff_id ===
+      "yamazaki"
+        ? "山崎"
+        :
+      appointment.staff_id ===
+      "takeuchi"
+        ? "竹内"
+        : "—";
+
+    const menu =
+      Array.isArray(
+        appointment.menu_labels
+      )
+        ? appointment.menu_labels.join("・")
+        : "—";
+
+    const item =
+      document.createElement(
+        "div"
+      );
+
+    item.style.marginBottom =
+      "16px";
+
+    item.style.padding =
+      "14px";
+
+    item.style.border =
+      "1px solid #ddd";
+
+    item.style.borderRadius =
+      "10px";
+
+    item.innerHTML = `
+      <div>
+        <strong>
+          ${appointment.appointment_date}
+          ${appointment.start_time?.slice(0, 5) ?? ""}
+        </strong>
+      </div>
+
+      <div>
+        担当：${staffName}
+      </div>
+
+      <div>
+        メニュー：${menu}
+      </div>
+
+      <div>
+        状態：${appointment.status ?? "—"}
+      </div>
+
+      <div>
+        予約経路：${appointment.source ?? "—"}
+      </div>
+    `;
+
+    list.appendChild(
+      item
+    );
+
+  }
 
 }
 
@@ -217,6 +401,15 @@ async function initializeCustomerDetail(){
 
     renderCustomer(
       customer
+    );
+
+    const history =
+      await loadCustomerHistory(
+        customerId
+      );
+
+    renderCustomerHistory(
+      history
     );
 
     customerDetailApp
