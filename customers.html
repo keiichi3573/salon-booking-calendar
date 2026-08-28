@@ -15,36 +15,382 @@
     rel="stylesheet"
     href="style.css?v=5"
   />
+
+  <style>
+
+    /* =========================
+       顧客管理ページ専用
+    ========================= */
+
+    body {
+      background: #f7f4f2;
+    }
+
+    .customersTopbar {
+      position: relative;
+      min-height: 72px;
+      padding: 10px 20px;
+      background: #ffffff;
+      border-bottom: 1px solid #eadfda;
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .customersTopbarLeft {
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+    }
+
+    .customersTopbarCenter {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .customersTopbarRight {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+    }
+
+    .customersLogo {
+      display: block;
+      max-width: 150px;
+      max-height: 48px;
+      object-fit: contain;
+    }
+
+    .customersBackBtn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      min-height: 40px;
+      padding: 0 15px;
+      border: 1px solid #d8c7c0;
+      border-radius: 10px;
+      background: #ffffff;
+      color: #694f46;
+      font-size: 14px;
+      font-weight: 700;
+      text-decoration: none;
+      box-sizing: border-box;
+      white-space: nowrap;
+      transition: 0.2s ease;
+    }
+
+    .customersBackBtn:hover {
+      background: #f7efec;
+    }
+
+    .customersLogoutBtn {
+      min-height: 40px;
+    }
+
+    .customersPage {
+      width: min(1180px, calc(100% - 32px));
+      margin: 30px auto 60px;
+    }
+
+    /* =========================
+       ページタイトル
+    ========================= */
+
+    .customersHero {
+      margin-bottom: 20px;
+      padding: 26px 28px;
+      background: #ffffff;
+      border: 1px solid #eadfda;
+      border-radius: 18px;
+      box-shadow: 0 5px 18px rgba(90, 67, 58, 0.05);
+    }
+
+    .customersEyebrow {
+      margin-bottom: 4px;
+      color: #b17d72;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+    }
+
+    .customersTitle {
+      margin: 0;
+      color: #4e3b34;
+      font-size: 28px;
+      line-height: 1.3;
+    }
+
+    .customersDescription {
+      margin: 8px 0 0;
+      color: #7b6b65;
+      font-size: 14px;
+    }
+
+    /* =========================
+       検索エリア
+    ========================= */
+
+    .customersControlPanel {
+      margin-bottom: 20px;
+      padding: 20px;
+      background: #ffffff;
+      border: 1px solid #eadfda;
+      border-radius: 16px;
+    }
+
+    .customersControlHead {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 16px;
+      margin-bottom: 12px;
+    }
+
+    .customersSearchLabel {
+      display: block;
+      margin-bottom: 7px;
+      color: #59453d;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .customersSearchWrap {
+      flex: 1;
+      max-width: 560px;
+    }
+
+    .customersSearchInput {
+      width: 100%;
+      min-height: 48px;
+      padding: 0 16px;
+      border: 1px solid #d7c9c3;
+      border-radius: 12px;
+      background: #fffdfc;
+      color: #40332e;
+      font-size: 16px;
+      box-sizing: border-box;
+      outline: none;
+    }
+
+    .customersSearchInput:focus {
+      border-color: #bf8c80;
+      box-shadow: 0 0 0 3px rgba(191, 140, 128, 0.12);
+    }
+
+    .customersSearchHint {
+      margin-top: 7px;
+      color: #95847d;
+      font-size: 12px;
+    }
+
+    .customersCountBox {
+      min-width: 125px;
+      padding: 10px 14px;
+      border-radius: 12px;
+      background: #f7efec;
+      color: #744f46;
+      text-align: center;
+      font-weight: 700;
+    }
+
+    #customerCount {
+      font-size: 15px;
+    }
+
+    /* =========================
+       顧客一覧
+    ========================= */
+
+    .customersListPanel {
+      overflow: hidden;
+      background: #ffffff;
+      border: 1px solid #eadfda;
+      border-radius: 18px;
+      box-shadow: 0 5px 18px rgba(90, 67, 58, 0.04);
+    }
+
+    .customersListHead {
+      padding: 18px 22px;
+      border-bottom: 1px solid #eee5e1;
+    }
+
+    .customersListTitle {
+      margin: 0;
+      color: #513f38;
+      font-size: 18px;
+    }
+
+    .customersTableScroll {
+      width: 100%;
+      overflow-x: auto;
+    }
+
+    #customersList table {
+      width: 100%;
+      min-width: 760px;
+      border-collapse: collapse;
+    }
+
+    #customersList th {
+      padding: 13px 16px;
+      background: #faf7f5;
+      border-bottom: 1px solid #e8ded9;
+      color: #806c64;
+      font-size: 13px;
+      font-weight: 700;
+      text-align: left;
+      white-space: nowrap;
+    }
+
+    #customersList td {
+      padding: 15px 16px;
+      border-bottom: 1px solid #f0e9e6;
+      color: #4b3d38;
+      font-size: 14px;
+      vertical-align: middle;
+    }
+
+    #customersList tbody tr {
+      transition: background 0.15s ease;
+    }
+
+    #customersList tbody tr:hover {
+      background: #fffaf8;
+    }
+
+    #customersList tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    #customersList td:first-child a {
+      color: #9d6358;
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    #customersList td:first-child a:hover {
+      text-decoration: underline;
+    }
+
+    .customersLoading,
+    .customersEmpty {
+      padding: 40px 20px;
+      color: #8a7972;
+      text-align: center;
+      font-size: 14px;
+    }
+
+    /* =========================
+       スマホ
+    ========================= */
+
+    @media (max-width: 640px) {
+
+      .customersTopbar {
+        min-height: 62px;
+        padding: 8px 10px;
+        grid-template-columns: auto 1fr auto;
+      }
+
+      .customersLogo {
+        max-width: 110px;
+        max-height: 38px;
+      }
+
+      .customersBackBtn {
+        width: 42px;
+        min-width: 42px;
+        padding: 0;
+        font-size: 0;
+      }
+
+      .customersBackBtn::before {
+        content: "←";
+        font-size: 20px;
+      }
+
+      .customersPage {
+        width: calc(100% - 20px);
+        margin-top: 16px;
+      }
+
+      .customersHero {
+        padding: 20px;
+        border-radius: 14px;
+      }
+
+      .customersTitle {
+        font-size: 23px;
+      }
+
+      .customersControlPanel {
+        padding: 16px;
+      }
+
+      .customersControlHead {
+        display: block;
+      }
+
+      .customersSearchWrap {
+        max-width: none;
+      }
+
+      .customersCountBox {
+        margin-top: 12px;
+        text-align: left;
+      }
+
+      .customersListPanel {
+        border-radius: 14px;
+      }
+
+      .customersListHead {
+        padding: 15px 16px;
+      }
+
+    }
+
+  </style>
+
 </head>
 
 <body>
 
-  <header class="topbar">
+  <!-- =========================
+       ヘッダー
+  ========================== -->
 
-    <div class="left">
+  <header class="customersTopbar">
+
+    <div class="customersTopbarLeft">
+
       <a
         href="index.html"
-        class="btn"
+        class="customersBackBtn"
       >
         ← トップへ戻る
       </a>
+
     </div>
 
-    <div class="brandCenter">
+    <div class="customersTopbarCenter">
 
       <img
-        class="brandLogo"
+        class="customersLogo"
         src="logo.png"
-        alt="COMFORT"
+        alt="Hair & Make COMFORT"
       />
 
     </div>
 
-    <div class="right">
+    <div class="customersTopbarRight">
 
       <button
         id="logoutBtn"
-        class="btn hidden"
+        class="btn customersLogoutBtn hidden"
         type="button"
       >
         ログアウト
@@ -60,67 +406,97 @@
 
   <main
     id="customersApp"
-    class="wrap hidden"
+    class="customersPage hidden"
   >
 
-    <section>
+    <!-- タイトル -->
 
-      <div>
-        <h1>顧客管理</h1>
+    <section class="customersHero">
 
-        <p>
-          顧客情報・予約履歴を確認できます。
-        </p>
+      <div class="customersEyebrow">
+        CUSTOMER MANAGEMENT
       </div>
+
+      <h1 class="customersTitle">
+        顧客管理
+      </h1>
+
+      <p class="customersDescription">
+        お客様情報の検索・確認と予約履歴の管理ができます。
+      </p>
 
     </section>
 
     <!-- 検索 -->
 
-    <section>
+    <section class="customersControlPanel">
 
-      <div>
+      <div class="customersControlHead">
 
-        <label for="customerSearchInput">
-          顧客検索
-        </label>
+        <div class="customersSearchWrap">
 
-        <input
-          id="customerSearchInput"
-          class="fieldInput"
-          type="search"
-          placeholder="氏名または電話番号"
-          autocomplete="off"
-        />
+          <label
+            for="customerSearchInput"
+            class="customersSearchLabel"
+          >
+            お客様を検索
+          </label>
+
+          <input
+            id="customerSearchInput"
+            class="customersSearchInput"
+            type="search"
+            placeholder="お名前 または 電話番号を入力"
+            autocomplete="off"
+          />
+
+          <div class="customersSearchHint">
+            お名前の一部、または電話番号の一部でも検索できます
+          </div>
+
+        </div>
+
+        <div class="customersCountBox">
+
+          <div id="customerCount">
+            顧客 0名
+          </div>
+
+        </div>
 
       </div>
 
     </section>
 
-    <!-- 件数 -->
-
-    <div id="customerCount">
-      顧客 0名
-    </div>
-
     <!-- 顧客一覧 -->
 
-    <section>
+    <section class="customersListPanel">
 
-      <div id="customersLoading">
+      <div class="customersListHead">
+
+        <h2 class="customersListTitle">
+          お客様一覧
+        </h2>
+
+      </div>
+
+      <div
+        id="customersLoading"
+        class="customersLoading"
+      >
         顧客情報を読み込み中…
       </div>
 
       <div
         id="customersEmpty"
-        class="hidden"
+        class="customersEmpty hidden"
       >
         顧客情報はまだありません。
       </div>
 
       <div
         id="customersList"
-        class="hidden"
+        class="customersTableScroll hidden"
       >
 
         <table>
@@ -128,7 +504,7 @@
           <thead>
 
             <tr>
-              <th>氏名</th>
+              <th>お名前</th>
               <th>電話番号</th>
               <th>主担当</th>
               <th>最終来店日</th>
@@ -170,9 +546,9 @@
 
       <a
         href="index.html"
-        class="btn"
+        class="customersBackBtn"
       >
-        トップへ戻る
+        ← トップへ戻る
       </a>
 
     </div>
@@ -184,8 +560,8 @@
   ></script>
 
   <script src="config.js"></script>
-　<script src="customers.js"></script>
-  
+  <script src="customers.js"></script>
+
 </body>
 
 </html>
