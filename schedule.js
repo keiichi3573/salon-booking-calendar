@@ -587,6 +587,12 @@ function databaseRowToBooking(
         row.start_time
       ),
 
+    customerPhone:
+  row.customer_phone || "",
+
+birthMonth:
+  row.birth_month || null,
+
     end:
       normalizeDatabaseTime(
         row.end_time
@@ -638,6 +644,12 @@ function bookingToDatabaseRow(
 
     start_time:
       booking.start,
+
+    customer_phone:
+  booking.customerPhone || null,
+
+birth_month:
+  booking.birthMonth || null,
 
     end_time:
       booking.end,
@@ -2088,6 +2100,19 @@ async function saveBooking(){
     return;
   }
 
+  const customerPhone =
+  customerPhoneInput
+    .value
+    .replace(/\D/g, "");
+
+const birthMonthValue =
+  customerBirthMonthSelect.value;
+
+const birthMonth =
+  birthMonthValue
+    ? Number(birthMonthValue)
+    : null;
+
   if(selectedMenus.size === 0){
     formMessage.textContent =
       "メニューを1つ以上選んでください。";
@@ -2154,6 +2179,10 @@ if(
       staffSelect.value,
 
     customerName,
+
+    customerPhone,
+
+birthMonth,
 
     start:
       startTimeSelect.value,
