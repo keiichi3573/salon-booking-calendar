@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="ja">
+
+<head>
+  <meta charset="utf-8" />
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1"
+  />
+
+  <title>顧客詳細 | COMFORT</title>
+
+  <link
+    rel="stylesheet"
+    href="style.css?v=5"
+  />
+</head>
+
+<body>
+
+  <header class="topbar">
+
+    <div class="left">
+
+      <a
+        href="customers.html"
+        class="btn"
+      >
+        ← 顧客一覧へ戻る
+      </a>
+
+    </div>
+
+    <div class="brandCenter">
+
+      <img
+        class="brandLogo"
+        src="logo.png"
+        alt="COMFORT"
+      />
+
+    </div>
+
+    <div class="right">
+
+      <button
+        id="logoutBtn"
+        class="btn hidden"
+        type="button"
+      >
+        ログアウト
+      </button>
+
+    </div>
+
+  </header>
+
+  <main
+    id="customerDetailApp"
+    class="wrap hidden"
+  >
+
+    <section>
+
+      <h1 id="customerDetailName">
+        顧客詳細
+      </h1>
+
+      <div>
+        <div>
+          電話番号：
+          <span id="customerDetailPhone">—</span>
+        </div>
+
+        <div>
+          誕生月：
+          <span id="customerDetailBirthMonth">—</span>
+        </div>
+
+        <div>
+          主担当：
+          <span id="customerDetailStaff">—</span>
+        </div>
+
+        <div>
+          初回来店日：
+          <span id="customerDetailFirstVisit">—</span>
+        </div>
+
+        <div>
+          最終来店日：
+          <span id="customerDetailLastVisit">—</span>
+        </div>
+
+        <div>
+          来店回数：
+          <span id="customerDetailVisitCount">0</span>
+        </div>
+
+        <div>
+          初回来店経路：
+          <span id="customerDetailFirstSource">—</span>
+        </div>
+      </div>
+
+    </section>
+
+    <section>
+
+      <h2>
+        予約履歴
+      </h2>
+
+      <div id="customerHistoryLoading">
+        予約履歴を読み込み中…
+      </div>
+
+      <div
+        id="customerHistoryEmpty"
+        class="hidden"
+      >
+        予約履歴はありません。
+      </div>
+
+      <div
+        id="customerHistoryList"
+        class="hidden"
+      >
+      </div>
+
+    </section>
+
+  </main>
+
+  <div
+    id="customerDetailAccessDenied"
+    class="authScreen hidden"
+  >
+
+    <div class="authCard">
+
+      <div class="authTitle">
+        顧客詳細
+      </div>
+
+      <div class="authSub">
+        このページを利用する権限がありません。
+      </div>
+
+      <a
+        href="index.html"
+        class="btn"
+      >
+        トップへ戻る
+      </a>
+
+    </div>
+
+  </div>
+
+  <script
+    src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"
+  ></script>
+
+  <script src="config.js"></script>
+
+</body>
+
+</html>
