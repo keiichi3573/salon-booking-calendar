@@ -2265,12 +2265,30 @@ selectButton
     () => {
 
       selectedCustomerId =
-        customer.customer_id;
+  customer.customer_id;
 
-      hideCustomerCandidates();
+customerCandidateMessage.textContent =
+  `${customer.name} 様を選択しました。`;
 
-      formMessage.textContent =
-        `${customer.name} 様を選択しました。予約を保存してください。`;
+customerCandidateList.innerHTML =
+  `
+    <div style="
+      margin-top:10px;
+      padding:12px;
+      border-radius:10px;
+      background:#f3f8f3;
+      font-weight:700;
+    ">
+      このお客様で予約します。
+      下の「予約を保存」を押してください。
+    </div>
+  `;
+
+customerCandidateArea
+  ?.classList
+  .remove("hidden");
+
+formMessage.textContent = "";
 
     }
   );
