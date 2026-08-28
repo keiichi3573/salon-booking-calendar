@@ -1148,6 +1148,105 @@ gap: 8px;
   transform: scale(0.99);
 }
 
+.complete-step {
+  margin-top: 28px;
+  padding: 30px 20px;
+
+  border-radius: 20px;
+
+  background:
+    linear-gradient(
+      180deg,
+      #fffdfb 0%,
+      #faf3ef 100%
+    );
+
+  text-align: center;
+
+  box-shadow:
+    0 8px 24px rgba(90, 70, 60, 0.08);
+}
+
+.complete-icon {
+  width: 58px;
+  height: 58px;
+
+  margin: 0 auto 14px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  background: #b9857f;
+  color: #fff;
+
+  font-size: 28px;
+  font-weight: 700;
+}
+
+.complete-title {
+  margin: 0 0 10px;
+
+  color: #6f5548;
+
+  font-size: 21px;
+}
+
+.complete-message {
+  margin: 0 0 22px;
+
+  color: #806d64;
+
+  font-size: 13px;
+  line-height: 1.8;
+}
+
+.complete-card {
+  padding: 14px 16px;
+
+  border: 1px solid #eadfd8;
+  border-radius: 14px;
+
+  background: #fff;
+}
+
+.complete-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+
+  padding: 10px 0;
+
+  border-bottom: 1px solid #eee5df;
+}
+
+.complete-row:last-child {
+  border-bottom: none;
+}
+
+.complete-row span {
+  color: #9a8176;
+  font-size: 12px;
+}
+
+.complete-row strong {
+  color: #5f4a41;
+
+  font-size: 13px;
+  text-align: right;
+}
+
+.complete-note {
+  margin: 18px 0 0;
+
+  color: #9a8176;
+
+  font-size: 11px;
+  line-height: 1.7;
+}    
+
 @media (max-width: 699px) {
 
   .page {
@@ -2130,6 +2229,51 @@ gap: 8px;
   この内容で予約する
 </button>
 </section>
+
+<section id="completeStep" class="complete-step" hidden>
+
+  <div class="complete-icon">
+    ✓
+  </div>
+
+  <h2 class="complete-title">
+    ご予約ありがとうございます
+  </h2>
+
+  <p class="complete-message">
+    ご予約を承りました。<br>
+    ご来店を心よりお待ちしております。
+  </p>
+
+  <div class="complete-card">
+
+    <div class="complete-row">
+      <span>メニュー</span>
+      <strong id="completeMenu"></strong>
+    </div>
+
+    <div class="complete-row">
+      <span>担当</span>
+      <strong id="completeStaff"></strong>
+    </div>
+
+    <div class="complete-row">
+      <span>日付</span>
+      <strong id="completeDate"></strong>
+    </div>
+
+    <div class="complete-row">
+      <span>時間</span>
+      <strong id="completeTime"></strong>
+    </div>
+
+  </div>
+
+  <p class="complete-note">
+    予約内容について確認が必要な場合は、店舗よりご連絡する場合があります。
+  </p>
+
+</section>  
   
 </section>
   
@@ -3631,11 +3775,41 @@ p_note:
     );
 
     button.textContent =
-      "予約が完了しました";
+  "予約が完了しました";
 
-    alert(
-      "ご予約を承りました。\nありがとうございます。"
-    );
+document.getElementById(
+  "completeMenu"
+).textContent = selectedMenu;
+
+document.getElementById(
+  "completeStaff"
+).textContent = selectedStaff;
+
+document.getElementById(
+  "completeDate"
+).textContent =
+  document.getElementById(
+    "selectedDateText"
+  ).textContent;
+
+document.getElementById(
+  "completeTime"
+).textContent = selectedTime;
+
+document.getElementById(
+  "confirmStep"
+).hidden = true;
+
+document.getElementById(
+  "completeStep"
+).hidden = false;
+
+document.getElementById(
+  "completeStep"
+).scrollIntoView({
+  behavior: "smooth",
+  block: "start"
+});
 
   } catch (error) {
     console.error(
