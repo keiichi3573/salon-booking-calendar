@@ -435,6 +435,8 @@ let bookings = [];
 
 let editingBookingId = null;
 
+let selectedCustomerId = null;
+
 let selectedMenus =
   new Set();
 
@@ -1551,6 +1553,8 @@ function createBookingBlock(
 function resetBookingForm(){
   editingBookingId = null;
 
+  selectedCustomerId = null;
+
   selectedMenus =
     new Set();
 
@@ -2204,41 +2208,72 @@ function renderCustomerCandidates(
         "10px";
 
       item.innerHTML = `
-        <div>
-          <strong>
-            ${escapeHtml(customer.name)}
-          </strong>
-        </div>
+  <div>
+    <strong>
+      ${escapeHtml(customer.name)}
+    </strong>
+  </div>
 
-        <div>
-          電話：
-          ${escapeHtml(customer.phone || "未登録")}
-        </div>
+  <div>
+    電話：
+    ${escapeHtml(customer.phone || "未登録")}
+  </div>
 
-        <div>
-          誕生月：
-          ${
-            customer.birth_month
-              ? `${customer.birth_month}月`
-              : "未登録"
-          }
-        </div>
+  <div>
+    誕生月：
+    ${
+      customer.birth_month
+        ? `${customer.birth_month}月`
+        : "未登録"
+    }
+  </div>
 
-        <div>
-          住所：
-          ${escapeHtml(customer.address || "未登録")}
-        </div>
+  <div>
+    住所：
+    ${escapeHtml(customer.address || "未登録")}
+  </div>
 
-        <div>
-          主担当：
-          ${staffName}
-        </div>
+  <div>
+    主担当：
+    ${staffName}
+  </div>
 
-        <div>
-          最終来店：
-          ${customer.last_visit_date || "—"}
-        </div>
-      `;
+  <div>
+    最終来店：
+    ${customer.last_visit_date || "—"}
+  </div>
+
+  <div style="margin-top:10px;">
+    <button
+      type="button"
+      class="scheduleBtn"
+      data-customer-candidate-id="${customer.customer_id}"
+    >
+      このお客様を選ぶ
+    </button>
+  </div>
+`;
+
+      const selectButton =
+  item.querySelector(
+    "[data-customer-candidate-id]"
+  );
+
+selectButton
+  ?.addEventListener(
+    "click",
+    () => {
+
+      selectedCustomerId =
+        customer.customer_id;
+
+      hideCustomerCandidates();
+
+      formMessage.textContent =
+        `${customer.name} 様を選択しました。予約を保存してください。`;
+
+    }
+  );
 
       customerCandidateList
         .appendChild(item);
@@ -2420,7 +2455,12 @@ const existingBooking =
       )
     : null;
 
-if(existingBooking?.customerId){
+if(selectedCustomerId){
+
+  matchedCustomerId =
+    selectedCustomerId;
+
+}else if(existingBooking?.customerId){
 
   matchedCustomerId =
     existingBooking.customerId;
@@ -2485,6 +2525,29 @@ if(existingBooking?.customerId){
     newCustomerId;
 
 }
+
+  else if(
+  customerMatch.matchStatus ===
+  "multiple"
+){
+
+  const candidates =
+    await loadCustomerCandidates(
+      customerName,
+      customerPhone,
+      birthMonth
+    );
+
+  renderCustomerCandidates(
+    candidates
+  );
+
+  formMessage.textContent =
+    "同じお客様候補が複数見つかりました。該当するお客様を選んでください。";
+
+  return;
+
+}  
 
   }catch(error){
 
