@@ -582,6 +582,9 @@ function databaseRowToBooking(
     customerName:
       row.customer_name,
 
+    customerId:
+  row.customer_id || null,
+
     start:
       normalizeDatabaseTime(
         row.start_time
@@ -641,6 +644,9 @@ function bookingToDatabaseRow(
 
     customer_name:
       booking.customerName,
+
+    customer_id:
+  booking.customerId || null,
 
     start_time:
       booking.start,
@@ -2179,6 +2185,16 @@ if(
       staffSelect.value,
 
     customerName,
+
+    customerId:
+  editingBookingId
+    ? (
+        bookings.find(
+          row =>
+            row.id === editingBookingId
+        )?.customerId || null
+      )
+    : null,
 
     customerPhone,
 
