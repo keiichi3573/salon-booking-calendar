@@ -288,13 +288,19 @@ function renderCustomers(customers){
         : "—";
 
     row.innerHTML = `
-      <td>${customer.name ?? "—"}</td>
-      <td>${customer.phone ?? "—"}</td>
-      <td>${staffName}</td>
-      <td>${lastVisit}</td>
-      <td>${customer.visit_count ?? 0}</td>
-      <td>${birthMonth}</td>
-    `;
+  <td>
+    <a
+      href="customer-detail.html?id=${encodeURIComponent(customer.id)}"
+    >
+      ${customer.name ?? "—"}
+    </a>
+  </td>
+  <td>${customer.phone ?? "—"}</td>
+  <td>${staffName}</td>
+  <td>${lastVisit}</td>
+  <td>${customer.visit_count ?? 0}</td>
+  <td>${birthMonth}</td>
+`;
 
     customersTableBody
       .appendChild(row);
