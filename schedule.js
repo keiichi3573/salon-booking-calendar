@@ -2086,6 +2086,67 @@ function getLatestReceptionLabel(){
 }
 
 /* =========================
+   顧客照合
+========================= */
+
+async function findCustomerForBooking(
+  customerName,
+  customerPhone,
+  birthMonth
+){
+
+  const {
+    data,
+    error
+  } =
+    await sb.rpc(
+      "find_customer_for_booking",
+      {
+        p_customer_name:
+          customerName,
+
+        p_customer_phone:
+          customerPhone || null,
+
+        p_birth_month:
+          birthMonth || null
+      }
+    );
+
+  if(error){
+    throw error;
+  }
+
+  if(
+    !Array.isArray(data) ||
+    data.length === 0
+  ){
+    return {
+      matchStatus:
+        "none",
+
+      customerId:
+        null,
+
+      matchCount:
+        0
+    };
+  }
+
+  return {
+    matchStatus:
+      data[0].match_status,
+
+    customerId:
+      data[0].customer_id,
+
+    matchCount:
+      data[0].match_count
+  };
+
+}
+
+/* =========================
    保存
 ========================= */
 
@@ -2174,6 +2235,68 @@ if(
   return;
 }
 
+  let matchedCustomerId =
+  null;
+
+/*
+  すでに顧客IDが付いている予約なら
+  その紐付けを維持する
+*/
+const existingBooking =
+  editingBookingId
+    ? bookings.find(
+        row =>
+          row.id ===
+          editingBookingId
+      )
+    : null;
+
+if(existingBooking?.customerId){
+
+  matchedCustomerId =
+    existingBooking.customerId;
+
+}else{
+
+  try{
+
+    const customerMatch =
+      await findCustomerForBooking(
+        customerName,
+        customerPhone,
+        birthMonth
+      );
+
+    /*
+      1人だけ一致した場合のみ
+      自動で顧客へ紐付ける
+    */
+    if(
+      customerMatch.matchStatus ===
+      "matched"
+    ){
+
+      matchedCustomerId =
+        customerMatch.customerId;
+
+    }
+
+  }catch(error){
+
+    console.error(
+      "顧客照合エラー:",
+      error
+    );
+
+    formMessage.textContent =
+      "顧客情報を確認できませんでした。";
+
+    return;
+
+  }
+
+}
+
   const bookingData = {
     id:
       editingBookingId || null,
@@ -2187,14 +2310,7 @@ if(
     customerName,
 
     customerId:
-  editingBookingId
-    ? (
-        bookings.find(
-          row =>
-            row.id === editingBookingId
-        )?.customerId || null
-      )
-    : null,
+  matchedCustomerId,
 
     customerPhone,
 
