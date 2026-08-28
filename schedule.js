@@ -2272,14 +2272,50 @@ if(existingBooking?.customerId){
       自動で顧客へ紐付ける
     */
     if(
-      customerMatch.matchStatus ===
-      "matched"
-    ){
+  customerMatch.matchStatus ===
+  "matched"
+){
 
-      matchedCustomerId =
-        customerMatch.customerId;
+  matchedCustomerId =
+    customerMatch.customerId;
 
-    }
+}else if(
+  customerMatch.matchStatus ===
+  "none"
+){
+
+  const {
+    data: newCustomerId,
+    error: createCustomerError
+  } =
+    await sb.rpc(
+      "create_store_customer",
+      {
+        p_customer_name:
+          customerName,
+
+        p_customer_phone:
+          customerPhone || null,
+
+        p_birth_month:
+          birthMonth || null,
+
+        p_staff_id:
+          staffSelect.value,
+
+        p_nomination:
+          selectedNomination
+      }
+    );
+
+  if(createCustomerError){
+    throw createCustomerError;
+  }
+
+  matchedCustomerId =
+    newCustomerId;
+
+}
 
   }catch(error){
 
