@@ -50,14 +50,16 @@ async function loadCustomer(
       .from("customers")
       .select(`
         id,
-        name,
-        phone,
-        birth_month,
-        first_visit_date,
-        last_visit_date,
-        visit_count,
-        primary_staff_id,
-        first_source
+name,
+phone,
+postal_code,
+address,
+birth_month,
+first_visit_date,
+last_visit_date,
+visit_count,
+primary_staff_id,
+first_source
       `)
       .eq(
         "id",
@@ -121,6 +123,16 @@ function renderCustomer(
     "customerDetailPhone",
     customer.phone ?? "—"
   );
+
+  setText(
+  "customerDetailPostalCode",
+  customer.postal_code ?? "—"
+);
+
+setText(
+  "customerDetailAddress",
+  customer.address ?? "—"
+);
 
   setText(
     "customerDetailBirthMonth",
