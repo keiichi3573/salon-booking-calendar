@@ -124,16 +124,26 @@ function renderCustomer(
     customer.phone ?? "—"
   );
 
-  setText(
-  "customerDetailPostalCode",
-  customer.postal_code ?? "—"
-);
+const postalCodeInput =
+  document.getElementById(
+    "customerDetailPostalCodeInput"
+  );
 
-setText(
-  "customerDetailAddress",
-  customer.address ?? "—"
-);
+const addressInput =
+  document.getElementById(
+    "customerDetailAddressInput"
+  );
 
+if(postalCodeInput){
+  postalCodeInput.value =
+    customer.postal_code ?? "";
+}
+
+if(addressInput){
+  addressInput.value =
+    customer.address ?? "";
+}
+  
   setText(
     "customerDetailBirthMonth",
     customer.birth_month
@@ -478,6 +488,107 @@ if(logoutBtn){
 
     }
   );
+
+}
+
+/* =========================
+   住所情報保存
+========================= */
+
+const saveCustomerAddressBtn =
+  document.getElementById(
+    "saveCustomerAddressBtn"
+  );
+
+async function saveCustomerAddress(){
+
+  const customerId =
+    getCustomerId();
+
+  if(!customerId){
+    return;
+  }
+
+  const postalCodeInput =
+    document.getElementById(
+      "customerDetailPostalCodeInput"
+    );
+
+  const addressInput =
+    document.getElementById(
+      "customerDetailAddressInput"
+    );
+
+  if(!postalCodeInput || !addressInput){
+    return;
+  }
+
+  saveCustomerAddressBtn.disabled =
+    true;
+
+  saveCustomerAddressBtn.textContent =
+    "保存中…";
+
+  try{
+
+    const {
+      error
+    } =
+      await sb
+        .from("customers")
+        .update({
+          postal_code:
+            postalCodeInput.value.trim() || null,
+
+          address:
+            addressInput.value.trim() || null,
+
+          updated_at:
+            new Date().toISOString()
+        })
+        .eq(
+          "id",
+          customerId
+        );
+
+    if(error){
+      throw error;
+    }
+
+    window.alert(
+      "住所情報を保存しました。"
+    );
+
+  }catch(error){
+
+    console.error(
+      "住所情報保存エラー:",
+      error
+    );
+
+    window.alert(
+      "住所情報を保存できませんでした。"
+    );
+
+  }finally{
+
+    saveCustomerAddressBtn.disabled =
+      false;
+
+    saveCustomerAddressBtn.textContent =
+      "住所情報を保存";
+
+  }
+
+}
+
+if(saveCustomerAddressBtn){
+
+  saveCustomerAddressBtn
+    .addEventListener(
+      "click",
+      saveCustomerAddress
+    );
 
 }
 
