@@ -388,6 +388,11 @@ const cancelBookingBtn =
     "cancelBookingBtn"
   );
 
+const visitedBookingBtn =
+  document.getElementById(
+    "visitedBookingBtn"
+  );
+
 /* =========================
    状態
 ========================= */
@@ -1538,6 +1543,10 @@ function resetBookingForm(){
     .classList
     .add("hidden");
 
+  visitedBookingBtn
+  ?.classList
+  .add("hidden");
+
   updateFormDisplay();
 }
 
@@ -1619,6 +1628,10 @@ function openEditBooking(
   cancelBookingBtn
     .classList
     .remove("hidden");
+
+  visitedBookingBtn
+  ?.classList
+  .remove("hidden");
 
   updateFormDisplay();
 
