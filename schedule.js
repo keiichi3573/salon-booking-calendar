@@ -1626,12 +1626,57 @@ function openEditBooking(
     "normal";
 
   cancelBookingBtn
-    .classList
-    .remove("hidden");
+  .classList
+  .remove("hidden");
+
+/*
+  清算済みボタン
+  ・未来予約 → 非表示
+  ・清算済み → 表示するが押せない
+  ・今日または過去 → 清算済みにできる
+*/
+const todayKey =
+  toDateKey(
+    new Date()
+  );
+
+if(
+  booking.date >
+  todayKey
+){
 
   visitedBookingBtn
-  ?.classList
-  .remove("hidden");
+    ?.classList
+    .add("hidden");
+
+}else{
+
+  visitedBookingBtn
+    ?.classList
+    .remove("hidden");
+
+  if(
+    booking.status ===
+    "visited"
+  ){
+
+    visitedBookingBtn.disabled =
+      true;
+
+    visitedBookingBtn.textContent =
+      "清算済み";
+
+  }else{
+
+    visitedBookingBtn.disabled =
+      false;
+
+    visitedBookingBtn.textContent =
+      "清算済みにする";
+
+  }
+
+}
 
   updateFormDisplay();
 
