@@ -2557,13 +2557,26 @@ if(selectedCustomerId){
     );
 
   renderCustomerCandidates(
-    candidates
-  );
+  candidates
+);
 
-  formMessage.textContent =
-    "同じお客様候補が複数見つかりました。該当するお客様を選んでください。";
+formMessage.textContent =
+  "同じお客様候補が複数見つかりました。該当するお客様を選んでください。";
 
-  return;
+setTimeout(
+  () => {
+
+    customerCandidateArea
+      ?.scrollIntoView({
+        behavior: "smooth",
+        block: "center"
+      });
+
+  },
+  100
+);
+
+return;
 
 }  
 
