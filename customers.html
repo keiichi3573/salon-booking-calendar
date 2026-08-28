@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="ja">
+
+<head>
+  <meta charset="utf-8" />
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1"
+  />
+
+  <title>顧客管理 | COMFORT</title>
+
+  <link
+    rel="stylesheet"
+    href="style.css?v=5"
+  />
+</head>
+
+<body>
+
+  <header class="topbar">
+
+    <div class="left">
+      <a
+        href="index.html"
+        class="btn"
+      >
+        ← トップへ戻る
+      </a>
+    </div>
+
+    <div class="brandCenter">
+
+      <img
+        class="brandLogo"
+        src="logo.png"
+        alt="COMFORT"
+      />
+
+    </div>
+
+    <div class="right">
+
+      <button
+        id="logoutBtn"
+        class="btn hidden"
+        type="button"
+      >
+        ログアウト
+      </button>
+
+    </div>
+
+  </header>
+
+  <!-- =========================
+       顧客管理
+  ========================== -->
+
+  <main
+    id="customersApp"
+    class="wrap hidden"
+  >
+
+    <section>
+
+      <div>
+        <h1>顧客管理</h1>
+
+        <p>
+          顧客情報・予約履歴を確認できます。
+        </p>
+      </div>
+
+    </section>
+
+    <!-- 検索 -->
+
+    <section>
+
+      <div>
+
+        <label for="customerSearchInput">
+          顧客検索
+        </label>
+
+        <input
+          id="customerSearchInput"
+          class="fieldInput"
+          type="search"
+          placeholder="氏名または電話番号"
+          autocomplete="off"
+        />
+
+      </div>
+
+    </section>
+
+    <!-- 件数 -->
+
+    <div id="customerCount">
+      顧客 0名
+    </div>
+
+    <!-- 顧客一覧 -->
+
+    <section>
+
+      <div id="customersLoading">
+        顧客情報を読み込み中…
+      </div>
+
+      <div
+        id="customersEmpty"
+        class="hidden"
+      >
+        顧客情報はまだありません。
+      </div>
+
+      <div
+        id="customersList"
+        class="hidden"
+      >
+
+        <table>
+
+          <thead>
+
+            <tr>
+              <th>氏名</th>
+              <th>電話番号</th>
+              <th>主担当</th>
+              <th>最終来店日</th>
+              <th>来店回数</th>
+              <th>誕生月</th>
+            </tr>
+
+          </thead>
+
+          <tbody id="customersTableBody">
+          </tbody>
+
+        </table>
+
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- =========================
+       権限エラー
+  ========================== -->
+
+  <div
+    id="customersAccessDenied"
+    class="authScreen hidden"
+  >
+
+    <div class="authCard">
+
+      <div class="authTitle">
+        顧客管理
+      </div>
+
+      <div class="authSub">
+        このページを利用する権限がありません。
+      </div>
+
+      <a
+        href="index.html"
+        class="btn"
+      >
+        トップへ戻る
+      </a>
+
+    </div>
+
+  </div>
+
+  <script
+    src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"
+  ></script>
+
+  <script src="config.js"></script>
+
+</body>
+
+</html>
