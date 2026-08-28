@@ -338,6 +338,21 @@ const customerBirthMonthSelect =
     "customerBirthMonthSelect"
   );
 
+const customerCandidateArea =
+  document.getElementById(
+    "customerCandidateArea"
+  );
+
+const customerCandidateMessage =
+  document.getElementById(
+    "customerCandidateMessage"
+  );
+
+const customerCandidateList =
+  document.getElementById(
+    "customerCandidateList"
+  );
+
 const staffSelect =
   document.getElementById(
     "staffSelect"
@@ -2086,6 +2101,158 @@ function getLatestReceptionLabel(){
 }
 
 /* =========================
+   顧客候補
+========================= */
+
+async function loadCustomerCandidates(
+  customerName,
+  customerPhone,
+  birthMonth
+){
+
+  const {
+    data,
+    error
+  } =
+    await sb.rpc(
+      "get_customer_candidates_for_booking",
+      {
+        p_customer_name:
+          customerName,
+
+        p_customer_phone:
+          customerPhone || null,
+
+        p_birth_month:
+          birthMonth || null
+      }
+    );
+
+  if(error){
+    throw error;
+  }
+
+  return data ?? [];
+
+}
+
+function hideCustomerCandidates(){
+
+  customerCandidateArea
+    ?.classList
+    .add("hidden");
+
+  if(customerCandidateMessage){
+    customerCandidateMessage.textContent = "";
+  }
+
+  if(customerCandidateList){
+    customerCandidateList.innerHTML = "";
+  }
+
+}
+
+function renderCustomerCandidates(
+  candidates
+){
+
+  if(
+    !customerCandidateArea ||
+    !customerCandidateMessage ||
+    !customerCandidateList
+  ){
+    return;
+  }
+
+  customerCandidateMessage.textContent =
+    `同じお客様候補が${candidates.length}名見つかりました。`;
+
+  customerCandidateList.innerHTML = "";
+
+  candidates.forEach(
+    customer => {
+
+      const staffName =
+        customer.primary_staff_id ===
+        "kitamura"
+          ? "北村"
+          :
+        customer.primary_staff_id ===
+        "yamazaki"
+          ? "山崎"
+          :
+        customer.primary_staff_id ===
+        "takeuchi"
+          ? "竹内"
+          : "—";
+
+      const item =
+        document.createElement(
+          "div"
+        );
+
+      item.style.marginTop =
+        "10px";
+
+      item.style.padding =
+        "12px";
+
+      item.style.border =
+        "1px solid #ddd";
+
+      item.style.borderRadius =
+        "10px";
+
+      item.innerHTML = `
+        <div>
+          <strong>
+            ${escapeHtml(customer.name)}
+          </strong>
+        </div>
+
+        <div>
+          電話：
+          ${escapeHtml(customer.phone || "未登録")}
+        </div>
+
+        <div>
+          誕生月：
+          ${
+            customer.birth_month
+              ? `${customer.birth_month}月`
+              : "未登録"
+          }
+        </div>
+
+        <div>
+          住所：
+          ${escapeHtml(customer.address || "未登録")}
+        </div>
+
+        <div>
+          主担当：
+          ${staffName}
+        </div>
+
+        <div>
+          最終来店：
+          ${customer.last_visit_date || "—"}
+        </div>
+      `;
+
+      customerCandidateList
+        .appendChild(item);
+
+    }
+  );
+
+  customerCandidateArea
+    .classList
+    .remove("hidden");
+
+}
+
+/* =========================
    顧客照合
 ========================= */
 
@@ -2152,6 +2319,8 @@ async function findCustomerForBooking(
 
 async function saveBooking(){
   formMessage.textContent = "";
+
+  hideCustomerCandidates();
 
   const customerName =
     customerNameInput
