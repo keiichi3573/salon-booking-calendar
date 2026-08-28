@@ -15,38 +15,325 @@
     rel="stylesheet"
     href="style.css?v=5"
   />
+
+  <style>
+
+    /* =========================
+       顧客詳細ページ専用
+    ========================= */
+
+    body {
+      background: #f7f4f2;
+    }
+
+    .customerDetailTopbar {
+      position: relative;
+      min-height: 72px;
+      padding: 10px 20px;
+      background: #ffffff;
+      border-bottom: 1px solid #eadfda;
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .customerDetailTopbarLeft {
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+    }
+
+    .customerDetailTopbarCenter {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .customerDetailTopbarRight {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+    }
+
+    .customerDetailLogo {
+      display: block;
+      max-width: 150px;
+      max-height: 48px;
+      object-fit: contain;
+    }
+
+    .customerDetailBackBtn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      min-height: 40px;
+      padding: 0 15px;
+      border: 1px solid #d8c7c0;
+      border-radius: 10px;
+      background: #ffffff;
+      color: #694f46;
+      font-size: 14px;
+      font-weight: 700;
+      text-decoration: none;
+      box-sizing: border-box;
+      white-space: nowrap;
+      transition: 0.2s ease;
+    }
+
+    .customerDetailBackBtn:hover {
+      background: #f7efec;
+    }
+
+    .customerDetailLogoutBtn {
+      min-height: 40px;
+    }
+
+    .customerDetailPage {
+      width: min(1050px, calc(100% - 32px));
+      margin: 30px auto 60px;
+    }
+
+    /* =========================
+       顧客ヘッダー
+    ========================= */
+
+    .customerDetailHero {
+      margin-bottom: 20px;
+      padding: 26px 28px;
+      background: #ffffff;
+      border: 1px solid #eadfda;
+      border-radius: 18px;
+      box-shadow: 0 5px 18px rgba(90, 67, 58, 0.05);
+    }
+
+    .customerDetailEyebrow {
+      margin-bottom: 4px;
+      color: #b17d72;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+    }
+
+    .customerDetailName {
+      margin: 0;
+      color: #4e3b34;
+      font-size: 30px;
+      line-height: 1.3;
+    }
+
+    .customerDetailSub {
+      margin-top: 7px;
+      color: #84726b;
+      font-size: 14px;
+    }
+
+    /* =========================
+       基本情報カード
+    ========================= */
+
+    .customerInfoPanel {
+      margin-bottom: 20px;
+      padding: 22px;
+      background: #ffffff;
+      border: 1px solid #eadfda;
+      border-radius: 18px;
+      box-shadow: 0 5px 18px rgba(90, 67, 58, 0.04);
+    }
+
+    .customerSectionTitle {
+      margin: 0 0 16px;
+      color: #513f38;
+      font-size: 18px;
+    }
+
+    .customerInfoGrid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .customerInfoItem {
+      padding: 15px 16px;
+      border: 1px solid #eee4df;
+      border-radius: 12px;
+      background: #fcfaf9;
+    }
+
+    .customerInfoLabel {
+      display: block;
+      margin-bottom: 5px;
+      color: #8b7770;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .customerInfoValue {
+      color: #473934;
+      font-size: 16px;
+      font-weight: 700;
+      word-break: break-word;
+    }
+
+    /* =========================
+       予約履歴
+    ========================= */
+
+    .customerHistoryPanel {
+      padding: 22px;
+      background: #ffffff;
+      border: 1px solid #eadfda;
+      border-radius: 18px;
+      box-shadow: 0 5px 18px rgba(90, 67, 58, 0.04);
+    }
+
+    .customerHistoryHead {
+      margin-bottom: 16px;
+    }
+
+    .customerHistoryTitle {
+      margin: 0;
+      color: #513f38;
+      font-size: 18px;
+    }
+
+    #customerHistoryList {
+      display: grid;
+      gap: 12px;
+    }
+
+    #customerHistoryList > div {
+      margin-bottom: 0 !important;
+      padding: 16px 18px !important;
+      border: 1px solid #eadfda !important;
+      border-radius: 14px !important;
+      background: #fdfaf9;
+      box-shadow: 0 2px 8px rgba(80, 60, 52, 0.03);
+    }
+
+    #customerHistoryList > div strong {
+      color: #6f5148;
+      font-size: 15px;
+    }
+
+    #customerHistoryList > div > div {
+      margin-top: 5px;
+      color: #5e504a;
+      font-size: 14px;
+      line-height: 1.55;
+    }
+
+    #customerHistoryList > div > div:first-child {
+      margin-top: 0;
+      margin-bottom: 8px;
+    }
+
+    .customerHistoryLoading,
+    .customerHistoryEmpty {
+      padding: 32px 10px;
+      color: #8a7972;
+      text-align: center;
+      font-size: 14px;
+    }
+
+    /* =========================
+       スマホ
+    ========================= */
+
+    @media (max-width: 640px) {
+
+      .customerDetailTopbar {
+        min-height: 62px;
+        padding: 8px 10px;
+        grid-template-columns: auto 1fr auto;
+      }
+
+      .customerDetailLogo {
+        max-width: 110px;
+        max-height: 38px;
+      }
+
+      .customerDetailBackBtn {
+        width: 42px;
+        min-width: 42px;
+        padding: 0;
+        font-size: 0;
+      }
+
+      .customerDetailBackBtn::before {
+        content: "←";
+        font-size: 20px;
+      }
+
+      .customerDetailPage {
+        width: calc(100% - 20px);
+        margin-top: 16px;
+      }
+
+      .customerDetailHero {
+        padding: 20px;
+        border-radius: 14px;
+      }
+
+      .customerDetailName {
+        font-size: 24px;
+      }
+
+      .customerInfoPanel,
+      .customerHistoryPanel {
+        padding: 16px;
+        border-radius: 14px;
+      }
+
+      .customerInfoGrid {
+        grid-template-columns: 1fr;
+      }
+
+      .customerInfoItem {
+        padding: 13px 14px;
+      }
+
+    }
+
+  </style>
+
 </head>
 
 <body>
 
-  <header class="topbar">
+  <!-- =========================
+       ヘッダー
+  ========================== -->
 
-    <div class="left">
+  <header class="customerDetailTopbar">
+
+    <div class="customerDetailTopbarLeft">
 
       <a
         href="customers.html"
-        class="btn"
+        class="customerDetailBackBtn"
       >
         ← 顧客一覧へ戻る
       </a>
 
     </div>
 
-    <div class="brandCenter">
+    <div class="customerDetailTopbarCenter">
 
       <img
-        class="brandLogo"
+        class="customerDetailLogo"
         src="logo.png"
-        alt="COMFORT"
+        alt="Hair & Make COMFORT"
       />
 
     </div>
 
-    <div class="right">
+    <div class="customerDetailTopbarRight">
 
       <button
         id="logoutBtn"
-        class="btn hidden"
+        class="btn customerDetailLogoutBtn hidden"
         type="button"
       >
         ログアウト
@@ -56,69 +343,177 @@
 
   </header>
 
+  <!-- =========================
+       顧客詳細
+  ========================== -->
+
   <main
     id="customerDetailApp"
-    class="wrap hidden"
+    class="customerDetailPage hidden"
   >
 
-    <section>
+    <!-- 顧客名 -->
 
-      <h1 id="customerDetailName">
+    <section class="customerDetailHero">
+
+      <div class="customerDetailEyebrow">
+        CUSTOMER DETAIL
+      </div>
+
+      <h1
+        id="customerDetailName"
+        class="customerDetailName"
+      >
         顧客詳細
       </h1>
 
-      <div>
-        <div>
-          電話番号：
-          <span id="customerDetailPhone">—</span>
-        </div>
-
-        <div>
-          誕生月：
-          <span id="customerDetailBirthMonth">—</span>
-        </div>
-
-        <div>
-          主担当：
-          <span id="customerDetailStaff">—</span>
-        </div>
-
-        <div>
-          初回来店日：
-          <span id="customerDetailFirstVisit">—</span>
-        </div>
-
-        <div>
-          最終来店日：
-          <span id="customerDetailLastVisit">—</span>
-        </div>
-
-        <div>
-          来店回数：
-          <span id="customerDetailVisitCount">0</span>
-        </div>
-
-        <div>
-          初回来店経路：
-          <span id="customerDetailFirstSource">—</span>
-        </div>
+      <div class="customerDetailSub">
+        お客様情報と予約履歴
       </div>
 
     </section>
 
-    <section>
+    <!-- 基本情報 -->
 
-      <h2>
-        予約履歴
+    <section class="customerInfoPanel">
+
+      <h2 class="customerSectionTitle">
+        基本情報
       </h2>
 
-      <div id="customerHistoryLoading">
+      <div class="customerInfoGrid">
+
+        <div class="customerInfoItem">
+
+          <span class="customerInfoLabel">
+            電話番号
+          </span>
+
+          <span
+            id="customerDetailPhone"
+            class="customerInfoValue"
+          >
+            —
+          </span>
+
+        </div>
+
+        <div class="customerInfoItem">
+
+          <span class="customerInfoLabel">
+            誕生月
+          </span>
+
+          <span
+            id="customerDetailBirthMonth"
+            class="customerInfoValue"
+          >
+            —
+          </span>
+
+        </div>
+
+        <div class="customerInfoItem">
+
+          <span class="customerInfoLabel">
+            主担当
+          </span>
+
+          <span
+            id="customerDetailStaff"
+            class="customerInfoValue"
+          >
+            —
+          </span>
+
+        </div>
+
+        <div class="customerInfoItem">
+
+          <span class="customerInfoLabel">
+            初回来店日
+          </span>
+
+          <span
+            id="customerDetailFirstVisit"
+            class="customerInfoValue"
+          >
+            —
+          </span>
+
+        </div>
+
+        <div class="customerInfoItem">
+
+          <span class="customerInfoLabel">
+            最終来店日
+          </span>
+
+          <span
+            id="customerDetailLastVisit"
+            class="customerInfoValue"
+          >
+            —
+          </span>
+
+        </div>
+
+        <div class="customerInfoItem">
+
+          <span class="customerInfoLabel">
+            来店回数
+          </span>
+
+          <span
+            id="customerDetailVisitCount"
+            class="customerInfoValue"
+          >
+            0
+          </span>
+
+        </div>
+
+        <div class="customerInfoItem">
+
+          <span class="customerInfoLabel">
+            初回来店経路
+          </span>
+
+          <span
+            id="customerDetailFirstSource"
+            class="customerInfoValue"
+          >
+            —
+          </span>
+
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- 予約履歴 -->
+
+    <section class="customerHistoryPanel">
+
+      <div class="customerHistoryHead">
+
+        <h2 class="customerHistoryTitle">
+          予約履歴
+        </h2>
+
+      </div>
+
+      <div
+        id="customerHistoryLoading"
+        class="customerHistoryLoading"
+      >
         予約履歴を読み込み中…
       </div>
 
       <div
         id="customerHistoryEmpty"
-        class="hidden"
+        class="customerHistoryEmpty hidden"
       >
         予約履歴はありません。
       </div>
@@ -132,6 +527,10 @@
     </section>
 
   </main>
+
+  <!-- =========================
+       権限エラー
+  ========================== -->
 
   <div
     id="customerDetailAccessDenied"
@@ -149,10 +548,10 @@
       </div>
 
       <a
-        href="index.html"
-        class="btn"
+        href="customers.html"
+        class="customerDetailBackBtn"
       >
-        トップへ戻る
+        ← 顧客一覧へ戻る
       </a>
 
     </div>
@@ -164,7 +563,7 @@
   ></script>
 
   <script src="config.js"></script>
-<script src="customer-detail.js"></script>
+  <script src="customer-detail.js"></script>
 
 </body>
 
