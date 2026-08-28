@@ -1,7 +1,7 @@
 const sb =
   supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_ANON_KEY
+    window.APP_CONFIG.SUPABASE_URL,
+    window.APP_CONFIG.SUPABASE_ANON_KEY
   );
 
 const customersApp =
