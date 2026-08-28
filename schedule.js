@@ -2525,6 +2525,8 @@ async function initializeSchedule(){
 
     renderSchedule();
 
+    setupReservationRealtime();
+
   }catch(error){
     console.error(
       "予約表初期化エラー:",
@@ -2538,6 +2540,129 @@ async function initializeSchedule(){
       `予約データを読み込めませんでした。\n\n${error.message || "原因不明のエラーです。"}`
     );
   }
+}
+
+/* =========================
+   新しいネット予約通知
+========================= */
+
+const newReservationNotice =
+  document.getElementById(
+    "newReservationNotice"
+  );
+
+const refreshScheduleBtn =
+  document.getElementById(
+    "refreshScheduleBtn"
+  );
+
+let reservationRealtimeChannel = null;
+
+function showNewReservationNotice(){
+  if(!newReservationNotice){
+    return;
+  }
+
+  newReservationNotice.hidden =
+    false;
+}
+
+function hideNewReservationNotice(){
+  if(!newReservationNotice){
+    return;
+  }
+
+  newReservationNotice.hidden =
+    true;
+}
+
+function setupReservationRealtime(){
+  if(reservationRealtimeChannel){
+    return;
+  }
+
+  reservationRealtimeChannel =
+    sb
+      .channel(
+        "schedule-new-reservations"
+      )
+      .on(
+        "postgres_changes",
+        {
+          event: "INSERT",
+          schema: "public",
+          table: "appointments"
+        },
+        payload => {
+          console.log(
+            "新しい予約を検知:",
+            payload
+          );
+
+          const newBooking =
+            payload.new;
+
+          if(
+            newBooking &&
+            newBooking.source === "WEB"
+          ){
+            showNewReservationNotice();
+          }
+        }
+      )
+      .subscribe(
+        status => {
+          console.log(
+            "Realtime status:",
+            status
+          );
+        }
+      );
+}
+
+async function refreshScheduleFromSupabase(){
+  if(!refreshScheduleBtn){
+    return;
+  }
+
+  refreshScheduleBtn.disabled =
+    true;
+
+  refreshScheduleBtn.textContent =
+    "更新中…";
+
+  try{
+    await loadBookingsFromSupabase();
+
+    renderSchedule();
+
+    hideNewReservationNotice();
+
+  }catch(error){
+    console.error(
+      "予約表更新エラー:",
+      error
+    );
+
+    window.alert(
+      "予約表を更新できませんでした。"
+    );
+
+  }finally{
+    refreshScheduleBtn.disabled =
+      false;
+
+    refreshScheduleBtn.textContent =
+      "最新に更新";
+  }
+}
+
+if(refreshScheduleBtn){
+  refreshScheduleBtn
+    .addEventListener(
+      "click",
+      refreshScheduleFromSupabase
+    );
 }
 
 initializeSchedule();
