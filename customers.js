@@ -91,10 +91,12 @@ async function initializeCustomers(){
       ?.classList
       .remove("hidden");
 
-    const customers =
+    allCustomers =
   await loadCustomers();
 
-renderCustomers(customers);
+renderCustomers(
+  allCustomers
+);
 
   }catch(error){
 
@@ -298,6 +300,77 @@ function renderCustomers(customers){
       .appendChild(row);
 
   }
+
+}
+
+/* =========================
+   顧客検索
+========================= */
+
+const customerSearchInput =
+  document.getElementById(
+    "customerSearchInput"
+  );
+
+let allCustomers = [];
+
+function filterCustomers(){
+
+  if(!customerSearchInput){
+    return;
+  }
+
+  const keyword =
+    customerSearchInput.value
+      .trim()
+      .toLowerCase();
+
+  if(keyword === ""){
+
+    renderCustomers(
+      allCustomers
+    );
+
+    return;
+
+  }
+
+  const filtered =
+    allCustomers.filter(
+      customer => {
+
+        const name =
+          String(
+            customer.name ?? ""
+          )
+          .toLowerCase();
+
+        const phone =
+          String(
+            customer.phone ?? ""
+          );
+
+        return (
+          name.includes(keyword) ||
+          phone.includes(keyword)
+        );
+
+      }
+    );
+
+  renderCustomers(
+    filtered
+  );
+
+}
+
+if(customerSearchInput){
+
+  customerSearchInput
+    .addEventListener(
+      "input",
+      filterCustomers
+    );
 
 }
 
