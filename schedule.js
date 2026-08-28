@@ -328,6 +328,16 @@ const customerNameInput =
     "customerNameInput"
   );
 
+const customerPhoneInput =
+  document.getElementById(
+    "customerPhoneInput"
+  );
+
+const customerBirthMonthSelect =
+  document.getElementById(
+    "customerBirthMonthSelect"
+  );
+
 const staffSelect =
   document.getElementById(
     "staffSelect"
@@ -1527,6 +1537,10 @@ function resetBookingForm(){
 
   customerNameInput.value = "";
 
+  customerPhoneInput.value = "";
+
+customerBirthMonthSelect.value = "";
+
   staffSelect.value =
     STAFFS[0].id;
 
@@ -1592,6 +1606,14 @@ function openEditBooking(
 
   customerNameInput.value =
     booking.customerName || "";
+
+  customerPhoneInput.value =
+  booking.customerPhone || "";
+
+customerBirthMonthSelect.value =
+  booking.birthMonth
+    ? String(booking.birthMonth)
+    : "";
 
   staffSelect.value =
     booking.staffId;
