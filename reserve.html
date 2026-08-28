@@ -1245,6 +1245,45 @@ gap: 8px;
 
   font-size: 11px;
   line-height: 1.7;
+}
+
+.complete-actions {
+  margin-top: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.complete-home-button,
+.complete-another-button {
+  width: 100%;
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  border-radius: 14px;
+  font-size: 14px;
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.complete-home-button {
+  background: #b9857f;
+  color: #fff;
+  border: 1px solid #b9857f;
+}
+
+.complete-another-button {
+  background: #fff;
+  color: #7c6156;
+  border: 1px solid #d9c9c1;
+}
+
+.complete-home-button:active,
+.complete-another-button:active {
+  transform: scale(0.99);
 }    
 
 @media (max-width: 699px) {
