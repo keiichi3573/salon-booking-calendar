@@ -2469,3 +2469,31 @@ body{
   }
 
 }
+
+/* =========================
+   売上分析 戻るボタン調整
+========================= */
+
+.analysisTopbar .left .btn{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  min-height:38px;
+  padding:8px 12px;
+
+  line-height:1.2;
+  white-space:nowrap;
+  text-decoration:none;
+}
+
+@media (max-width:520px){
+
+  .analysisTopbar .left .btn{
+    min-height:36px;
+    padding:7px 10px;
+
+    font-size:11px;
+  }
+
+}
