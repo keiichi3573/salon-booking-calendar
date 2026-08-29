@@ -1,0 +1,492 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1"
+  />
+
+  <title>スタッフ管理 | COMFORT BASE</title>
+
+  <link rel="stylesheet" href="style.css?v=2" />
+
+  <style>
+    body{
+      margin:0;
+      font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        "Noto Sans JP",
+        sans-serif;
+
+      background:#f7f3ef;
+      color:#4c403a;
+    }
+
+    .settingsPage{
+      min-height:100vh;
+    }
+
+    .settingsHeader{
+      height:72px;
+      display:grid;
+      grid-template-columns:1fr auto 1fr;
+      align-items:center;
+
+      background:#ffffff;
+      border-bottom:1px solid #e8e0da;
+
+      padding:10px 18px;
+    }
+
+    .settingsHeaderLeft{
+      justify-self:start;
+    }
+
+    .settingsHeaderCenter{
+      justify-self:center;
+    }
+
+    .settingsHeaderRight{
+      justify-self:end;
+    }
+
+    .settingsLogo{
+      max-height:42px;
+      max-width:180px;
+      object-fit:contain;
+      display:block;
+    }
+
+    .settingsWrap{
+      width:min(980px, 100%);
+      margin:0 auto;
+      padding:28px 18px 48px;
+    }
+
+    .settingsHero{
+      background:#ffffff;
+      border:1px solid #eaded8;
+      border-radius:22px;
+      padding:26px 24px;
+      box-shadow:0 6px 18px rgba(90,70,60,.06);
+      margin-bottom:22px;
+    }
+
+    .settingsEyebrow{
+      font-size:12px;
+      font-weight:800;
+      letter-spacing:.18em;
+      color:#b08579;
+      margin-bottom:8px;
+    }
+
+    .settingsTitle{
+      margin:0;
+      font-size:34px;
+      font-weight:900;
+      color:#4d3d36;
+      line-height:1.2;
+    }
+
+    .settingsSub{
+      margin-top:10px;
+      font-size:14px;
+      line-height:1.7;
+      color:#7f6d65;
+    }
+
+    .settingsGrid{
+      display:grid;
+      grid-template-columns:repeat(2, minmax(0, 1fr));
+      gap:18px;
+    }
+
+    .settingsCard{
+      background:#ffffff;
+      border:1px solid #eaded8;
+      border-radius:20px;
+      padding:22px 20px;
+      box-shadow:0 6px 18px rgba(90,70,60,.06);
+    }
+
+    .settingsCardFull{
+      grid-column:1 / -1;
+    }
+
+    .settingsCardTitle{
+      margin:0 0 8px;
+      font-size:20px;
+      font-weight:800;
+      color:#4d3d36;
+    }
+
+    .settingsCardText{
+      margin:0 0 16px;
+      font-size:13px;
+      line-height:1.7;
+      color:#88776f;
+    }
+
+    .settingsField{
+      display:grid;
+      gap:7px;
+      margin-bottom:14px;
+    }
+
+    .settingsField:last-child{
+      margin-bottom:0;
+    }
+
+    .settingsLabel{
+      font-size:13px;
+      font-weight:800;
+      color:#5c4a43;
+    }
+
+    .settingsInput{
+      width:100%;
+      min-height:50px;
+      padding:0 14px;
+
+      border:1px solid #dccdc5;
+      border-radius:14px;
+
+      background:#fff;
+      color:#4b3d37;
+
+      font-size:15px;
+      box-sizing:border-box;
+    }
+
+    .settingsHint{
+      font-size:12px;
+      color:#9a887f;
+      line-height:1.6;
+    }
+
+    .settingsAction{
+      margin-top:12px;
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+
+    .settingsStaffList{
+      display:grid;
+      gap:12px;
+      margin-top:6px;
+    }
+
+    .settingsStaffItem{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:14px;
+
+      padding:14px 16px;
+      border:1px solid #eee2dc;
+      border-radius:16px;
+      background:#fcfaf8;
+    }
+
+    .settingsStaffInfo{
+      min-width:0;
+    }
+
+    .settingsStaffName{
+      font-size:17px;
+      font-weight:800;
+      color:#473933;
+    }
+
+    .settingsStaffMeta{
+      margin-top:4px;
+      font-size:12px;
+      color:#8a786f;
+    }
+
+    .settingsStaffActions{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+    }
+
+    .settingsBtnRow{
+      margin-top:22px;
+      display:flex;
+      justify-content:flex-end;
+      gap:12px;
+    }
+
+    @media (max-width:760px){
+      .settingsHeader{
+        grid-template-columns:1fr auto;
+        gap:10px;
+        height:auto;
+      }
+
+      .settingsHeaderCenter{
+        grid-column:1 / -1;
+        order:-1;
+      }
+
+      .settingsGrid{
+        grid-template-columns:1fr;
+      }
+
+      .settingsCardFull{
+        grid-column:auto;
+      }
+
+      .settingsTitle{
+        font-size:28px;
+      }
+
+      .settingsStaffItem{
+        flex-direction:column;
+        align-items:flex-start;
+      }
+
+      .settingsStaffActions{
+        width:100%;
+        justify-content:flex-start;
+      }
+    }
+
+    @media (max-width:520px){
+      .settingsWrap{
+        padding:18px 14px 34px;
+      }
+
+      .settingsHero{
+        padding:22px 18px;
+        border-radius:18px;
+      }
+
+      .settingsCard{
+        padding:18px 16px;
+        border-radius:18px;
+      }
+
+      .settingsTitle{
+        font-size:24px;
+      }
+
+      .settingsSub{
+        font-size:13px;
+      }
+
+      .settingsInput{
+        min-height:48px;
+        font-size:14px;
+      }
+
+      .settingsBtnRow{
+        justify-content:stretch;
+      }
+
+      .settingsBtnRow .btn{
+        flex:1;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="settingsPage">
+
+  <header class="settingsHeader">
+
+    <div class="settingsHeaderLeft">
+      <a
+        href="dashboard.html"
+        class="btn"
+      >
+        ← ダッシュボードへ戻る
+      </a>
+    </div>
+
+    <div class="settingsHeaderCenter">
+      <img
+        src="logo.png"
+        alt="Hair & Make COMFORT"
+        class="settingsLogo"
+      />
+    </div>
+
+    <div class="settingsHeaderRight">
+      <button
+        id="settingsLogoutBtn"
+        class="btn"
+        type="button"
+      >
+        ログアウト
+      </button>
+    </div>
+
+  </header>
+
+  <main class="settingsWrap">
+
+    <section class="settingsHero">
+      <div class="settingsEyebrow">
+        STAFF MANAGEMENT
+      </div>
+
+      <h1 class="settingsTitle">
+        スタッフ管理
+      </h1>
+
+      <div class="settingsSub">
+        スタッフの追加・表示順・有効 / 無効の管理、管理者PINの変更を行えます。
+      </div>
+    </section>
+
+    <section class="settingsGrid">
+
+      <section class="settingsCard">
+        <h2 class="settingsCardTitle">
+          管理者PIN
+        </h2>
+
+        <p class="settingsCardText">
+          設定変更前に管理者PINを入力します。
+        </p>
+
+        <label class="settingsField">
+          <span class="settingsLabel">管理者PIN</span>
+          <input
+            id="pinInput"
+            class="settingsInput"
+            type="password"
+            placeholder="PINを入力"
+          />
+        </label>
+
+        <div class="settingsHint">
+          初期PINは 4043 です。確認後に変更できます。
+        </div>
+
+        <div class="settingsAction">
+          <button
+            id="pinEnterBtn"
+            class="btn"
+            type="button"
+          >
+            入る
+          </button>
+        </div>
+      </section>
+
+      <section class="settingsCard">
+        <h2 class="settingsCardTitle">
+          スタッフ追加
+        </h2>
+
+        <p class="settingsCardText">
+          新しいスタッフ名を追加します。
+        </p>
+
+        <label class="settingsField">
+          <span class="settingsLabel">スタッフ名</span>
+          <input
+            id="staffNameInput"
+            class="settingsInput"
+            type="text"
+            placeholder="スタッフ名を入力"
+          />
+        </label>
+
+        <div class="settingsAction">
+          <button
+            id="staffAddBtn"
+            class="btn primary"
+            type="button"
+          >
+            追加
+          </button>
+        </div>
+      </section>
+
+      <section class="settingsCard settingsCardFull">
+        <h2 class="settingsCardTitle">
+          スタッフ一覧
+        </h2>
+
+        <p class="settingsCardText">
+          並び順の調整、有効 / 無効の切り替えができます。
+        </p>
+
+        <div
+          id="staffList"
+          class="settingsStaffList"
+        >
+          <div class="settingsStaffItem">
+            <div class="settingsStaffInfo">
+              <div class="settingsStaffName">
+                読み込み中…
+              </div>
+              <div class="settingsStaffMeta">
+                スタッフ情報を取得しています
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="settingsCard settingsCardFull">
+        <h2 class="settingsCardTitle">
+          管理者PIN変更
+        </h2>
+
+        <p class="settingsCardText">
+          現在の管理PIN確認後、新しいPINへ変更します。
+        </p>
+
+        <label class="settingsField">
+          <span class="settingsLabel">新しいPIN</span>
+          <input
+            id="newPinInput"
+            class="settingsInput"
+            type="password"
+            placeholder="新しいPIN"
+          />
+        </label>
+
+        <div class="settingsAction">
+          <button
+            id="pinChangeBtn"
+            class="btn"
+            type="button"
+          >
+            変更
+          </button>
+        </div>
+      </section>
+
+    </section>
+
+    <div class="settingsBtnRow">
+      <a
+        href="dashboard.html"
+        class="btn"
+      >
+        ダッシュボードへ戻る
+      </a>
+    </div>
+
+  </main>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js"></script>
+<script src="settings.js"></script>
+
+</body>
+</html>
