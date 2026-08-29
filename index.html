@@ -280,58 +280,6 @@
     </div>
   </div>
 
-  <!-- 設定モーダル -->
-  <div class="modal hidden" id="settingsModal">
-    <div class="modalBackdrop" data-close="settingsModal"></div>
-    <div class="modalCard" role="dialog" aria-modal="true" aria-hidden="true" tabindex="-1">
-      <div class="modalHeader">
-        <div>
-          <div class="modalTitle">設定（スタッフ管理）</div>
-          <div class="modalSubTitle">PINで編集できます</div>
-        </div>
-        <button class="x" id="settingsCloseBtn" type="button">✕</button>
-      </div>
-
-      <div class="modalBody">
-        <div>
-          <div class="label">管理者PIN</div>
-          <div class="row">
-            <input id="pinInput" class="input" inputmode="numeric" placeholder="PINを入力" />
-            <button id="pinEnterBtn" class="btn" type="button">入る</button>
-          </div>
-          <div class="hint">※ 初期PINは 4043（あとで変更できます）</div>
-        </div>
-
-        <div id="settingsArea" class="hidden">
-          <div>
-            <div class="label">スタッフ追加</div>
-            <div class="row">
-              <input id="staffNameInput" class="input" placeholder="スタッフ名を入力" />
-              <button id="staffAddBtn" class="btn" type="button">追加</button>
-            </div>
-          </div>
-
-          <div>
-            <div class="label">スタッフ一覧</div>
-            <div id="staffList" class="staffList"></div>
-          </div>
-
-          <div>
-            <div class="label">管理者PIN変更</div>
-            <div class="row">
-              <input id="newPinInput" class="input" inputmode="numeric" placeholder="新しいPIN" />
-              <button id="pinChangeBtn" class="btn" type="button">変更</button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="modalFooter">
-        <button class="btn" id="settingsCloseBtn2" type="button">閉じる</button>
-      </div>
-    </div>
-  </div>
-
   <!-- 目標編集モーダル -->
   <div class="modal hidden" id="goalModal">
     <div class="modalBackdrop" data-close="goalModal"></div>
