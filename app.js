@@ -3146,14 +3146,6 @@ btnOpenAnalysis?.addEventListener("click", () => {
   window.location.href = `analysis.html?month=${monthKey}`;
 });
 
-btnSettings?.addEventListener("click", ()=> openModal(settingsModal));
-settingsCloseBtn?.addEventListener("click", ()=> closeModal(settingsModal));
-settingsCloseBtn2?.addEventListener("click", ()=> closeModal(settingsModal));
-
-pinEnterBtn?.addEventListener("click", enterPin);
-staffAddBtn?.addEventListener("click", addStaff);
-pinChangeBtn?.addEventListener("click", changePin);
-
 dayCloseBtn?.addEventListener("click", ()=> closeModal(dayModal));
 daySaveBtn?.addEventListener("click", ()=> saveDay(false));
 daySaveNextBtn?.addEventListener("click", ()=> saveDay(true));
