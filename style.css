@@ -40,7 +40,24 @@ body{
 }
 .brandCenter{ display:flex; justify-content:center; flex:1; }
 .brandLogo{ height: 34px; object-fit: contain; }
-.left,.right{ width: 120px; }
+.left{
+  width: 180px;
+  display:flex;
+  align-items:center;
+  justify-content:flex-start;
+}
+
+.right{
+  width: 180px;
+  display:flex;
+  align-items:center;
+  justify-content:flex-end;
+}
+
+.left .btn{
+  white-space:nowrap;
+  text-decoration:none;
+}
 
 /* wrap */
 .wrap{
@@ -489,6 +506,17 @@ body{
   .dayCell{ min-height: 74px; }
   .staffCards{ grid-template-columns: 1fr; }
   .photoRowInline{ grid-template-columns: 1fr; }
+
+.left,
+.right{
+  width:auto;
+}
+
+.left .btn{
+  font-size:12px;
+  padding:8px 10px;
+}
+  
 }
 /* ===== store board: 左半分だけ使う（右は空白） ===== */
 .boardGrid{
