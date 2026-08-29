@@ -454,6 +454,115 @@
             お名前の一部、または電話番号の一部でも検索できます
           </div>
 
+          <div
+  class="customersFilterGrid"
+  style="
+    margin-top:16px;
+    display:grid;
+    grid-template-columns:repeat(4,minmax(0,1fr));
+    gap:10px;
+  "
+>
+
+  <select
+    id="customerStaffFilter"
+    class="customersSearchInput"
+  >
+    <option value="">
+      主担当：すべて
+    </option>
+
+    <option value="kitamura">
+      北村
+    </option>
+
+    <option value="yamazaki">
+      山崎
+    </option>
+
+    <option value="takeuchi">
+      竹内
+    </option>
+
+    <option value="none">
+      主担当未設定
+    </option>
+  </select>
+
+  <select
+    id="customerBirthMonthFilter"
+    class="customersSearchInput"
+  >
+    <option value="">
+      誕生月：すべて
+    </option>
+
+    <option value="1">1月</option>
+    <option value="2">2月</option>
+    <option value="3">3月</option>
+    <option value="4">4月</option>
+    <option value="5">5月</option>
+    <option value="6">6月</option>
+    <option value="7">7月</option>
+    <option value="8">8月</option>
+    <option value="9">9月</option>
+    <option value="10">10月</option>
+    <option value="11">11月</option>
+    <option value="12">12月</option>
+
+    <option value="none">
+      誕生月未登録
+    </option>
+  </select>
+
+  <select
+    id="customerLastVisitFilter"
+    class="customersSearchInput"
+  >
+    <option value="">
+      最終来店：すべて
+    </option>
+
+    <option value="30">
+      1か月以上
+    </option>
+
+    <option value="60">
+      2か月以上
+    </option>
+
+    <option value="90">
+      3か月以上
+    </option>
+
+    <option value="180">
+      6か月以上
+    </option>
+
+    <option value="365">
+      1年以上
+    </option>
+  </select>
+
+  <select
+    id="customerVisitStatusFilter"
+    class="customersSearchInput"
+  >
+    <option value="">
+      来店状況：すべて
+    </option>
+
+    <option value="inactive90">
+      3か月以上来店なし
+    </option>
+
+    <option value="never">
+      来店実績なし
+    </option>
+  </select>
+
+</div>
+
         </div>
 
         <div class="customersCountBox">
