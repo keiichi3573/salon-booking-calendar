@@ -3018,16 +3018,8 @@ async function signInApp(){
 
   if (authHint) authHint.textContent = "";
 
-if (isIPadDevice()){
-  window.location.href = "schedule.html";
-  return;
-}
-
-if (authScreen) authScreen.classList.add("hidden");
-if (appShell) appShell.classList.remove("hidden");
-if (logoutBtn) logoutBtn.classList.remove("hidden");
-
-await loadAndRender();
+window.location.href = "home.html";
+return;
 }
 
 function isIPadDevice(){
