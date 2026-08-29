@@ -1497,6 +1497,14 @@ async function renderTodayCustomers(
       card.className =
         "todayCustomerCard";
 
+      if(
+  booking.status === "visited"
+){
+  card.classList.add(
+    "todayCustomerCardVisited"
+  );
+}
+
 
       /* 上段 */
 
