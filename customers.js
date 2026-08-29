@@ -322,28 +322,62 @@ let allCustomers = [];
 
 function filterCustomers(){
 
-  if(!customerSearchInput){
-    return;
-  }
-
-  const keyword =
-    customerSearchInput.value
-      .trim()
-      .toLowerCase();
-
-  if(keyword === ""){
-
-    renderCustomers(
-      allCustomers
+  const staffFilter =
+    document.getElementById(
+      "customerStaffFilter"
     );
 
-    return;
+  const birthMonthFilter =
+    document.getElementById(
+      "customerBirthMonthFilter"
+    );
 
-  }
+  const lastVisitFilter =
+    document.getElementById(
+      "customerLastVisitFilter"
+    );
+
+  const visitStatusFilter =
+    document.getElementById(
+      "customerVisitStatusFilter"
+    );
+
+  const keyword =
+    customerSearchInput
+      ? customerSearchInput.value
+          .trim()
+          .toLowerCase()
+      : "";
+
+  const selectedStaff =
+    staffFilter?.value || "";
+
+  const selectedBirthMonth =
+    birthMonthFilter?.value || "";
+
+  const selectedLastVisit =
+    lastVisitFilter?.value || "";
+
+  const selectedVisitStatus =
+    visitStatusFilter?.value || "";
+
+  const today =
+    new Date();
+
+  today.setHours(
+    0,
+    0,
+    0,
+    0
+  );
 
   const filtered =
     allCustomers.filter(
       customer => {
+
+        /* =========================
+           名前・電話番号
+        ========================= */
 
         const name =
           String(
@@ -356,10 +390,159 @@ function filterCustomers(){
             customer.phone ?? ""
           );
 
-        return (
+        const matchesKeyword =
+          keyword === "" ||
           name.includes(keyword) ||
-          phone.includes(keyword)
-        );
+          phone.includes(keyword);
+
+        if(!matchesKeyword){
+          return false;
+        }
+
+        /* =========================
+           主担当
+        ========================= */
+
+        if(selectedStaff){
+
+          if(
+            selectedStaff === "none"
+          ){
+
+            if(
+              customer.primary_staff_id
+            ){
+              return false;
+            }
+
+          }else if(
+            customer.primary_staff_id !==
+            selectedStaff
+          ){
+
+            return false;
+
+          }
+
+        }
+
+        /* =========================
+           誕生月
+        ========================= */
+
+        if(selectedBirthMonth){
+
+          if(
+            selectedBirthMonth ===
+            "none"
+          ){
+
+            if(customer.birth_month){
+              return false;
+            }
+
+          }else if(
+            Number(
+              customer.birth_month
+            ) !==
+            Number(
+              selectedBirthMonth
+            )
+          ){
+
+            return false;
+
+          }
+
+        }
+
+        /* =========================
+           最終来店日
+        ========================= */
+
+        let daysSinceLastVisit =
+          null;
+
+        if(customer.last_visit_date){
+
+          const lastVisitDate =
+            new Date(
+              `${customer.last_visit_date}T00:00:00`
+            );
+
+          daysSinceLastVisit =
+            Math.floor(
+              (
+                today -
+                lastVisitDate
+              ) /
+              (
+                1000 *
+                60 *
+                60 *
+                24
+              )
+            );
+
+        }
+
+        if(selectedLastVisit){
+
+          const requiredDays =
+            Number(
+              selectedLastVisit
+            );
+
+          if(
+            daysSinceLastVisit === null ||
+            daysSinceLastVisit <
+            requiredDays
+          ){
+
+            return false;
+
+          }
+
+        }
+
+        /* =========================
+           来店状況
+        ========================= */
+
+        if(
+          selectedVisitStatus ===
+          "inactive90"
+        ){
+
+          if(
+            daysSinceLastVisit === null ||
+            daysSinceLastVisit < 90
+          ){
+
+            return false;
+
+          }
+
+        }
+
+        if(
+          selectedVisitStatus ===
+          "never"
+        ){
+
+          if(
+            Number(
+              customer.visit_count || 0
+            ) !== 0
+          ){
+
+            return false;
+
+          }
+
+        }
+
+        return true;
 
       }
     );
@@ -379,5 +562,25 @@ if(customerSearchInput){
     );
 
 }
+
+[
+  "customerStaffFilter",
+  "customerBirthMonthFilter",
+  "customerLastVisitFilter",
+  "customerVisitStatusFilter"
+].forEach(
+  id => {
+
+    const filter =
+      document.getElementById(id);
+
+    filter
+      ?.addEventListener(
+        "change",
+        filterCustomers
+      );
+
+  }
+);
 
 initializeCustomers();
