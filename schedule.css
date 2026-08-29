@@ -2273,3 +2273,7 @@ body{
   }
 
 }
+
+.todayCustomerCardVisited{
+  background: var(--schedule-visited);
+}
