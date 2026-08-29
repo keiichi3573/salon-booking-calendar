@@ -564,6 +564,45 @@
 
   checkHomeLogin();
 
+  const homeLogoutBtn =
+  document.getElementById(
+    "homeLogoutBtn"
+  );
+
+if(homeLogoutBtn){
+
+  homeLogoutBtn.addEventListener(
+    "click",
+    async () => {
+
+      const {
+        error
+      } =
+        await homeSupabase.auth
+          .signOut();
+
+      if(error){
+
+        console.error(
+          "ログアウトエラー:",
+          error
+        );
+
+        alert(
+          "ログアウトできませんでした。もう一度お試しください。"
+        );
+
+        return;
+      }
+
+      window.location.href =
+        "index.html";
+
+    }
+  );
+
+}
+
 </script>  
 
 </body>
