@@ -3423,11 +3423,24 @@ async function bootAuth(){
   const session = data?.session || null;
 
   if (session){
-    if (authScreen) authScreen.classList.add("hidden");
-    if (appShell) appShell.classList.remove("hidden");
-    if (logoutBtn) logoutBtn.classList.remove("hidden");
-    await loadAndRender();
-  } else {
+  if (authScreen) authScreen.classList.add("hidden");
+  if (appShell) appShell.classList.remove("hidden");
+  if (logoutBtn) logoutBtn.classList.remove("hidden");
+
+  await loadAndRender();
+
+  const pageParams =
+    new URLSearchParams(
+      window.location.search
+    );
+
+  if(
+    pageParams.get("settings") === "1"
+  ){
+    openModal(settingsModal);
+  }
+
+} else {
     if (appShell) appShell.classList.add("hidden");
     if (authScreen) authScreen.classList.remove("hidden");
     if (logoutBtn) logoutBtn.classList.add("hidden");
