@@ -1706,7 +1706,29 @@ async function renderTodayCustomers(
         );
 
       }
+      
+      /* 予約メモ */
 
+if(
+  booking.note
+){
+
+  const bookingNote =
+    document.createElement(
+      "div"
+    );
+
+  bookingNote.className =
+    "todayCustomerNote";
+
+  bookingNote.textContent =
+    `予約メモ：${booking.note}`;
+
+  card.appendChild(
+    bookingNote
+  );
+
+}
 
       /* 顧客詳細 */
 
