@@ -39,16 +39,43 @@
     ========================= */
 
     .homeHeader{
-      height:72px;
-      display:flex;
-      align-items:center;
-      justify-content:center;
+  height:72px;
+  display:grid;
+  grid-template-columns:1fr auto 1fr;
+  align-items:center;
 
-      background:#ffffff;
-      border-bottom:1px solid #e8e0da;
+  background:#ffffff;
+  border-bottom:1px solid #e8e0da;
 
-      padding:10px 20px;
-    }
+  padding:10px 20px;
+}
+
+.homeHeaderLeft{
+  justify-self:start;
+}
+
+.homeHeaderCenter{
+  justify-self:center;
+}
+
+.homeHeaderRight{
+  justify-self:end;
+}
+
+.homeLogoutBtn{
+  padding:9px 14px;
+
+  border:1px solid #dfd3cd;
+  border-radius:10px;
+
+  background:#ffffff;
+  color:#6f5b52;
+
+  font-size:13px;
+  font-weight:700;
+
+  cursor:pointer;
+}
 
     .homeLogo{
       max-height:45px;
@@ -311,13 +338,27 @@
   <!-- ヘッダー -->
   <header class="homeHeader">
 
+  <div class="homeHeaderLeft"></div>
+
+  <div class="homeHeaderCenter">
     <img
       src="logo.png"
       alt="Hair & Make COMFORT"
       class="homeLogo"
     >
+  </div>
 
-  </header>
+  <div class="homeHeaderRight">
+    <button
+      id="homeLogoutBtn"
+      class="homeLogoutBtn"
+      type="button"
+    >
+      ログアウト
+    </button>
+  </div>
+
+</header>
 
 
   <main class="homeWrap">
