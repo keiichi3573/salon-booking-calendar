@@ -161,12 +161,38 @@ async function updateStaff(
       .eq(
         "id",
         id
+      )
+      .select(
+        "id,name,active,sort_order,sort"
       );
 
 
   if(res.error){
+    alert(
+      "更新エラー：" +
+      res.error.message
+    );
+
     throw res.error;
   }
+
+
+  if(
+    !res.data ||
+    res.data.length === 0
+  ){
+    alert(
+      "更新対象が0件でした"
+    );
+
+    return;
+  }
+
+
+  alert(
+    "更新成功：" +
+    res.data[0].name
+  );
 }
 
 
