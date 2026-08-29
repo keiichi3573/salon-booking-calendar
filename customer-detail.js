@@ -698,14 +698,4 @@ if(saveCustomerInfoBtn){
 
 }
 
-if(saveCustomerAddressBtn){
-
-  saveCustomerAddressBtn
-    .addEventListener(
-      "click",
-      saveCustomerAddress
-    );
-
-}
-
 initializeCustomerDetail();
