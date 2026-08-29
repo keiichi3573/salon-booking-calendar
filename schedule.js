@@ -1129,15 +1129,523 @@ const isClosedDay =
     );
   }
 
-  STAFFS.forEach(
-  staff => {
-    renderStaffRow(
-      staff,
-      currentBookings,
-      isClosedDay
+    STAFFS.forEach(
+    staff => {
+      renderStaffRow(
+        staff,
+        currentBookings,
+        isClosedDay
+      );
+    }
+  );
+
+  renderTodayCustomers(
+    currentDateKey,
+    currentBookings
+  );
+}
+
+/* =========================
+   その日のお客様情報
+========================= */
+
+async function renderTodayCustomers(
+  dateKey,
+  currentBookings
+){
+
+  const title =
+    document.getElementById(
+      "todayCustomersTitle"
     );
+
+  const count =
+    document.getElementById(
+      "todayCustomersCount"
+    );
+
+  const list =
+    document.getElementById(
+      "todayCustomersList"
+    );
+
+  if(
+    !title ||
+    !count ||
+    !list
+  ){
+    return;
   }
-);
+
+  const todayKey =
+    toDateKey(
+      new Date()
+    );
+
+  title.textContent =
+    dateKey === todayKey
+      ? "本日のお客様"
+      : "この日のお客様";
+
+  count.textContent =
+    `${currentBookings.length}名`;
+
+  list.innerHTML = "";
+
+  if(
+    currentBookings.length === 0
+  ){
+
+    const empty =
+      document.createElement("div");
+
+    empty.className =
+      "todayCustomersEmpty";
+
+    empty.textContent =
+      "この日のお客様情報はありません";
+
+    list.appendChild(
+      empty
+    );
+
+    return;
+  }
+
+
+  /* =========================
+     顧客IDを集める
+  ========================= */
+
+  const customerIds =
+    [
+      ...new Set(
+        currentBookings
+          .map(
+            booking =>
+              booking.customerId
+          )
+          .filter(Boolean)
+      )
+    ];
+
+
+  /* =========================
+     顧客マスター取得
+  ========================= */
+
+  let customerMap =
+    new Map();
+
+  if(
+    customerIds.length > 0
+  ){
+
+    const {
+      data,
+      error
+    } =
+      await sb
+        .from("customers")
+        .select(
+          [
+            "id",
+            "name",
+            "phone",
+            "birth_month",
+            "last_visit_date",
+            "visit_count",
+            "primary_staff_id",
+            "note"
+          ].join(",")
+        )
+        .in(
+          "id",
+          customerIds
+        );
+
+    if(error){
+
+      console.error(
+        "本日のお客様情報読込エラー:",
+        error
+      );
+
+    }else{
+
+      customerMap =
+        new Map(
+          (data || []).map(
+            customer => [
+              customer.id,
+              customer
+            ]
+          )
+        );
+
+    }
+
+  }
+
+
+  /* =========================
+     スタッフ名
+  ========================= */
+
+  const staffName =
+    staffId => {
+
+      if(
+        staffId ===
+        "kitamura"
+      ){
+        return "北村";
+      }
+
+      if(
+        staffId ===
+        "yamazaki"
+      ){
+        return "山崎";
+      }
+
+      if(
+        staffId ===
+        "takeuchi"
+      ){
+        return "竹内";
+      }
+
+      return "—";
+
+    };
+
+
+  /* =========================
+     日付表示
+  ========================= */
+
+  const formatVisitDate =
+    value => {
+
+      if(!value){
+        return "—";
+      }
+
+      const parts =
+        String(value)
+          .split("-");
+
+      if(
+        parts.length !== 3
+      ){
+        return value;
+      }
+
+      return (
+        `${Number(parts[0])}/` +
+        `${Number(parts[1])}/` +
+        `${Number(parts[2])}`
+      );
+
+    };
+
+
+  /* =========================
+     情報ボックス作成
+  ========================= */
+
+  const createInfo =
+    (
+      label,
+      value
+    ) => {
+
+      const box =
+        document.createElement(
+          "div"
+        );
+
+      box.className =
+        "todayCustomerInfo";
+
+      const labelElement =
+        document.createElement(
+          "span"
+        );
+
+      labelElement.className =
+        "todayCustomerInfoLabel";
+
+      labelElement.textContent =
+        label;
+
+      const valueElement =
+        document.createElement(
+          "div"
+        );
+
+      valueElement.className =
+        "todayCustomerInfoValue";
+
+      valueElement.textContent =
+        value ?? "—";
+
+      box.appendChild(
+        labelElement
+      );
+
+      box.appendChild(
+        valueElement
+      );
+
+      return box;
+
+    };
+
+
+  /* =========================
+     予約ごとにカード表示
+  ========================= */
+
+  currentBookings.forEach(
+    booking => {
+
+      const customer =
+        booking.customerId
+          ? customerMap.get(
+              booking.customerId
+            )
+          : null;
+
+
+      const card =
+        document.createElement(
+          "article"
+        );
+
+      card.className =
+        "todayCustomerCard";
+
+
+      /* 上段 */
+
+      const main =
+        document.createElement(
+          "div"
+        );
+
+      main.className =
+        "todayCustomerMain";
+
+
+      const name =
+        document.createElement(
+          "div"
+        );
+
+      name.className =
+        "todayCustomerName";
+
+      name.textContent =
+        `${
+          customer?.name ||
+          booking.customerName ||
+          "お名前未登録"
+        } 様`;
+
+
+      const time =
+        document.createElement(
+          "div"
+        );
+
+      time.className =
+        "todayCustomerTime";
+
+      time.textContent =
+        booking.start ||
+        booking.startTime ||
+        "—";
+
+
+      main.appendChild(
+        name
+      );
+
+      main.appendChild(
+        time
+      );
+
+      card.appendChild(
+        main
+      );
+
+
+      /* 情報 */
+
+      const infoGrid =
+        document.createElement(
+          "div"
+        );
+
+      infoGrid.className =
+        "todayCustomerInfoGrid";
+
+
+      const menuText =
+        Array.isArray(
+          booking.menuLabels
+        )
+          ? booking.menuLabels.join("＋")
+          : (
+              booking.menuLabels ||
+              "—"
+            );
+
+
+      infoGrid.appendChild(
+        createInfo(
+          "担当",
+          staffName(
+            booking.staffId
+          )
+        )
+      );
+
+      infoGrid.appendChild(
+        createInfo(
+          "メニュー",
+          menuText
+        )
+      );
+
+      infoGrid.appendChild(
+        createInfo(
+          "電話番号",
+          customer?.phone ||
+          booking.customerPhone ||
+          "未登録"
+        )
+      );
+
+      infoGrid.appendChild(
+        createInfo(
+          "誕生月",
+          customer?.birth_month
+            ? `${customer.birth_month}月`
+            : (
+                booking.birthMonth
+                  ? `${booking.birthMonth}月`
+                  : "未登録"
+              )
+        )
+      );
+
+      infoGrid.appendChild(
+        createInfo(
+          "来店回数",
+          customer
+            ? `${Number(
+                customer.visit_count || 0
+              )}回`
+            : "未連携"
+        )
+      );
+
+      infoGrid.appendChild(
+        createInfo(
+          "前回来店",
+          customer
+            ? formatVisitDate(
+                customer.last_visit_date
+              )
+            : "未連携"
+        )
+      );
+
+
+      card.appendChild(
+        infoGrid
+      );
+
+
+      /* 顧客メモ */
+
+      if(
+        customer?.note
+      ){
+
+        const note =
+          document.createElement(
+            "div"
+          );
+
+        note.className =
+          "todayCustomerNote";
+
+        note.textContent =
+          `顧客メモ：${customer.note}`;
+
+        card.appendChild(
+          note
+        );
+
+      }
+
+
+      /* 顧客詳細 */
+
+      if(
+        booking.customerId
+      ){
+
+        const actions =
+          document.createElement(
+            "div"
+          );
+
+        actions.className =
+          "todayCustomerActions";
+
+
+        const detailLink =
+          document.createElement(
+            "a"
+          );
+
+        detailLink.className =
+          "scheduleBtn scheduleBtnGhost";
+
+        detailLink.href =
+          `customer-detail.html?id=${
+            encodeURIComponent(
+              booking.customerId
+            )
+          }`;
+
+        detailLink.textContent =
+          "顧客詳細を見る";
+
+
+        actions.appendChild(
+          detailLink
+        );
+
+        card.appendChild(
+          actions
+        );
+
+      }
+
+
+      list.appendChild(
+        card
+      );
+
+    }
+  );
+
 }
 
 /* =========================
