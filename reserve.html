@@ -1382,12 +1382,50 @@ gap: 8px;
   <main class="page">
 
     <header class="header">
+
+  <a
+    id="staffHomeLink"
+    href="home.html"
+    style="
+      display:none;
+      margin-bottom:14px;
+      color:#8a6b61;
+      font-size:13px;
+      font-weight:700;
+      text-decoration:none;
+    "
+  >
+    ← 管理ホームへ戻る
+  </a>
+
   <img
     src="logo.png"
     alt="Hair & Make COMFORT"
     class="shop-logo"
   >
+
 </header>
+
+    <script>
+  const reserveParams =
+    new URLSearchParams(
+      window.location.search
+    );
+
+  if(
+    reserveParams.get("staff") === "1"
+  ){
+    const staffHomeLink =
+      document.getElementById(
+        "staffHomeLink"
+      );
+
+    if(staffHomeLink){
+      staffHomeLink.style.display =
+        "inline-block";
+    }
+  }
+</script>
 
     <section class="card">
 
