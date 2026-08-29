@@ -2455,3 +2455,31 @@ body{
     min-height:46px;
   }
 }
+
+/* =========================
+   ログイン画面 スマホ調整
+========================= */
+
+@media (max-width:520px){
+
+  .comfortLoginLogo{
+    width:90px !important;
+    max-width:32% !important;
+  }
+
+  .comfortLoginLogoWrap{
+    margin-bottom:12px !important;
+  }
+
+  .comfortLoginEyebrow{
+    font-size:26px !important;
+    letter-spacing:.06em !important;
+    line-height:1.2 !important;
+    margin-bottom:7px !important;
+  }
+
+  .comfortLoginTitle{
+    font-size:15px !important;
+  }
+
+}
