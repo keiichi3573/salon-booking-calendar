@@ -283,6 +283,21 @@
       font-size: 14px;
     }
 
+    .customersSearchWrap {
+  max-width: none;
+  width: 100%;
+}
+
+.customersFilterGrid {
+  grid-template-columns: repeat(2, minmax(220px, 1fr)) !important;
+  width: 100%;
+}
+
+.customersFilterGrid select {
+  width: 100%;
+  min-width: 0;
+}
+
     /* =========================
        スマホ
     ========================= */
@@ -350,6 +365,10 @@
       .customersListHead {
         padding: 15px 16px;
       }
+
+      .customersFilterGrid {
+  grid-template-columns: 1fr !important;
+}
 
     }
 
