@@ -1545,7 +1545,26 @@ async function renderTodayCustomers(
         booking.start ||
         booking.startTime ||
         "—";
+      
+　　　if(
+  booking.status === "visited"
+){
 
+  const visitedBadge =
+    document.createElement(
+      "span"
+    );
+
+  visitedBadge.className =
+    "todayCustomerVisitedBadge";
+
+  visitedBadge.textContent =
+    "清算済み";
+
+  time.appendChild(
+    visitedBadge
+  );
+}
 
       main.appendChild(
         name
