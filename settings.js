@@ -470,8 +470,6 @@ function renderStaffList(){
       toggle.onclick =
   async () => {
 
-    alert("ボタン反応確認");
-
     try{
 
             await updateStaff(
