@@ -49,7 +49,7 @@ async function loadCustomer(
     await sb
       .from("customers")
       .select(`
-        id,
+id,
 name,
 phone,
 postal_code,
@@ -59,7 +59,8 @@ first_visit_date,
 last_visit_date,
 visit_count,
 primary_staff_id,
-first_source
+first_source,
+note
       `)
       .eq(
         "id",
@@ -124,6 +125,11 @@ function renderCustomer(
     customer.phone ?? "—"
   );
 
+const phoneInput =
+  document.getElementById(
+    "customerDetailPhoneInput"
+  );
+
 const postalCodeInput =
   document.getElementById(
     "customerDetailPostalCodeInput"
@@ -134,6 +140,26 @@ const addressInput =
     "customerDetailAddressInput"
   );
 
+const birthMonthSelect =
+  document.getElementById(
+    "customerDetailBirthMonthSelect"
+  );
+
+const staffSelect =
+  document.getElementById(
+    "customerDetailStaffSelect"
+  );
+
+const noteInput =
+  document.getElementById(
+    "customerDetailNoteInput"
+  );
+
+if(phoneInput){
+  phoneInput.value =
+    customer.phone ?? "";
+}
+
 if(postalCodeInput){
   postalCodeInput.value =
     customer.postal_code ?? "";
@@ -142,6 +168,23 @@ if(postalCodeInput){
 if(addressInput){
   addressInput.value =
     customer.address ?? "";
+}
+
+if(birthMonthSelect){
+  birthMonthSelect.value =
+    customer.birth_month
+      ? String(customer.birth_month)
+      : "";
+}
+
+if(staffSelect){
+  staffSelect.value =
+    customer.primary_staff_id ?? "";
+}
+
+if(noteInput){
+  noteInput.value =
+    customer.note ?? "";
 }
   
   setText(
@@ -492,15 +535,15 @@ if(logoutBtn){
 }
 
 /* =========================
-   住所情報保存
+   顧客情報保存
 ========================= */
 
-const saveCustomerAddressBtn =
+const saveCustomerInfoBtn =
   document.getElementById(
-    "saveCustomerAddressBtn"
+    "saveCustomerInfoBtn"
   );
 
-async function saveCustomerAddress(){
+async function saveCustomerInfo(){
 
   const customerId =
     getCustomerId();
@@ -508,6 +551,11 @@ async function saveCustomerAddress(){
   if(!customerId){
     return;
   }
+
+  const phoneInput =
+    document.getElementById(
+      "customerDetailPhoneInput"
+    );
 
   const postalCodeInput =
     document.getElementById(
@@ -519,14 +567,60 @@ async function saveCustomerAddress(){
       "customerDetailAddressInput"
     );
 
-  if(!postalCodeInput || !addressInput){
+  const birthMonthSelect =
+    document.getElementById(
+      "customerDetailBirthMonthSelect"
+    );
+
+  const staffSelect =
+    document.getElementById(
+      "customerDetailStaffSelect"
+    );
+
+  const noteInput =
+    document.getElementById(
+      "customerDetailNoteInput"
+    );
+
+  if(
+    !phoneInput ||
+    !postalCodeInput ||
+    !addressInput ||
+    !birthMonthSelect ||
+    !staffSelect ||
+    !noteInput
+  ){
     return;
   }
 
-  saveCustomerAddressBtn.disabled =
+  const phone =
+    phoneInput.value
+      .replace(/\D/g, "");
+
+  if(
+    phone &&
+    !/^[0-9]{10,11}$/.test(phone)
+  ){
+
+    window.alert(
+      "電話番号は10～11桁の数字で入力してください。"
+    );
+
+    return;
+
+  }
+
+  const birthMonth =
+    birthMonthSelect.value
+      ? Number(
+          birthMonthSelect.value
+        )
+      : null;
+
+  saveCustomerInfoBtn.disabled =
     true;
 
-  saveCustomerAddressBtn.textContent =
+  saveCustomerInfoBtn.textContent =
     "保存中…";
 
   try{
@@ -537,11 +631,23 @@ async function saveCustomerAddress(){
       await sb
         .from("customers")
         .update({
+          phone:
+            phone || null,
+
           postal_code:
             postalCodeInput.value.trim() || null,
 
           address:
             addressInput.value.trim() || null,
+
+          birth_month:
+            birthMonth,
+
+          primary_staff_id:
+            staffSelect.value || null,
+
+          note:
+            noteInput.value.trim() || null,
 
           updated_at:
             new Date().toISOString()
@@ -556,29 +662,39 @@ async function saveCustomerAddress(){
     }
 
     window.alert(
-      "住所情報を保存しました。"
+      "顧客情報を保存しました。"
     );
 
   }catch(error){
 
     console.error(
-      "住所情報保存エラー:",
+      "顧客情報保存エラー:",
       error
     );
 
     window.alert(
-      "住所情報を保存できませんでした。"
+      "顧客情報を保存できませんでした。"
     );
 
   }finally{
 
-    saveCustomerAddressBtn.disabled =
+    saveCustomerInfoBtn.disabled =
       false;
 
-    saveCustomerAddressBtn.textContent =
-      "住所情報を保存";
+    saveCustomerInfoBtn.textContent =
+      "顧客情報を保存";
 
   }
+
+}
+
+if(saveCustomerInfoBtn){
+
+  saveCustomerInfoBtn
+    .addEventListener(
+      "click",
+      saveCustomerInfo
+    );
 
 }
 
