@@ -1984,39 +1984,39 @@ body{
   justify-content:center;
   align-items:center;
 
-  margin-bottom:18px;
+  margin-bottom:14px;
 }
 
 .comfortLoginLogo{
   display:block;
 
-  width:220px;
-  max-width:78%;
+  width:120px;
+  max-width:42%;
   height:auto;
 }
 
 .comfortLoginEyebrow{
-  margin-bottom:10px;
+  margin-bottom:8px;
 
-  color:#9a7569;
+  color:#5f453e;
 
   text-align:center;
-  font-size:10px;
-  font-weight:800;
-  letter-spacing:.22em;
+  font-size:30px;
+  font-weight:900;
+  letter-spacing:.08em;
+  line-height:1.2;
 }
 
 .comfortLoginTitle{
   margin:0;
 
-  color:#4f3b35;
+  color:#7b665e;
 
   text-align:center;
-  font-size:28px;
-  font-weight:900;
-  line-height:1.3;
+  font-size:16px;
+  font-weight:700;
+  line-height:1.4;
 }
-
 .comfortLoginSub{
   margin:8px 0 28px;
 
