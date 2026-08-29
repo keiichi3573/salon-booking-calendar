@@ -1287,7 +1287,77 @@ async function renderTodayCustomers(
 
   }
 
+　  /* =========================
+     前回来店日を取得
+  ========================= */
 
+  const previousVisitMap =
+    new Map();
+
+  if(
+    customerIds.length > 0
+  ){
+
+    const {
+      data: previousVisits,
+      error: previousVisitError
+    } =
+      await sb
+        .from("appointments")
+        .select(
+          "customer_id, appointment_date"
+        )
+        .in(
+          "customer_id",
+          customerIds
+        )
+        .eq(
+          "status",
+          "visited"
+        )
+        .lt(
+          "appointment_date",
+          dateKey
+        )
+        .order(
+          "appointment_date",
+          {
+            ascending:false
+          }
+        );
+
+    if(previousVisitError){
+
+      console.error(
+        "前回来店日読込エラー:",
+        previousVisitError
+      );
+
+    }else{
+
+      (previousVisits || [])
+        .forEach(
+          visit => {
+
+            if(
+              visit.customer_id &&
+              !previousVisitMap.has(
+                visit.customer_id
+              )
+            ){
+              previousVisitMap.set(
+                visit.customer_id,
+                visit.appointment_date
+              );
+            }
+
+          }
+        );
+
+    }
+
+  }
+  
   /* =========================
      スタッフ名
   ========================= */
@@ -1553,12 +1623,29 @@ async function renderTodayCustomers(
         )
       );
 
+            const previousVisitDate =
+        booking.customerId
+          ? (
+              previousVisitMap.get(
+                booking.customerId
+              ) ||
+              (
+                customer?.last_visit_date &&
+                customer.last_visit_date <
+                  dateKey
+                  ? customer.last_visit_date
+                  : null
+              )
+            )
+          : null;
+
+
       infoGrid.appendChild(
         createInfo(
           "前回来店",
-          customer
+          booking.customerId
             ? formatVisitDate(
-                customer.last_visit_date
+                previousVisitDate
               )
             : "未連携"
         )
