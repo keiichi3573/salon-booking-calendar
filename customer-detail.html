@@ -377,163 +377,212 @@
 
     <section class="customerInfoPanel">
 
-      <h2 class="customerSectionTitle">
-        基本情報
-      </h2>
+  <h2 class="customerSectionTitle">
+    基本情報
+  </h2>
 
-      <div class="customerInfoGrid">
+  <div class="customerInfoGrid">
 
-        <div class="customerInfoItem">
+    <div class="customerInfoItem">
 
-          <span class="customerInfoLabel">
-            電話番号
-          </span>
+      <span class="customerInfoLabel">
+        電話番号
+      </span>
 
-          <span
-            id="customerDetailPhone"
-            class="customerInfoValue"
-          >
-            —
-          </span>
+      <input
+        id="customerDetailPhoneInput"
+        class="fieldInput"
+        type="tel"
+        inputmode="tel"
+        placeholder="例：09012345678"
+        autocomplete="off"
+      />
 
-        </div>
+    </div>
 
-        <div class="customerInfoItem">
+    <div class="customerInfoItem">
 
-  <span class="customerInfoLabel">
-    郵便番号
-  </span>
+      <span class="customerInfoLabel">
+        郵便番号
+      </span>
 
-  <input
-    id="customerDetailPostalCodeInput"
-    class="fieldInput"
-    type="text"
-    inputmode="numeric"
-    placeholder="例：3998205"
-  />
+      <input
+        id="customerDetailPostalCodeInput"
+        class="fieldInput"
+        type="text"
+        inputmode="numeric"
+        placeholder="例：3998205"
+      />
 
-</div>
+    </div>
 
-<div class="customerInfoItem">
+    <div class="customerInfoItem">
 
-  <span class="customerInfoLabel">
-    住所
-  </span>
+      <span class="customerInfoLabel">
+        住所
+      </span>
 
-  <input
-    id="customerDetailAddressInput"
-    class="fieldInput"
-    type="text"
-    placeholder="例：安曇野市豊科..."
-  />
+      <input
+        id="customerDetailAddressInput"
+        class="fieldInput"
+        type="text"
+        placeholder="例：安曇野市豊科..."
+      />
 
-</div>
+    </div>
 
-        <div class="customerInfoItem">
+    <div class="customerInfoItem">
 
-          <span class="customerInfoLabel">
-            誕生月
-          </span>
+      <span class="customerInfoLabel">
+        誕生月
+      </span>
 
-          <span
-            id="customerDetailBirthMonth"
-            class="customerInfoValue"
-          >
-            —
-          </span>
+      <select
+        id="customerDetailBirthMonthSelect"
+        class="fieldInput"
+      >
+        <option value="">
+          未登録
+        </option>
 
-        </div>
+        <option value="1">1月</option>
+        <option value="2">2月</option>
+        <option value="3">3月</option>
+        <option value="4">4月</option>
+        <option value="5">5月</option>
+        <option value="6">6月</option>
+        <option value="7">7月</option>
+        <option value="8">8月</option>
+        <option value="9">9月</option>
+        <option value="10">10月</option>
+        <option value="11">11月</option>
+        <option value="12">12月</option>
+      </select>
 
-        <div class="customerInfoItem">
+    </div>
 
-          <span class="customerInfoLabel">
-            主担当
-          </span>
+    <div class="customerInfoItem">
 
-          <span
-            id="customerDetailStaff"
-            class="customerInfoValue"
-          >
-            —
-          </span>
+      <span class="customerInfoLabel">
+        主担当
+      </span>
 
-        </div>
+      <select
+        id="customerDetailStaffSelect"
+        class="fieldInput"
+      >
+        <option value="">
+          未設定
+        </option>
 
-        <div class="customerInfoItem">
+        <option value="kitamura">
+          北村
+        </option>
 
-          <span class="customerInfoLabel">
-            初回来店日
-          </span>
+        <option value="yamazaki">
+          山崎
+        </option>
 
-          <span
-            id="customerDetailFirstVisit"
-            class="customerInfoValue"
-          >
-            —
-          </span>
+        <option value="takeuchi">
+          竹内
+        </option>
+      </select>
 
-        </div>
+    </div>
 
-        <div class="customerInfoItem">
+    <div class="customerInfoItem">
 
-          <span class="customerInfoLabel">
-            最終来店日
-          </span>
+      <span class="customerInfoLabel">
+        初回来店日
+      </span>
 
-          <span
-            id="customerDetailLastVisit"
-            class="customerInfoValue"
-          >
-            —
-          </span>
+      <span
+        id="customerDetailFirstVisit"
+        class="customerInfoValue"
+      >
+        —
+      </span>
 
-        </div>
+    </div>
 
-        <div class="customerInfoItem">
+    <div class="customerInfoItem">
 
-          <span class="customerInfoLabel">
-            来店回数
-          </span>
+      <span class="customerInfoLabel">
+        最終来店日
+      </span>
 
-          <span
-            id="customerDetailVisitCount"
-            class="customerInfoValue"
-          >
-            0
-          </span>
+      <span
+        id="customerDetailLastVisit"
+        class="customerInfoValue"
+      >
+        —
+      </span>
 
-        </div>
+    </div>
 
-        <div class="customerInfoItem">
+    <div class="customerInfoItem">
 
-          <span class="customerInfoLabel">
-            初回来店経路
-          </span>
+      <span class="customerInfoLabel">
+        来店回数
+      </span>
 
-          <span
-            id="customerDetailFirstSource"
-            class="customerInfoValue"
-          >
-            —
-          </span>
+      <span
+        id="customerDetailVisitCount"
+        class="customerInfoValue"
+      >
+        0
+      </span>
 
-        </div>
+    </div>
 
-      </div>
+    <div class="customerInfoItem">
 
-      <div style="margin-top:16px; text-align:right;">
+      <span class="customerInfoLabel">
+        初回来店経路
+      </span>
 
-        <button
-          id="saveCustomerAddressBtn"
-          class="btn primary"
-          type="button"
-        >
-          住所情報を保存
-        </button>
+      <span
+        id="customerDetailFirstSource"
+        class="customerInfoValue"
+      >
+        —
+      </span>
 
-      </div>
+    </div>
 
-    </section>
+    <div
+      class="customerInfoItem"
+      style="grid-column:1 / -1;"
+    >
+
+      <span class="customerInfoLabel">
+        顧客メモ
+      </span>
+
+      <textarea
+        id="customerDetailNoteInput"
+        class="fieldInput"
+        rows="4"
+        placeholder="髪のお悩み・好み・注意事項など"
+      ></textarea>
+
+    </div>
+
+  </div>
+
+  <div style="margin-top:16px; text-align:right;">
+
+    <button
+      id="saveCustomerInfoBtn"
+      class="btn primary"
+      type="button"
+    >
+      顧客情報を保存
+    </button>
+
+  </div>
+
+</section>
 
     <!-- 予約履歴 -->
 
