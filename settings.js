@@ -468,9 +468,11 @@ function renderStaffList(){
 
 
       toggle.onclick =
-        async () => {
+  async () => {
 
-          try{
+    alert("ボタン反応確認");
+
+    try{
 
             await updateStaff(
               s.id,
