@@ -583,4 +583,65 @@ if(customerSearchInput){
   }
 );
 
+const resetCustomerFiltersBtn =
+  document.getElementById(
+    "resetCustomerFiltersBtn"
+  );
+
+if(resetCustomerFiltersBtn){
+
+  resetCustomerFiltersBtn
+    .addEventListener(
+      "click",
+      () => {
+
+        if(customerSearchInput){
+          customerSearchInput.value = "";
+        }
+
+        const staffFilter =
+          document.getElementById(
+            "customerStaffFilter"
+          );
+
+        const birthMonthFilter =
+          document.getElementById(
+            "customerBirthMonthFilter"
+          );
+
+        const lastVisitFilter =
+          document.getElementById(
+            "customerLastVisitFilter"
+          );
+
+        const visitStatusFilter =
+          document.getElementById(
+            "customerVisitStatusFilter"
+          );
+
+        if(staffFilter){
+          staffFilter.value = "";
+        }
+
+        if(birthMonthFilter){
+          birthMonthFilter.value = "";
+        }
+
+        if(lastVisitFilter){
+          lastVisitFilter.value = "";
+        }
+
+        if(visitStatusFilter){
+          visitStatusFilter.value = "";
+        }
+
+        renderCustomers(
+          allCustomers
+        );
+
+      }
+    );
+
+}
+
 initializeCustomers();
