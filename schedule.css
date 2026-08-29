@@ -2067,3 +2067,209 @@ body{
 .newReservationNotice[hidden] {
   display: none;
 }
+
+/* =========================
+   本日のお客様
+========================= */
+
+.todayCustomersSection{
+  margin-top:24px;
+  padding:20px;
+
+  background:#fffaf8;
+  border:1px solid #eaded8;
+  border-radius:18px;
+
+  box-shadow:
+    0 4px 16px rgba(90,70,60,.05);
+}
+
+.todayCustomersHeader{
+  display:flex;
+  align-items:flex-end;
+  justify-content:space-between;
+  gap:16px;
+
+  margin-bottom:16px;
+}
+
+.todayCustomersLabel{
+  font-size:11px;
+  font-weight:700;
+  letter-spacing:.16em;
+  color:#aa8780;
+
+  margin-bottom:4px;
+}
+
+.todayCustomersTitle{
+  margin:0;
+
+  font-size:22px;
+  color:#4e4039;
+}
+
+.todayCustomersCount{
+  min-width:54px;
+
+  padding:7px 12px;
+
+  text-align:center;
+
+  font-size:14px;
+  font-weight:700;
+
+  color:#7a5f58;
+  background:#f3e6e2;
+
+  border-radius:999px;
+}
+
+.todayCustomersList{
+  display:grid;
+  gap:12px;
+}
+
+.todayCustomersEmpty{
+  padding:26px 16px;
+
+  text-align:center;
+
+  color:#9a8981;
+  font-size:14px;
+
+  background:#ffffff;
+
+  border:
+    1px dashed #dfd2cc;
+
+  border-radius:14px;
+}
+
+
+/* 後で顧客カード表示に使用 */
+
+.todayCustomerCard{
+  padding:16px;
+
+  background:#ffffff;
+
+  border:
+    1px solid #eaded8;
+
+  border-radius:14px;
+}
+
+.todayCustomerMain{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+
+  margin-bottom:12px;
+}
+
+.todayCustomerName{
+  font-size:18px;
+  font-weight:700;
+  color:#493b35;
+}
+
+.todayCustomerTime{
+  font-size:15px;
+  font-weight:700;
+  color:#a06f68;
+}
+
+.todayCustomerInfoGrid{
+  display:grid;
+
+  grid-template-columns:
+    repeat(4, minmax(0, 1fr));
+
+  gap:10px;
+}
+
+.todayCustomerInfo{
+  padding:10px;
+
+  background:#faf6f3;
+  border-radius:10px;
+}
+
+.todayCustomerInfoLabel{
+  display:block;
+
+  margin-bottom:3px;
+
+  font-size:11px;
+  color:#927f76;
+}
+
+.todayCustomerInfoValue{
+  font-size:14px;
+  font-weight:600;
+  color:#4f433d;
+}
+
+.todayCustomerNote{
+  margin-top:12px;
+  padding:10px 12px;
+
+  background:#f8f1ed;
+
+  border-radius:10px;
+
+  font-size:13px;
+  line-height:1.6;
+}
+
+.todayCustomerActions{
+  margin-top:12px;
+
+  display:flex;
+  justify-content:flex-end;
+}
+
+
+/* =========================
+   タブレット
+========================= */
+
+@media(max-width:900px){
+
+  .todayCustomerInfoGrid{
+    grid-template-columns:
+      repeat(2, minmax(0,1fr));
+  }
+
+}
+
+
+/* =========================
+   スマホ
+========================= */
+
+@media(max-width:560px){
+
+  .todayCustomersSection{
+    padding:14px;
+  }
+
+  .todayCustomersTitle{
+    font-size:19px;
+  }
+
+  .todayCustomersHeader{
+    align-items:center;
+  }
+
+  .todayCustomerMain{
+    align-items:flex-start;
+  }
+
+  .todayCustomerInfoGrid{
+    grid-template-columns:1fr;
+  }
+
+}
