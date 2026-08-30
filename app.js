@@ -245,7 +245,6 @@ const elCalendar   = document.getElementById("calendar");
 const btnPrev      = document.getElementById("prevBtn");
 const btnNext      = document.getElementById("nextBtn");
 const btnExport    = document.getElementById("exportCsvBtn");
-const btnSettings  = document.getElementById("settingsBtn");
 const btnOpenAnalysis = document.getElementById("openAnalysisBtn");
 
 const elTotalMonthCount = document.getElementById("totalMonthCount");
@@ -316,19 +315,6 @@ const techSalesInput = document.getElementById("techSalesInput");
 const retailSalesInput = document.getElementById("retailSalesInput");
 const newCustomersSelect = document.getElementById("newCustomersSelect");
 const repeatCustomersSelect = document.getElementById("repeatCustomersSelect");
-
-// Settings modal
-const settingsModal = document.getElementById("settingsModal");
-const settingsCloseBtn  = document.getElementById("settingsCloseBtn");
-const settingsCloseBtn2 = document.getElementById("settingsCloseBtn2");
-const pinInput = document.getElementById("pinInput");
-const pinEnterBtn = document.getElementById("pinEnterBtn");
-const settingsArea = document.getElementById("settingsArea");
-const staffNameInput = document.getElementById("staffNameInput");
-const staffAddBtn = document.getElementById("staffAddBtn");
-const staffList = document.getElementById("staffList");
-const newPinInput = document.getElementById("newPinInput");
-const pinChangeBtn = document.getElementById("pinChangeBtn");
 
 // Goal modal
 const goalModal = document.getElementById("goalModal");
