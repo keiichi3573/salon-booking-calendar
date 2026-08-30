@@ -945,6 +945,14 @@ function getMenuIconHtml(menu){
       );
 
 
+    case "soda":
+  return (
+    `<span class="scheduleMenuIconWrap">` +
+      `${spaIcon}` +
+    `</span>`
+  );  
+
+
     case "basic_treatment":
     case "placenta_treatment":
     case "tsuyakoi_treatment":
@@ -1000,6 +1008,15 @@ function getMenuIconHtml(menu){
           `${treatmentIcon}` +
         `</span>`
       );
+
+
+      case "color_treatment":
+  return (
+    `<span class="scheduleMenuIconGroup">` +
+      `${colorIcon}` +
+      `${treatmentIcon}` +
+    `</span>`
+  );
 
 
     default:
