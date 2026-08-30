@@ -215,7 +215,7 @@ const SINGLE_MENUS = [
   },
   {
     id: "ultrasound_treatment",
-    label: "超音波トリートメント",
+    label: "超音波T",
     icon: "➖",
     minutes: 45
   },
