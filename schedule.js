@@ -190,7 +190,7 @@ const SINGLE_MENUS = [
     id: "tsuyakoi_treatment",
     label: "ツヤ恋T",
     icon: "💎",
-    minutes: 45,
+    minutes: 75,
     disabledStaffs: [
       "takeuchi"
     ]
