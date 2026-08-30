@@ -204,7 +204,7 @@ const SINGLE_MENUS = [
       "takeuchi"
     ]
   },
-  {
+    {
     id: "straight",
     label: "縮毛矯正",
     icon: "➖",
@@ -212,9 +212,8 @@ const SINGLE_MENUS = [
     disabledStaffs: [
       "takeuchi"
     ]
-  }
-
-      {
+  },
+  {
     id: "ultrasound_treatment",
     label: "超音波トリートメント",
     icon: "➖",
