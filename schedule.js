@@ -891,6 +891,7 @@ function renderTimeOptions(){
 }
 
 function getMenuIconHtml(menu){
+
   const cutIcon =
     `<img src="icon-cut.png" alt="" class="scheduleMenuImage">`;
 
@@ -899,6 +900,16 @@ function getMenuIconHtml(menu){
 
   const colorIcon =
     `<img src="icon-color.png" alt="" class="scheduleMenuImage">`;
+
+  const spaIcon =
+    `<img src="icon-spa.png" alt="" class="scheduleMenuImage">`;
+
+  const treatmentIcon =
+    `<img src="icon-treatment.png" alt="" class="scheduleMenuImage">`;
+
+  const straightIcon =
+    `<img src="icon-straight.png" alt="" class="scheduleMenuImage">`;
+
 
   switch(menu.id){
 
@@ -909,12 +920,14 @@ function getMenuIconHtml(menu){
         `</span>`
       );
 
+
     case "color":
       return (
         `<span class="scheduleMenuIconWrap">` +
           `${colorIcon}` +
         `</span>`
       );
+
 
     case "perm":
       return (
@@ -923,8 +936,35 @@ function getMenuIconHtml(menu){
         `</span>`
       );
 
+
+    case "spa":
+      return (
+        `<span class="scheduleMenuIconWrap">` +
+          `${spaIcon}` +
+        `</span>`
+      );
+
+
+    case "basic_treatment":
+    case "placenta_treatment":
+    case "tsuyakoi_treatment":
+      return (
+        `<span class="scheduleMenuIconWrap">` +
+          `${treatmentIcon}` +
+        `</span>`
+      );
+
+
+    case "straight":
+    case "ultrasound_treatment":
+      return (
+        `<span class="scheduleMenuIconWrap">` +
+          `${straightIcon}` +
+        `</span>`
+      );
+
+
     case "cut_color":
-    case "cut_color_basic":
       return (
         `<span class="scheduleMenuIconGroup">` +
           `${cutIcon}` +
@@ -932,14 +972,35 @@ function getMenuIconHtml(menu){
         `</span>`
       );
 
+
+    case "cut_color_basic":
+      return (
+        `<span class="scheduleMenuIconGroup">` +
+          `${cutIcon}` +
+          `${colorIcon}` +
+          `${treatmentIcon}` +
+        `</span>`
+      );
+
+
     case "cut_perm":
-    case "cut_perm_basic":
       return (
         `<span class="scheduleMenuIconGroup">` +
           `${cutIcon}` +
           `${permIcon}` +
         `</span>`
       );
+
+
+    case "cut_perm_basic":
+      return (
+        `<span class="scheduleMenuIconGroup">` +
+          `${cutIcon}` +
+          `${permIcon}` +
+          `${treatmentIcon}` +
+        `</span>`
+      );
+
 
     default:
       return "";
