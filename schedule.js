@@ -213,6 +213,14 @@ const SINGLE_MENUS = [
       "takeuchi"
     ]
   }
+
+      {
+    id: "ultrasound_treatment",
+    label: "超音波トリートメント",
+    icon: "➖",
+    minutes: 45
+  },
+  
 ];
 
 /* =========================
@@ -251,7 +259,8 @@ const MENU_DISPLAY_ORDER = [
   "straight",
   "placenta_treatment",
 
-  "tsuyakoi_treatment",
+    "tsuyakoi_treatment",
+  "ultrasound_treatment",
   "spa",
   "basic_treatment",
 
