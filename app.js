@@ -3240,17 +3240,6 @@ async function bootAuth(){
 
   await loadAndRender();
 
-  const pageParams =
-    new URLSearchParams(
-      window.location.search
-    );
-
-  if(
-    pageParams.get("settings") === "1"
-  ){
-    openModal(settingsModal);
-  }
-
 } else {
     if (appShell) appShell.classList.add("hidden");
     if (authScreen) authScreen.classList.remove("hidden");
