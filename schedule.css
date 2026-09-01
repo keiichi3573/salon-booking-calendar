@@ -2289,3 +2289,16 @@ body{
   font-weight:700;
   vertical-align:middle;
 }
+
+.scheduleStaffOffBadge{
+  display:inline-block;
+  margin-top:6px;
+  padding:5px 12px;
+  border-radius:999px;
+  background:#f3d7d2;
+  color:#8a4f45;
+  font-size:14px;
+  font-weight:700;
+  line-height:1.2;
+  letter-spacing:.05em;
+}
