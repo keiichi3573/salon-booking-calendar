@@ -2066,17 +2066,19 @@ function renderStaffRow(
     `${rowHeight}px`;
 
   staffCell.innerHTML =
-    `<div class="scheduleStaffName">` +
-      `${escapeHtml(staff.name)}` +
-    `</div>` +
+  `<div class="scheduleStaffName">` +
+    `${escapeHtml(staff.name)}` +
+  `</div>` +
 
-    `<div class="scheduleStaffMeta">` +
-      `${escapeHtml(staff.hours)}` +
-    `</div>` +
+  `<div class="scheduleStaffMeta">` +
+    `${escapeHtml(staff.hours)}` +
+  `</div>` +
 
+  (
     staffIsOff
-  ? `<span class="scheduleStaffOffBadge">休み</span>`
-  : `<span class="scheduleStaffBadge">予約 ${staffBookings.length}件</span>`;
+      ? `<span class="scheduleStaffOffBadge">休み</span>`
+      : `<span class="scheduleStaffBadge">予約 ${staffBookings.length}件</span>`
+  );
 
   scheduleGrid.appendChild(
     staffCell
