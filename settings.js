@@ -124,8 +124,8 @@ async function fetchStaffsAll(){
       return await sb
         .from("staffs")
         .select(
-          "id,name,active,sort_order,sort"
-        )
+  "id,name,active,sort_order,sort,staff_code"
+)
         .order(
           col,
           {
