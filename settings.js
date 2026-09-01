@@ -289,7 +289,8 @@ async function saveStaffDayOff(){
     alert(
       "休日を登録しました"
     );
-
+    
+   await loadStaffDaysOff();
 
     if(staffDayOffDate){
       staffDayOffDate.value =
@@ -327,6 +328,190 @@ async function saveStaffDayOff(){
     alert(
       "休日を登録できませんでした。"
     );
+  }
+}
+
+async function loadStaffDaysOff(){
+
+  if(!staffDayOffList){
+    return;
+  }
+
+  staffDayOffList.innerHTML =
+    `
+      <div class="settingsStaffItem">
+        <div class="settingsStaffInfo">
+          <div class="settingsStaffName">
+            読み込み中…
+          </div>
+          <div class="settingsStaffMeta">
+            登録済み休日を確認しています
+          </div>
+        </div>
+      </div>
+    `;
+
+
+  try{
+
+    const {
+      data,
+      error
+    } =
+      await sb
+        .from(
+          "staff_days_off"
+        )
+        .select(
+          "id,staff_id,off_date,off_type,note"
+        )
+        .order(
+          "off_date",
+          {
+            ascending:true
+          }
+        );
+
+
+    if(error){
+      throw error;
+    }
+
+
+    const staffs =
+      await fetchStaffsAll();
+
+
+    const staffMap =
+      new Map(
+        staffs.map(
+          staff => [
+            staff.id,
+            staff.name
+          ]
+        )
+      );
+
+
+    staffDayOffList.innerHTML =
+      "";
+
+
+    if(
+      !data ||
+      data.length === 0
+    ){
+
+      staffDayOffList.innerHTML =
+        `
+          <div class="settingsStaffItem">
+            <div class="settingsStaffInfo">
+              <div class="settingsStaffName">
+                登録済み休日はありません
+              </div>
+            </div>
+          </div>
+        `;
+
+      return;
+    }
+
+
+    data.forEach(
+      row => {
+
+        const item =
+          document.createElement(
+            "div"
+          );
+
+        item.className =
+          "settingsStaffItem";
+
+
+        const info =
+          document.createElement(
+            "div"
+          );
+
+        info.className =
+          "settingsStaffInfo";
+
+
+        const name =
+          document.createElement(
+            "div"
+          );
+
+        name.className =
+          "settingsStaffName";
+
+        name.textContent =
+          `${
+            staffMap.get(
+              row.staff_id
+            ) || row.staff_id
+          }　${row.off_date}`;
+
+
+        const meta =
+          document.createElement(
+            "div"
+          );
+
+        meta.className =
+          "settingsStaffMeta";
+
+
+        const typeLabel =
+          row.off_type ===
+          "paid_leave"
+            ? "有給休暇"
+            : "その他休み";
+
+
+        meta.textContent =
+          row.note
+            ? `${typeLabel} / ${row.note}`
+            : typeLabel;
+
+
+        info.appendChild(
+          name
+        );
+
+        info.appendChild(
+          meta
+        );
+
+        item.appendChild(
+          info
+        );
+
+        staffDayOffList.appendChild(
+          item
+        );
+      }
+    );
+
+
+  }catch(error){
+
+    console.error(
+      "休日一覧読込エラー:",
+      error
+    );
+
+    staffDayOffList.innerHTML =
+      `
+        <div class="settingsStaffItem">
+          <div class="settingsStaffInfo">
+            <div class="settingsStaffName">
+              休日一覧を取得できませんでした
+            </div>
+          </div>
+        </div>
+      `;
   }
 }
 
@@ -1101,3 +1286,4 @@ if(pinChangeBtn){
 
 checkSettingsLogin();
 loadDayOffStaffOptions();
+loadStaffDaysOff();
