@@ -432,9 +432,9 @@ gap: 8px;
 
 .menu-button {
   width: 100%;
-  min-height: 128px;
+  min-height: 92px;
 
-  padding: 12px 8px;
+  padding: 10px 12px;
 
   border: 1px solid #dfcfc7;
   border-radius: 16px;
@@ -449,13 +449,13 @@ gap: 8px;
   color: #5f4a41;
 
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
 
-  gap: 7px;
+  gap: 12px;
 
-  text-align: center;
+  text-align: left;
 
   box-shadow:
     0 5px 14px rgba(90, 70, 60, 0.06);
@@ -484,8 +484,10 @@ gap: 8px;
 }
 
 .menu-image-box {
-  width: 58px;
-  height: 58px;
+  width: 64px;
+  height: 64px;
+
+  flex: 0 0 64px;
 
   display: flex;
   align-items: center;
@@ -521,8 +523,8 @@ gap: 8px;
 }    
 
 .menu-image {
-  width: 44px;
-  height: 44px;
+  width: 50px;
+  height: 50px;
 
   object-fit: contain;
 }
@@ -534,11 +536,14 @@ gap: 8px;
 .menu-info {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
 
   gap: 3px;
 
   width: 100%;
+  min-width: 0;
+
+  text-align: left;
 }
 
 .menu-name {
@@ -582,9 +587,13 @@ gap: 8px;
   }
 
   .menu-image-pair {
-  width: 76px;
-  height: 54px;
-  flex: 0 0 76px;
+  width: 82px;
+  height: 64px;
+
+  flex: 0 0 82px;
+
+  flex-direction: row;
+  gap: 2px;
 }
 
 .menu-image-pair .menu-image {
@@ -593,9 +602,13 @@ gap: 8px;
 }
 
 .menu-image-triple {
-  width: 92px;
-  height: 54px;
-  flex: 0 0 92px;
+  width: 98px;
+  height: 64px;
+
+  flex: 0 0 98px;
+
+  flex-direction: row;
+  gap: 1px;
 }
 
 .menu-image-triple .menu-image {
@@ -1375,6 +1388,25 @@ gap: 8px;
         padding: 34px 36px;
       }
     }
+
+　.menu-price {
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.menu-note {
+  font-size: 11px;
+  line-height: 1.35;
+  opacity: 0.82;
+}
+
+.menu-time {
+  font-size: 11px;
+  line-height: 1.35;
+  opacity: 0.72;
+}
+    
   </style>
 </head>
 
@@ -4206,3 +4238,4 @@ document.addEventListener(
   
 </body>
 </html>
+
