@@ -2127,6 +2127,16 @@ if(isClosedDay){
     "scheduleSlotCellClosedDay"
   );
 
+}else if(staffIsOff){
+
+  /*
+    スタッフ休日は
+    新しい予約を入力不可にする
+  */
+  slotCell.classList.add(
+    "scheduleSlotCellStaffOff"
+  );
+
 }else if(
   minutes >
   LAST_RECEPTION_MINUTES
