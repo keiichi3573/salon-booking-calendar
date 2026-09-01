@@ -488,6 +488,38 @@ async function loadStaffDaysOff(){
           info
         );
 
+        const actions =
+  document.createElement(
+    "div"
+  );
+
+actions.className =
+  "settingsStaffActions";
+
+
+const deleteBtn =
+  document.createElement(
+    "button"
+  );
+
+deleteBtn.type =
+  "button";
+
+deleteBtn.className =
+  "btn";
+
+deleteBtn.textContent =
+  "削除";
+
+
+actions.appendChild(
+  deleteBtn
+);
+
+item.appendChild(
+  actions
+);
+
         staffDayOffList.appendChild(
           item
         );
