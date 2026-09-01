@@ -212,6 +212,124 @@ async function loadDayOffStaffOptions(){
   }
 }
 
+async function saveStaffDayOff(){
+
+  const staffId =
+    staffDayOffStaff?.value || "";
+
+  const offDate =
+    staffDayOffDate?.value || "";
+
+  const offType =
+    staffDayOffType?.value || "";
+
+  const note =
+    (
+      staffDayOffNote?.value ||
+      ""
+    ).trim();
+
+
+  if(!staffId){
+    alert(
+      "スタッフを選択してください"
+    );
+    return;
+  }
+
+
+  if(!offDate){
+    alert(
+      "休日日を選択してください"
+    );
+    return;
+  }
+
+
+  if(
+    offType !== "paid_leave" &&
+    offType !== "other"
+  ){
+    alert(
+      "休日区分を選択してください"
+    );
+    return;
+  }
+
+
+  try{
+
+    const {
+      error
+    } =
+      await sb
+        .from(
+          "staff_days_off"
+        )
+        .insert({
+          staff_id:
+            staffId,
+
+          off_date:
+            offDate,
+
+          off_type:
+            offType,
+
+          note:
+            note || null
+        });
+
+
+    if(error){
+      throw error;
+    }
+
+
+    alert(
+      "休日を登録しました"
+    );
+
+
+    if(staffDayOffDate){
+      staffDayOffDate.value =
+        "";
+    }
+
+    if(staffDayOffNote){
+      staffDayOffNote.value =
+        "";
+    }
+
+
+  }catch(error){
+
+    console.error(
+      "休日登録エラー:",
+      error
+    );
+
+
+    if(
+      String(
+        error?.message || ""
+      ).includes(
+        "staff_days_off_unique"
+      )
+    ){
+      alert(
+        "このスタッフには、すでに同じ日の休日が登録されています。"
+      );
+      return;
+    }
+
+
+    alert(
+      "休日を登録できませんでした。"
+    );
+  }
+}
+
 async function upsertStaff(
   row
 ){
@@ -920,6 +1038,10 @@ pinChangeBtn?.addEventListener(
   changePin
 );
 
+staffDayOffSaveBtn?.addEventListener(
+  "click",
+  saveStaffDayOff
+);
 
 settingsLogoutBtn?.addEventListener(
   "click",
