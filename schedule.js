@@ -2017,6 +2017,20 @@ function renderStaffRow(
   currentBookings,
   isClosedDay
 ){
+
+  const dateKey =
+    toDateKey(viewDate);
+
+  const staffDayOff =
+    staffDaysOff.find(
+      dayOff =>
+        dayOff.staff_id === staff.id &&
+        dayOff.off_date === dateKey
+    );
+
+  const staffIsOff =
+    Boolean(staffDayOff);
+
   const staffBookings =
     currentBookings.filter(
       booking =>
@@ -2061,8 +2075,12 @@ function renderStaffRow(
     `</div>` +
 
     `<span class="scheduleStaffBadge">` +
-      `予約 ${staffBookings.length}件` +
-    `</span>`;
+  `${
+    staffIsOff
+      ? "休み"
+      : `予約 ${staffBookings.length}件`
+  }` +
+`</span>`;
 
   scheduleGrid.appendChild(
     staffCell
