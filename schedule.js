@@ -756,6 +756,40 @@ async function loadBookingsFromSupabase(){
       );
 }
 
+async function loadStaffDaysOffFromSupabase(){
+
+  const {
+    data,
+    error
+  } =
+    await sb
+      .from(
+        "staff_days_off"
+      )
+      .select(
+        "id,staff_id,off_date,off_type,note"
+      )
+      .order(
+        "off_date",
+        {
+          ascending:true
+        }
+      );
+
+  if(error){
+    console.error(
+      "スタッフ休日読込エラー:",
+      error
+    );
+
+    staffDaysOff = [];
+    return;
+  }
+
+  staffDaysOff =
+    data || [];
+}
+
 /* =========================
    メニュー取得
 ========================= */
