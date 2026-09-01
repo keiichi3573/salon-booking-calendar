@@ -343,103 +343,13 @@
       </h1>
 
       <div class="settingsSub">
-        スタッフの追加・表示順・有効 / 無効の管理、管理者PINの変更を行えます。
-      </div>
+  スタッフの休日管理、表示順・有効 / 無効の管理、スタッフ追加、管理者PINの変更を行えます。
+</div>
     </section>
 
     <section class="settingsGrid">
 
-      <section class="settingsCard">
-        <h2 class="settingsCardTitle">
-          管理者PIN
-        </h2>
-
-        <p class="settingsCardText">
-          設定変更前に管理者PINを入力します。
-        </p>
-
-        <label class="settingsField">
-          <span class="settingsLabel">管理者PIN</span>
-          <input
-            id="pinInput"
-            class="settingsInput"
-            type="password"
-            placeholder="PINを入力"
-          />
-        </label>
-
-        <div class="settingsHint">
-          初期PINは 4043 です。確認後に変更できます。
-        </div>
-
-        <div class="settingsAction">
-          <button
-            id="pinEnterBtn"
-            class="btn"
-            type="button"
-          >
-            入る
-          </button>
-        </div>
-      </section>
-
-      <section class="settingsCard">
-        <h2 class="settingsCardTitle">
-          スタッフ追加
-        </h2>
-
-        <p class="settingsCardText">
-          新しいスタッフ名を追加します。
-        </p>
-
-        <label class="settingsField">
-          <span class="settingsLabel">スタッフ名</span>
-          <input
-            id="staffNameInput"
-            class="settingsInput"
-            type="text"
-            placeholder="スタッフ名を入力"
-          />
-        </label>
-
-        <div class="settingsAction">
-          <button
-            id="staffAddBtn"
-            class="btn primary"
-            type="button"
-          >
-            追加
-          </button>
-        </div>
-      </section>
-
-      <section class="settingsCard settingsCardFull">
-        <h2 class="settingsCardTitle">
-          スタッフ一覧
-        </h2>
-
-        <p class="settingsCardText">
-          並び順の調整、有効 / 無効の切り替えができます。
-        </p>
-
-        <div
-          id="staffList"
-          class="settingsStaffList"
-        >
-          <div class="settingsStaffItem">
-            <div class="settingsStaffInfo">
-              <div class="settingsStaffName">
-                読み込み中…
-              </div>
-              <div class="settingsStaffMeta">
-                スタッフ情報を取得しています
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-            <!-- スタッフ休日管理 -->
+      <!-- スタッフ休日管理 -->
       <section class="settingsCard settingsCardFull">
 
         <h2 class="settingsCardTitle">
@@ -552,6 +462,96 @@
           </div>
         </div>
 
+      </section>
+
+      <section class="settingsCard">
+        <h2 class="settingsCardTitle">
+          管理者PIN
+        </h2>
+
+        <p class="settingsCardText">
+          設定変更前に管理者PINを入力します。
+        </p>
+
+        <label class="settingsField">
+          <span class="settingsLabel">管理者PIN</span>
+          <input
+            id="pinInput"
+            class="settingsInput"
+            type="password"
+            placeholder="PINを入力"
+          />
+        </label>
+
+        <div class="settingsHint">
+          初期PINは 4043 です。確認後に変更できます。
+        </div>
+
+        <div class="settingsAction">
+          <button
+            id="pinEnterBtn"
+            class="btn"
+            type="button"
+          >
+            入る
+          </button>
+        </div>
+      </section>
+
+      <section class="settingsCard">
+        <h2 class="settingsCardTitle">
+          スタッフ追加
+        </h2>
+
+        <p class="settingsCardText">
+          新しいスタッフ名を追加します。
+        </p>
+
+        <label class="settingsField">
+          <span class="settingsLabel">スタッフ名</span>
+          <input
+            id="staffNameInput"
+            class="settingsInput"
+            type="text"
+            placeholder="スタッフ名を入力"
+          />
+        </label>
+
+        <div class="settingsAction">
+          <button
+            id="staffAddBtn"
+            class="btn primary"
+            type="button"
+          >
+            追加
+          </button>
+        </div>
+      </section>
+
+      <section class="settingsCard settingsCardFull">
+        <h2 class="settingsCardTitle">
+          スタッフ一覧
+        </h2>
+
+        <p class="settingsCardText">
+          並び順の調整、有効 / 無効の切り替えができます。
+        </p>
+
+        <div
+          id="staffList"
+          class="settingsStaffList"
+        >
+          <div class="settingsStaffItem">
+            <div class="settingsStaffInfo">
+              <div class="settingsStaffName">
+                読み込み中…
+              </div>
+              <div class="settingsStaffMeta">
+                スタッフ情報を取得しています
+              </div>
+            </div>
+          </div>
+        </div>
       </section>
 
       <section class="settingsCard settingsCardFull">
