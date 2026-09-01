@@ -3124,12 +3124,11 @@ if (selectedStaff === "指名なし") {
 
 if (staffHolidayDisabled) {
   button.classList.add(
-    "staff-holiday"
+    "closed"
   );
 
   button.disabled = true;
 }
-
     if (!button.disabled) {
   button.onclick = () => {
     selectCalendarDate(
