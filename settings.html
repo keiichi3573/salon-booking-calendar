@@ -439,6 +439,121 @@
         </div>
       </section>
 
+            <!-- スタッフ休日管理 -->
+      <section class="settingsCard settingsCardFull">
+
+        <h2 class="settingsCardTitle">
+          スタッフ休日管理
+        </h2>
+
+        <p class="settingsCardText">
+          有給休暇・その他の休日を登録します。
+        </p>
+
+        <div class="settingsGrid">
+
+          <label class="settingsField">
+            <span class="settingsLabel">
+              スタッフ
+            </span>
+
+            <select
+              id="staffDayOffStaff"
+              class="settingsInput"
+            >
+              <option value="">
+                スタッフを選択
+              </option>
+            </select>
+          </label>
+
+
+          <label class="settingsField">
+            <span class="settingsLabel">
+              休日日
+            </span>
+
+            <input
+              id="staffDayOffDate"
+              class="settingsInput"
+              type="date"
+            />
+          </label>
+
+
+          <label class="settingsField">
+            <span class="settingsLabel">
+              休日区分
+            </span>
+
+            <select
+              id="staffDayOffType"
+              class="settingsInput"
+            >
+              <option value="paid_leave">
+                有給休暇
+              </option>
+
+              <option value="other">
+                その他休み
+              </option>
+            </select>
+          </label>
+
+
+          <label class="settingsField">
+            <span class="settingsLabel">
+              メモ
+            </span>
+
+            <input
+              id="staffDayOffNote"
+              class="settingsInput"
+              type="text"
+              placeholder="必要な場合のみ入力"
+            />
+          </label>
+
+        </div>
+
+
+        <div class="settingsAction">
+
+          <button
+            id="staffDayOffSaveBtn"
+            class="btn primary"
+            type="button"
+          >
+            休日を登録
+          </button>
+
+        </div>
+
+
+        <div
+          id="staffDayOffList"
+          class="settingsStaffList"
+          style="margin-top:18px;"
+        >
+          <div class="settingsStaffItem">
+
+            <div class="settingsStaffInfo">
+
+              <div class="settingsStaffName">
+                登録済み休日
+              </div>
+
+              <div class="settingsStaffMeta">
+                まだ読み込んでいません
+              </div>
+
+            </div>
+
+          </div>
+        </div>
+
+      </section>
+
       <section class="settingsCard settingsCardFull">
         <h2 class="settingsCardTitle">
           管理者PIN変更
