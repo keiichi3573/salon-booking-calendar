@@ -2590,15 +2590,21 @@ if (staffTitle) {
 }  
 
   document.getElementById(
-    "dateStep"
-  ).hidden = false;
+  "dateStep"
+).hidden = false;
 
-  document.getElementById(
-    "dateStep"
-  ).scrollIntoView({
-    behavior: "smooth",
-    block: "start"
-  });
+/*
+  選択したスタッフに合わせて
+  休日を反映したカレンダーを再表示
+*/
+renderBookingCalendar();
+
+document.getElementById(
+  "dateStep"
+).scrollIntoView({
+  behavior: "smooth",
+  block: "start"
+});
 }
 
 function changeStaffSelection() {
