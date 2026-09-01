@@ -383,14 +383,15 @@ async function loadStaffDaysOff(){
 
 
     const staffMap =
-      new Map(
-        staffs.map(
-          staff => [
-            staff.id,
-            staff.name
-          ]
-        )
-      );
+  new Map(
+    staffs.map(
+      staff => [
+        staff.staff_code ||
+          staff.id,
+        staff.name
+      ]
+    )
+  );
 
 
     staffDayOffList.innerHTML =
