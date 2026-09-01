@@ -49,6 +49,35 @@ const pinChangeBtn =
     "pinChangeBtn"
   );
 
+const staffDayOffStaff =
+  document.getElementById(
+    "staffDayOffStaff"
+  );
+
+const staffDayOffDate =
+  document.getElementById(
+    "staffDayOffDate"
+  );
+
+const staffDayOffType =
+  document.getElementById(
+    "staffDayOffType"
+  );
+
+const staffDayOffNote =
+  document.getElementById(
+    "staffDayOffNote"
+  );
+
+const staffDayOffSaveBtn =
+  document.getElementById(
+    "staffDayOffSaveBtn"
+  );
+
+const staffDayOffList =
+  document.getElementById(
+    "staffDayOffList"
+  );
 
 /* =========================
    PIN設定
@@ -128,6 +157,60 @@ async function fetchStaffsAll(){
   return res.data || [];
 }
 
+async function loadDayOffStaffOptions(){
+
+  if(!staffDayOffStaff){
+    return;
+  }
+
+  try{
+
+    const staffs =
+      await fetchStaffsAll();
+
+    staffDayOffStaff.innerHTML =
+      `<option value="">
+        スタッフを選択
+      </option>`;
+
+    staffs
+      .filter(
+        staff =>
+          staff.active !== false
+      )
+      .forEach(
+        staff => {
+
+          const option =
+            document.createElement(
+              "option"
+            );
+
+          option.value =
+            staff.id;
+
+          option.textContent =
+            staff.name;
+
+          staffDayOffStaff.appendChild(
+            option
+          );
+        }
+      );
+
+  }catch(error){
+
+    console.error(
+      "休日管理スタッフ読込エラー:",
+      error
+    );
+
+    staffDayOffStaff.innerHTML =
+      `<option value="">
+        スタッフを取得できませんでした
+      </option>`;
+  }
+}
 
 async function upsertStaff(
   row
@@ -895,3 +978,4 @@ if(pinChangeBtn){
 
 
 checkSettingsLogin();
+loadDayOffStaffOptions();
