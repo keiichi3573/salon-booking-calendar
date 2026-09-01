@@ -187,7 +187,7 @@ async function loadDayOffStaffOptions(){
             );
 
           option.value =
-            staff.id;
+  staff.staff_code || staff.id;
 
           option.textContent =
             staff.name;
