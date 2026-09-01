@@ -2794,6 +2794,7 @@ function enhanceMenuButtons() {
   
 let selectedMenu = "";
 let selectedMenuMinutes = 0;
+let selectedMenuPriceLabel = "";
 
 function selectMenu(button) {
   document
@@ -2804,9 +2805,16 @@ function selectMenu(button) {
 
   button.classList.add("selected");
 
-  selectedMenu = button.dataset.menu;
-  selectedMenuMinutes =
-    Number(button.dataset.minutes);
+  selectedMenu =
+  button.dataset.menu;
+
+selectedMenuMinutes =
+  Number(
+    button.dataset.minutes
+  );
+
+selectedMenuPriceLabel =
+  button.dataset.priceLabel || "";
 
   /*
   メニューを選び直した場合は、
