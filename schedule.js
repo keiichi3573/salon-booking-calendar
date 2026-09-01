@@ -3943,9 +3943,11 @@ async function initializeSchedule(){
 
     await loadBookingsFromSupabase();
 
-    renderSchedule();
+await loadStaffDaysOffFromSupabase();
 
-    setupReservationRealtime();
+renderSchedule();
+
+setupReservationRealtime();
 
   }catch(error){
     console.error(
