@@ -2850,10 +2850,89 @@ if (menuTitle) {
   
   let selectedDate = "";
 
+  let publicStaffDaysOff = {
+  kitamura: [],
+  yamazaki: []
+};
+
   let calendarCurrentDate =
   new Date();
 
 calendarCurrentDate.setDate(1);
+
+async function loadPublicStaffDaysOffForMonth() {
+  const year =
+    calendarCurrentDate.getFullYear();
+
+  const month =
+    calendarCurrentDate.getMonth();
+
+  const firstDate =
+    `${year}-` +
+    `${String(month + 1).padStart(2, "0")}-01`;
+
+  const lastDay =
+    new Date(
+      year,
+      month + 1,
+      0
+    ).getDate();
+
+  const lastDate =
+    `${year}-` +
+    `${String(month + 1).padStart(2, "0")}-` +
+    `${String(lastDay).padStart(2, "0")}`;
+
+  const [
+    kitamuraResult,
+    yamazakiResult
+  ] = await Promise.all([
+    sb.rpc(
+      "get_public_staff_days_off",
+      {
+        p_start_date: firstDate,
+        p_end_date: lastDate,
+        p_staff_id: "kitamura"
+      }
+    ),
+    sb.rpc(
+      "get_public_staff_days_off",
+      {
+        p_start_date: firstDate,
+        p_end_date: lastDate,
+        p_staff_id: "yamazaki"
+      }
+    )
+  ]);
+
+  if (
+    kitamuraResult.error ||
+    yamazakiResult.error
+  ) {
+    console.error(
+      "スタッフ休日取得エラー:",
+      kitamuraResult.error ||
+      yamazakiResult.error
+    );
+
+    publicStaffDaysOff = {
+      kitamura: [],
+      yamazaki: []
+    };
+
+    return;
+  }
+
+  publicStaffDaysOff = {
+    kitamura:
+      (kitamuraResult.data || [])
+        .map(row => row.off_date),
+
+    yamazaki:
+      (yamazakiResult.data || [])
+        .map(row => row.off_date)
+  };
+}  
 
 function renderBookingCalendar() {
   const title =
