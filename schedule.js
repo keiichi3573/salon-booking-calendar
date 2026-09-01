@@ -441,6 +441,8 @@ let viewDate =
 
 let bookings = [];
 
+let staffDaysOff = [];
+
 let editingBookingId = null;
 
 let selectedCustomerId = null;
