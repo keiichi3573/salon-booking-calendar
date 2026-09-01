@@ -2074,13 +2074,9 @@ function renderStaffRow(
       `${escapeHtml(staff.hours)}` +
     `</div>` +
 
-    `<span class="scheduleStaffBadge">` +
-  `${
     staffIsOff
-      ? "休み"
-      : `予約 ${staffBookings.length}件`
-  }` +
-`</span>`;
+  ? `<span class="scheduleStaffOffBadge">休み</span>`
+  : `<span class="scheduleStaffBadge">予約 ${staffBookings.length}件</span>`;
 
   scheduleGrid.appendChild(
     staffCell
