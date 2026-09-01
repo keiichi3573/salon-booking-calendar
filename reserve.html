@@ -3089,6 +3089,41 @@ if (targetDate < today) {
       button.disabled = true;
     }
 
+    const kitamuraIsOff =
+  publicStaffDaysOff.kitamura
+    .includes(dateString);
+
+const yamazakiIsOff =
+  publicStaffDaysOff.yamazaki
+    .includes(dateString);
+
+let staffHolidayDisabled =
+  false;
+
+if (selectedStaff === "北村 美穂") {
+  staffHolidayDisabled =
+    kitamuraIsOff;
+}
+
+if (selectedStaff === "山崎 錦子") {
+  staffHolidayDisabled =
+    yamazakiIsOff;
+}
+
+if (selectedStaff === "指名なし") {
+  staffHolidayDisabled =
+    kitamuraIsOff &&
+    yamazakiIsOff;
+}
+
+if (staffHolidayDisabled) {
+  button.classList.add(
+    "staff-holiday"
+  );
+
+  button.disabled = true;
+}
+
     if (!button.disabled) {
   button.onclick = () => {
     selectCalendarDate(
