@@ -2934,7 +2934,9 @@ async function loadPublicStaffDaysOffForMonth() {
   };
 }  
 
-function renderBookingCalendar() {
+async function renderBookingCalendar() {
+  await loadPublicStaffDaysOffForMonth();
+
   const title =
     document.getElementById(
       "calendarMonthTitle"
