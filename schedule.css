@@ -2302,3 +2302,12 @@ body{
   line-height:1.2;
   letter-spacing:.05em;
 }
+
+.scheduleSlotCellStaffOff{
+  background:#fff3f1;
+  cursor:not-allowed;
+}
+
+.scheduleSlotCellStaffOff:hover{
+  background:#fff3f1;
+}
