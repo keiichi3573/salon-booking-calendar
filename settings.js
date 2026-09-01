@@ -510,7 +510,60 @@ deleteBtn.className =
 
 deleteBtn.textContent =
   "削除";
+        
+deleteBtn.onclick =
+  async () => {
 
+    const ok =
+      confirm(
+        "この休日を削除しますか？"
+      );
+
+    if(!ok){
+      return;
+    }
+
+    try{
+
+      const {
+        error
+      } =
+        await sb
+          .from(
+            "staff_days_off"
+          )
+          .delete()
+          .eq(
+            "id",
+            row.id
+          );
+
+
+      if(error){
+        throw error;
+      }
+
+
+      alert(
+        "休日を削除しました"
+      );
+
+
+      await loadStaffDaysOff();
+
+
+    }catch(error){
+
+      console.error(
+        "休日削除エラー:",
+        error
+      );
+
+      alert(
+        "休日を削除できませんでした。"
+      );
+    }
+  };
 
 actions.appendChild(
   deleteBtn
