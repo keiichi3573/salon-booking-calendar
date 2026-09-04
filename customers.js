@@ -159,14 +159,15 @@ async function loadCustomers(){
     await sb
       .from("customers")
       .select(`
-        id,
-        name,
-        phone,
-        birth_month,
-        last_visit_date,
-        visit_count,
-        primary_staff_id
-      `)
+  id,
+  chart_number,
+  name,
+  phone,
+  birth_month,
+  last_visit_date,
+  visit_count,
+  primary_staff_id
+`)
       .order(
         "created_at",
         {
