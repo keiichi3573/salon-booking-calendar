@@ -289,6 +289,8 @@ function renderCustomers(customers){
         : "—";
 
     row.innerHTML = `
+  <td>${customer.chart_number ?? "—"}</td>
+
   <td>
     <a
       href="customer-detail.html?id=${encodeURIComponent(customer.id)}"
@@ -296,6 +298,7 @@ function renderCustomers(customers){
       ${customer.name ?? "—"}
     </a>
   </td>
+
   <td>${customer.phone ?? "—"}</td>
   <td>${staffName}</td>
   <td>${lastVisit}</td>
