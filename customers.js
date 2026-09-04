@@ -390,14 +390,21 @@ function filterCustomers(){
           .toLowerCase();
 
         const phone =
-          String(
-            customer.phone ?? ""
-          );
+  String(
+    customer.phone ?? ""
+  );
 
-        const matchesKeyword =
-          keyword === "" ||
-          name.includes(keyword) ||
-          phone.includes(keyword);
+const chartNumber =
+  String(
+    customer.chart_number ?? ""
+  )
+  .toLowerCase();
+
+const matchesKeyword =
+  keyword === "" ||
+  name.includes(keyword) ||
+  phone.includes(keyword) ||
+  chartNumber.includes(keyword);
 
         if(!matchesKeyword){
           return false;
