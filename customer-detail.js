@@ -50,6 +50,7 @@ async function loadCustomer(
       .from("customers")
       .select(`
 id,
+chart_number,
 name,
 phone,
 postal_code,
@@ -61,7 +62,7 @@ visit_count,
 primary_staff_id,
 first_source,
 note
-      `)
+`)
       .eq(
         "id",
         customerId
