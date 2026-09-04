@@ -156,6 +156,16 @@ const noteInput =
     "customerDetailNoteInput"
   );
 
+const chartNumberInput =
+  document.getElementById(
+    "customerDetailChartNumberInput"
+  );
+
+if(chartNumberInput){
+  chartNumberInput.value =
+    customer.chart_number ?? "";
+}
+  
 if(phoneInput){
   phoneInput.value =
     customer.phone ?? "";
