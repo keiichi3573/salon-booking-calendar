@@ -543,6 +543,11 @@ const saveCustomerInfoBtn =
     "saveCustomerInfoBtn"
   );
 
+const deleteCustomerBtn =
+  document.getElementById(
+    "deleteCustomerBtn"
+  );
+
 async function saveCustomerInfo(){
 
   const customerId =
@@ -694,6 +699,85 @@ if(saveCustomerInfoBtn){
     .addEventListener(
       "click",
       saveCustomerInfo
+    );
+
+}
+
+async function deleteCustomer(){
+
+  const customerId =
+    getCustomerId();
+
+  if(!customerId){
+    return;
+  }
+
+  const confirmed =
+    window.confirm(
+      "この顧客を削除しますか？\n過去の予約履歴は残ります。"
+    );
+
+  if(!confirmed){
+    return;
+  }
+
+  deleteCustomerBtn.disabled =
+    true;
+
+  deleteCustomerBtn.textContent =
+    "削除中…";
+
+  try{
+
+    const {
+      error
+    } =
+      await sb
+        .from("customers")
+        .delete()
+        .eq(
+          "id",
+          customerId
+        );
+
+    if(error){
+      throw error;
+    }
+
+    window.alert(
+      "顧客を削除しました。"
+    );
+
+    window.location.href =
+      "customers.html";
+
+  }catch(error){
+
+    console.error(
+      "顧客削除エラー:",
+      error
+    );
+
+    window.alert(
+      "顧客を削除できませんでした。"
+    );
+
+    deleteCustomerBtn.disabled =
+      false;
+
+    deleteCustomerBtn.textContent =
+      "顧客を削除";
+
+  }
+
+}
+
+if(deleteCustomerBtn){
+
+  deleteCustomerBtn
+    .addEventListener(
+      "click",
+      deleteCustomer
     );
 
 }
