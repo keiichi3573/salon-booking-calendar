@@ -126,6 +126,11 @@ function renderCustomer(
     customer.phone ?? "—"
   );
 
+const chartNumberInput =
+  document.getElementById(
+    "customerDetailChartNumberInput"
+  );
+  
 const phoneInput =
   document.getElementById(
     "customerDetailPhoneInput"
@@ -599,15 +604,16 @@ async function saveCustomerInfo(){
     );
 
   if(
-    !phoneInput ||
-    !postalCodeInput ||
-    !addressInput ||
-    !birthMonthSelect ||
-    !staffSelect ||
-    !noteInput
-  ){
-    return;
-  }
+  !chartNumberInput ||
+  !phoneInput ||
+  !postalCodeInput ||
+  !addressInput ||
+  !birthMonthSelect ||
+  !staffSelect ||
+  !noteInput
+){
+  return;
+}
 
   const phone =
     phoneInput.value
@@ -647,6 +653,9 @@ async function saveCustomerInfo(){
       await sb
         .from("customers")
         .update({
+          chart_number:
+  chartNumberInput.value.trim() || null,
+          
           phone:
             phone || null,
 
