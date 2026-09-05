@@ -368,40 +368,71 @@ function renderBasicAnalysis() {
   const lastDay = endOfMonth(viewDate).getDate();
 
   let sumSales = 0;
-  let sumCustomers = 0;
-  let firstHalfSales = 0;
-  let secondHalfSales = 0;
+let sumCustomers = 0;
+let firstHalfSales = 0;
+let secondHalfSales = 0;
+
+let salesInputDays = 0;
+let customerInputDays = 0;
+
+let firstHalfSalesDays = 0;
+let secondHalfSalesDays = 0;
 
   for (let day = 1; day <= lastDay; day++) {
-    const key = toDateKey(
-      new Date(
-        viewDate.getFullYear(),
-        viewDate.getMonth(),
-        day
-      )
-    );
+  const key = toDateKey(
+    new Date(
+      viewDate.getFullYear(),
+      viewDate.getMonth(),
+      day
+    )
+  );
 
-    const row = bookingsDailyMap.get(key);
+  const row =
+    bookingsDailyMap.get(key);
 
-    if (!row) continue;
+  if (!row) {
+    continue;
+  }
 
-    const daySales =
-      Number(row.tech_sales || 0) +
-      Number(row.retail_sales || 0);
+  const daySales =
+    Number(row.tech_sales || 0) +
+    Number(row.retail_sales || 0);
 
-    const dayCustomers =
-      Number(row.new_customers || 0) +
-      Number(row.repeat_customers || 0);
+  const dayCustomers =
+    Number(row.new_customers || 0) +
+    Number(row.repeat_customers || 0);
 
-    sumSales += daySales;
-    sumCustomers += dayCustomers;
+  sumSales += daySales;
+  sumCustomers += dayCustomers;
+
+  /*
+    実際に売上が入力されている日だけ
+    平均売上の日数として数える
+  */
+  if (daySales > 0) {
+    salesInputDays++;
 
     if (day <= 15) {
-      firstHalfSales += daySales;
+      firstHalfSalesDays++;
     } else {
-      secondHalfSales += daySales;
+      secondHalfSalesDays++;
     }
   }
+
+  /*
+    実際に客数が入力されている日だけ
+    平均客数の日数として数える
+  */
+  if (dayCustomers > 0) {
+    customerInputDays++;
+  }
+
+  if (day <= 15) {
+    firstHalfSales += daySales;
+  } else {
+    secondHalfSales += daySales;
+  }
+}
 
   const now = new Date();
 
