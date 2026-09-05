@@ -462,10 +462,10 @@ let secondHalfSalesDays = 0;
   }
 
   const elapsedSalesDays =
-    businessDaysInRange(viewDate, 1, salesEndDay);
+  salesInputDays;
 
-  const elapsedCustomerDays =
-    businessDaysInRange(viewDate, 1, customersEndDay);
+const elapsedCustomerDays =
+  customerInputDays;
 
   const avgDaySales =
     elapsedSalesDays > 0
@@ -483,8 +483,11 @@ let secondHalfSalesDays = 0;
   const secondHalfTotalDays =
     businessDaysInRange(viewDate, 16, lastDay);
 
-  let firstHalfDiv = firstHalfTotalDays;
-  let secondHalfDiv = secondHalfTotalDays;
+  let firstHalfDiv =
+  firstHalfSalesDays;
+
+let secondHalfDiv =
+  secondHalfSalesDays;
 
   if (sameMonth) {
     const today = now.getDate();
