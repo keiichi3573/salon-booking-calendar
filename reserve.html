@@ -1459,94 +1459,61 @@ gap: 8px;
   }
 </script>
 
-    <section class="card">
+    <section class="card reservation-start-card">
 
-      <h2 class="title">ご予約</h2>
+  <div class="reservation-start-main">
 
-<p class="description">
-  かんたん6ステップでご予約いただけます
-</p>
+    <h2 class="title">
+      ネット予約
+    </h2>
 
-<div id="reservationTutorial" class="tutorial-grid">
+    <p class="description reservation-start-description">
+      メニュー・担当・日時を選んで<br>
+      かんたんにご予約いただけます
+    </p>
 
-  <div class="tutorial-column">
-
-    <div class="tutorial-small">
-      <div class="tutorial-small-icon">✂️</div>
-      <div class="tutorial-small-text">
-        <strong>STEP 1</strong>
-        <span>メニュー</span>
-      </div>
-    </div>
-
-    <div class="tutorial-down">↓</div>
-
-    <div class="tutorial-small">
-      <div class="tutorial-small-icon">👤</div>
-      <div class="tutorial-small-text">
-        <strong>STEP 2</strong>
-        <span>スタッフ</span>
-      </div>
-    </div>
-
-    <div class="tutorial-down">↓</div>
-
-    <div class="tutorial-small">
-  <div class="tutorial-small-icon">📅</div>
-  <div class="tutorial-small-text">
-    <strong>STEP 3</strong>
-    <span>日付</span>
-    <small>次は STEP 4</small>
-  </div>
-</div>
+    <button
+      class="start-button reservation-start-button"
+      type="button"
+      onclick="showMenuStep()"
+    >
+      予約をはじめる
+      <span class="start-button-arrow">›</span>
+    </button>
 
   </div>
 
+  <div
+    id="reservationTutorial"
+    class="reservation-flow"
+  >
 
-  <div class="tutorial-column">
-
-    <div class="tutorial-small">
-      <div class="tutorial-small-icon">🕒</div>
-      <div class="tutorial-small-text">
-        <strong>STEP 4</strong>
-        <span>時間</span>
-      </div>
+    <div class="reservation-flow-title">
+      ご予約の流れ
     </div>
 
-    <div class="tutorial-down">↓</div>
-
-    <div class="tutorial-small">
-      <div class="tutorial-small-icon">✏️</div>
-      <div class="tutorial-small-text">
-        <strong>STEP 5</strong>
-        <span>情報入力</span>
-      </div>
-    </div>
-
-    <div class="tutorial-down">↓</div>
-
-    <div class="tutorial-small tutorial-last">
-      <div class="tutorial-small-icon">✓</div>
-      <div class="tutorial-small-text">
-        <strong>STEP 6</strong>
-        <span>確認・予約</span>
-      </div>
+    <div class="reservation-flow-steps">
+      <span>メニュー</span>
+      <span>›</span>
+      <span>スタッフ</span>
+      <span>›</span>
+      <span>日付</span>
+      <span>›</span>
+      <span>時間</span>
+      <span>›</span>
+      <span>お客様情報</span>
+      <span>›</span>
+      <span>確認</span>
     </div>
 
   </div>
 
-</div>
-
-<div id="reservationTutorialNote" class="tutorial-note">
-  空き時間は最新の予約状況から自動で表示されます。
-</div>
-      <button
-  class="start-button"
-  type="button"
-  onclick="showMenuStep()"
->
-  予約を始める
-</button>
+  <div
+    id="reservationTutorialNote"
+    class="tutorial-note reservation-start-note"
+  >
+    空き時間は最新の予約状況から自動で表示されます。
+  </div>
 
 <section id="menuStep" class="menu-step" hidden>
 
