@@ -3194,6 +3194,16 @@ const birthMonth =
     ? Number(birthMonthValue)
     : null;
 
+  if(
+  !customerPhone &&
+  !birthMonth
+){
+  formMessage.textContent =
+    "電話番号または誕生月のどちらかを入力してください。";
+
+  return;
+}
+
   if(selectedMenus.size === 0){
     formMessage.textContent =
       "メニューを1つ以上選んでください。";
