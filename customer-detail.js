@@ -568,6 +568,11 @@ async function saveCustomerInfo(){
     return;
   }
 
+const chartNumberInput =
+  document.getElementById(
+    "customerDetailChartNumberInput"
+  );
+  
   const phoneInput =
     document.getElementById(
       "customerDetailPhoneInput"
