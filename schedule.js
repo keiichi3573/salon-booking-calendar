@@ -3194,12 +3194,19 @@ const birthMonth =
     ? Number(birthMonthValue)
     : null;
 
-  if(
+ if(
   !customerPhone &&
   !birthMonth
 ){
-  formMessage.textContent =
+  const message =
     "電話番号または誕生月のどちらかを入力してください。";
+
+  formMessage.textContent =
+    message;
+
+  window.alert(
+    message
+  );
 
   return;
 }
