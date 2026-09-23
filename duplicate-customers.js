@@ -578,6 +578,128 @@ box.appendChild(
   editGrid
 );
 
+    const saveBtn =
+  document.createElement(
+    "button"
+  );
+
+saveBtn.type =
+  "button";
+
+saveBtn.className =
+  "duplicateBtn duplicateBtnPrimary";
+
+saveBtn.style.marginTop =
+  "12px";
+
+saveBtn.textContent =
+  "この顧客情報を保存";
+
+
+saveBtn.addEventListener(
+  "click",
+  async () => {
+
+    const phone =
+      phoneInput.value
+        .replace(/\D/g, "");
+
+    if(
+      phone &&
+      !/^[0-9]{10,11}$/.test(phone)
+    ){
+
+      window.alert(
+        "電話番号は10～11桁の数字で入力してください。"
+      );
+
+      return;
+
+    }
+
+    const birthMonth =
+      birthMonthSelect.value
+        ? Number(
+            birthMonthSelect.value
+          )
+        : null;
+
+    saveBtn.disabled =
+      true;
+
+    saveBtn.textContent =
+      "保存中…";
+
+    try{
+
+      const {
+        error
+      } =
+        await sb
+          .from("customers")
+          .update({
+            name:
+              nameInput.value.trim(),
+
+            phone:
+              phone || null,
+
+            birth_month:
+              birthMonth,
+
+            chart_number:
+              chartNumberInput.value.trim() || null,
+
+            primary_staff_id:
+              staffSelect.value || null,
+
+            note:
+              noteInput.value.trim() || null,
+
+            updated_at:
+              new Date().toISOString()
+          })
+          .eq(
+            "id",
+            customer.customerId
+          );
+
+      if(error){
+        throw error;
+      }
+
+      window.alert(
+        "顧客情報を保存しました。"
+      );
+
+    }catch(error){
+
+      console.error(
+        "同名顧客情報保存エラー:",
+        error
+      );
+
+      window.alert(
+        "顧客情報を保存できませんでした。"
+      );
+
+    }finally{
+
+      saveBtn.disabled =
+        false;
+
+      saveBtn.textContent =
+        "この顧客情報を保存";
+
+    }
+
+  }
+);
+
+box.appendChild(
+  saveBtn
+);
+
     const historyTitle =
       document.createElement(
         "div"
