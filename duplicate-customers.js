@@ -139,6 +139,290 @@ async function loadDuplicateCustomerGroups(){
 
 }
 
+/* =========================
+   同名顧客 詳細取得
+========================= */
+
+async function loadDuplicateCustomerDetails(
+  normalizedName
+){
+
+  const {
+    data,
+    error
+  } =
+    await sb.rpc(
+      "get_duplicate_customer_details",
+      {
+        p_normalized_name:
+          normalizedName
+      }
+    );
+
+  if(error){
+    throw error;
+  }
+
+  return data || [];
+
+}
+
+
+/* =========================
+   スタッフ名
+========================= */
+
+function getStaffLabel(
+  staffId
+){
+
+  if(staffId === "kitamura"){
+    return "北村";
+  }
+
+  if(staffId === "yamazaki"){
+    return "山崎";
+  }
+
+  if(staffId === "takeuchi"){
+    return "竹内";
+  }
+
+  return "—";
+
+}
+
+
+/* =========================
+   同名顧客 詳細表示
+========================= */
+
+function renderDuplicateCustomerDetails(
+  detailArea,
+  rows
+){
+
+  detailArea.innerHTML = "";
+
+  const customerMap =
+    new Map();
+
+  for(const row of rows){
+
+    if(
+      !customerMap.has(
+        row.customer_id
+      )
+    ){
+
+      customerMap.set(
+        row.customer_id,
+        {
+          customerId:
+            row.customer_id,
+
+          name:
+            row.customer_name,
+
+          phone:
+            row.phone,
+
+          birthMonth:
+            row.birth_month,
+
+          chartNumber:
+            row.chart_number,
+
+          primaryStaffId:
+            row.primary_staff_id,
+
+          appointments:
+            []
+        }
+      );
+
+    }
+
+    if(row.appointment_id){
+
+      customerMap
+        .get(row.customer_id)
+        .appointments
+        .push(row);
+
+    }
+
+  }
+
+  for(
+    const customer
+    of customerMap.values()
+  ){
+
+    const box =
+      document.createElement(
+        "div"
+      );
+
+    box.style.marginTop =
+      "14px";
+
+    box.style.padding =
+      "16px";
+
+    box.style.border =
+      "1px solid #eadfda";
+
+    box.style.borderRadius =
+      "12px";
+
+    box.style.background =
+      "#ffffff";
+
+    const title =
+      document.createElement(
+        "div"
+      );
+
+    title.style.fontWeight =
+      "700";
+
+    title.style.fontSize =
+      "16px";
+
+    title.style.marginBottom =
+      "10px";
+
+    title.textContent =
+      `${customer.name || "—"} / 担当 ${
+        getStaffLabel(
+          customer.primaryStaffId
+        )
+      }`;
+
+    box.appendChild(
+      title
+    );
+
+    const info =
+      document.createElement(
+        "div"
+      );
+
+    info.style.fontSize =
+      "13px";
+
+    info.style.lineHeight =
+      "1.8";
+
+    info.textContent =
+      `電話番号：${customer.phone || "未登録"}　` +
+      `誕生月：${
+        customer.birthMonth
+          ? `${customer.birthMonth}月`
+          : "未登録"
+      }　` +
+      `カルテ番号：${customer.chartNumber || "未登録"}`;
+
+    box.appendChild(
+      info
+    );
+
+    const historyTitle =
+      document.createElement(
+        "div"
+      );
+
+    historyTitle.style.marginTop =
+      "12px";
+
+    historyTitle.style.marginBottom =
+      "6px";
+
+    historyTitle.style.fontWeight =
+      "700";
+
+    historyTitle.textContent =
+      "予約履歴";
+
+    box.appendChild(
+      historyTitle
+    );
+
+    if(
+      customer.appointments.length === 0
+    ){
+
+      const empty =
+        document.createElement(
+          "div"
+        );
+
+      empty.style.fontSize =
+        "13px";
+
+      empty.textContent =
+        "予約履歴なし";
+
+      box.appendChild(
+        empty
+      );
+
+    }else{
+
+      for(
+        const appointment
+        of customer.appointments
+      ){
+
+        const row =
+          document.createElement(
+            "div"
+          );
+
+        row.style.padding =
+          "8px 0";
+
+        row.style.borderTop =
+          "1px solid #f0e8e5";
+
+        row.style.fontSize =
+          "13px";
+
+        const time =
+          appointment.start_time
+            ? appointment.start_time.slice(
+                0,
+                5
+              )
+            : "";
+
+        row.textContent =
+          `${appointment.appointment_date} ${time}` +
+          ` / 担当 ${
+            getStaffLabel(
+              appointment.appointment_staff_id
+            )
+          }` +
+          ` / ${
+            appointment.appointment_status || "—"
+          }`;
+
+        box.appendChild(
+          row
+        );
+
+      }
+
+    }
+
+    detailArea.appendChild(
+      box
+    );
+
+  }
+
+}
 
 /* =========================
    同名顧客一覧表示
@@ -317,16 +601,86 @@ function renderDuplicateCustomerGroups(
     /*
       詳細確認機能は次の工程で実装
     */
-    detailBtn.addEventListener(
-      "click",
-      () => {
+    const detailArea =
+  document.createElement(
+    "div"
+  );
 
-        window.alert(
-          `${group.display_name}さんの詳細確認機能は次に追加します。`
+detailArea.style.marginTop =
+  "12px";
+
+detailArea.classList.add(
+  "hidden"
+);
+
+detailBtn.addEventListener(
+  "click",
+  async () => {
+
+    if(
+      !detailArea.classList.contains(
+        "hidden"
+      )
+    ){
+
+      detailArea.classList.add(
+        "hidden"
+      );
+
+      detailBtn.textContent =
+        "確認する";
+
+      return;
+    }
+
+    detailBtn.disabled =
+      true;
+
+    detailBtn.textContent =
+      "読み込み中…";
+
+    try{
+
+      const rows =
+        await loadDuplicateCustomerDetails(
+          group.normalized_name
         );
 
-      }
-    );
+      renderDuplicateCustomerDetails(
+        detailArea,
+        rows
+      );
+
+      detailArea.classList.remove(
+        "hidden"
+      );
+
+      detailBtn.textContent =
+        "閉じる";
+
+    }catch(error){
+
+      console.error(
+        "同名顧客詳細取得エラー:",
+        error
+      );
+
+      window.alert(
+        "詳細情報を読み込めませんでした。"
+      );
+
+      detailBtn.textContent =
+        "確認する";
+
+    }finally{
+
+      detailBtn.disabled =
+        false;
+
+    }
+
+  }
+);
 
     actions.appendChild(
       detailBtn
@@ -343,6 +697,10 @@ function renderDuplicateCustomerGroups(
     card.appendChild(
       actions
     );
+
+    card.appendChild(
+  detailArea
+);
 
     duplicateCustomersList
       .appendChild(
