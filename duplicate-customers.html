@@ -1,0 +1,409 @@
+<!doctype html>
+<html lang="ja">
+
+<head>
+  <meta charset="utf-8" />
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1"
+  />
+
+  <title>同名顧客確認 | COMFORT</title>
+
+  <link
+    rel="stylesheet"
+    href="style.css?v=5"
+  />
+
+  <style>
+
+    body {
+      background: #f7f4f2;
+    }
+
+    .customersTopbar {
+      position: relative;
+      min-height: 72px;
+      padding: 10px 20px;
+      background: #ffffff;
+      border-bottom: 1px solid #eadfda;
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .customersTopbarLeft {
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+    }
+
+    .customersTopbarCenter {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .customersTopbarRight {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+    }
+
+    .customersLogo {
+      display: block;
+      max-width: 150px;
+      max-height: 48px;
+      object-fit: contain;
+    }
+
+    .customersBackBtn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      min-height: 40px;
+      padding: 0 15px;
+      border: 1px solid #d8c7c0;
+      border-radius: 10px;
+      background: #ffffff;
+      color: #694f46;
+      font-size: 14px;
+      font-weight: 700;
+      text-decoration: none;
+      box-sizing: border-box;
+      white-space: nowrap;
+    }
+
+    .customersPage {
+      width: min(1180px, calc(100% - 32px));
+      margin: 30px auto 60px;
+    }
+
+    .customersHero {
+      margin-bottom: 20px;
+      padding: 26px 28px;
+      background: #ffffff;
+      border: 1px solid #eadfda;
+      border-radius: 18px;
+      box-shadow: 0 5px 18px rgba(90, 67, 58, 0.05);
+    }
+
+    .customersEyebrow {
+      margin-bottom: 4px;
+      color: #b17d72;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+    }
+
+    .customersTitle {
+      margin: 0;
+      color: #4e3b34;
+      font-size: 28px;
+      line-height: 1.3;
+    }
+
+    .customersDescription {
+      margin: 8px 0 0;
+      color: #7b6b65;
+      font-size: 14px;
+      line-height: 1.7;
+    }
+
+    .duplicatePanel {
+      background: #ffffff;
+      border: 1px solid #eadfda;
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow: 0 5px 18px rgba(90, 67, 58, 0.04);
+    }
+
+    .duplicatePanelHead {
+      padding: 18px 22px;
+      border-bottom: 1px solid #eee5e1;
+    }
+
+    .duplicatePanelTitle {
+      margin: 0;
+      color: #513f38;
+      font-size: 18px;
+    }
+
+    .duplicateLoading,
+    .duplicateEmpty {
+      padding: 40px 20px;
+      color: #8a7972;
+      text-align: center;
+      font-size: 14px;
+    }
+
+    .duplicateList {
+      padding: 18px;
+    }
+
+    .duplicateCard {
+      margin-bottom: 16px;
+      padding: 18px;
+      border: 1px solid #eadfda;
+      border-radius: 14px;
+      background: #fffdfc;
+    }
+
+    .duplicateCard:last-child {
+      margin-bottom: 0;
+    }
+
+    .duplicateCardTop {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .duplicateName {
+      color: #4e3b34;
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    .duplicateStatus {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 30px;
+      padding: 0 10px;
+      border-radius: 999px;
+      background: #f3e7e3;
+      color: #8b5f55;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .duplicateMeta {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .duplicateMetaItem {
+      padding: 10px 12px;
+      border-radius: 10px;
+      background: #f8f3f1;
+      color: #6e5b54;
+      font-size: 13px;
+    }
+
+    .duplicateActions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .duplicateBtn {
+      min-height: 40px;
+      padding: 0 14px;
+      border: 1px solid #d8c7c0;
+      border-radius: 10px;
+      background: #ffffff;
+      color: #694f46;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .duplicateBtnPrimary {
+      background: #a85f6a;
+      border-color: #a85f6a;
+      color: #ffffff;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    @media (max-width: 640px) {
+
+      .customersTopbar {
+        min-height: 62px;
+        padding: 8px 10px;
+        grid-template-columns: auto 1fr auto;
+      }
+
+      .customersLogo {
+        max-width: 110px;
+        max-height: 38px;
+      }
+
+      .customersBackBtn {
+        width: 42px;
+        min-width: 42px;
+        padding: 0;
+        font-size: 0;
+      }
+
+      .customersBackBtn::before {
+        content: "←";
+        font-size: 20px;
+      }
+
+      .customersPage {
+        width: calc(100% - 20px);
+        margin-top: 16px;
+      }
+
+      .customersHero {
+        padding: 20px;
+        border-radius: 14px;
+      }
+
+      .customersTitle {
+        font-size: 23px;
+      }
+
+      .duplicateMeta {
+        grid-template-columns: 1fr;
+      }
+
+    }
+
+  </style>
+
+</head>
+
+<body>
+
+  <header class="customersTopbar">
+
+    <div class="customersTopbarLeft">
+
+      <a
+        href="customers.html"
+        class="customersBackBtn"
+      >
+        ← 顧客管理へ戻る
+      </a>
+
+    </div>
+
+    <div class="customersTopbarCenter">
+
+      <img
+        class="customersLogo"
+        src="logo.png"
+        alt="Hair & Make COMFORT"
+      />
+
+    </div>
+
+    <div class="customersTopbarRight">
+
+      <button
+        id="logoutBtn"
+        class="btn hidden"
+        type="button"
+      >
+        ログアウト
+      </button>
+
+    </div>
+
+  </header>
+
+  <main
+    id="duplicateCustomersApp"
+    class="customersPage hidden"
+  >
+
+    <section class="customersHero">
+
+      <div class="customersEyebrow">
+        DUPLICATE CUSTOMER REVIEW
+      </div>
+
+      <h1 class="customersTitle">
+        同名顧客確認
+      </h1>
+
+      <p class="customersDescription">
+        同じ名前で登録されているお客様を確認し、
+        同一人物・別人・不明の判定や、
+        必要な情報の追加・修正を行います。
+      </p>
+
+    </section>
+
+    <section class="duplicatePanel">
+
+      <div class="duplicatePanelHead">
+
+        <h2 class="duplicatePanelTitle">
+          確認が必要なお客様
+        </h2>
+
+      </div>
+
+      <div
+        id="duplicateCustomersLoading"
+        class="duplicateLoading"
+      >
+        同名顧客を読み込み中…
+      </div>
+
+      <div
+        id="duplicateCustomersEmpty"
+        class="duplicateEmpty hidden"
+      >
+        確認が必要な同名顧客はありません。
+      </div>
+
+      <div
+        id="duplicateCustomersList"
+        class="duplicateList hidden"
+      >
+      </div>
+
+    </section>
+
+  </main>
+
+  <div
+    id="duplicateCustomersAccessDenied"
+    class="authScreen hidden"
+  >
+
+    <div class="authCard">
+
+      <div class="authTitle">
+        同名顧客確認
+      </div>
+
+      <div class="authSub">
+        このページを利用する権限がありません。
+      </div>
+
+      <a
+        href="index.html"
+        class="customersBackBtn"
+      >
+        ← ダッシュボードへ戻る
+      </a>
+
+    </div>
+
+  </div>
+
+  <script
+    src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"
+  ></script>
+
+  <script src="config.js"></script>
+  <script src="duplicate-customers.js"></script>
+
+</body>
+
+</html>
