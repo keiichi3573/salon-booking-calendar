@@ -425,6 +425,48 @@ function renderDuplicateCustomerDetails(
 }
 
 /* =========================
+   確認結果保存
+========================= */
+
+async function saveDuplicateCustomerReview(
+  normalizedName,
+  reviewStatus
+){
+
+  const {
+    error
+  } =
+    await sb
+      .from(
+        "duplicate_customer_reviews"
+      )
+      .upsert(
+        {
+          normalized_name:
+            normalizedName,
+
+          review_status:
+            reviewStatus,
+
+          reviewed_at:
+            new Date().toISOString(),
+
+          updated_at:
+            new Date().toISOString()
+        },
+        {
+          onConflict:
+            "normalized_name"
+        }
+      );
+
+  if(error){
+    throw error;
+  }
+
+}
+
+/* =========================
    同名顧客一覧表示
 ========================= */
 
@@ -685,6 +727,158 @@ detailBtn.addEventListener(
     actions.appendChild(
       detailBtn
     );
+
+    const samePersonBtn =
+  document.createElement(
+    "button"
+  );
+
+samePersonBtn.type =
+  "button";
+
+samePersonBtn.className =
+  "duplicateBtn";
+
+samePersonBtn.textContent =
+  "同一人物";
+
+
+const differentPersonBtn =
+  document.createElement(
+    "button"
+  );
+
+differentPersonBtn.type =
+  "button";
+
+differentPersonBtn.className =
+  "duplicateBtn";
+
+differentPersonBtn.textContent =
+  "別人";
+
+
+const unknownBtn =
+  document.createElement(
+    "button"
+  );
+
+unknownBtn.type =
+  "button";
+
+unknownBtn.className =
+  "duplicateBtn";
+
+unknownBtn.textContent =
+  "分からない";
+
+
+async function saveReview(
+  reviewStatus
+){
+
+  samePersonBtn.disabled =
+    true;
+
+  differentPersonBtn.disabled =
+    true;
+
+  unknownBtn.disabled =
+    true;
+
+  try{
+
+    await saveDuplicateCustomerReview(
+      group.normalized_name,
+      reviewStatus
+    );
+
+    group.review_status =
+      reviewStatus;
+
+    status.textContent =
+      getReviewStatusLabel(
+        reviewStatus
+      );
+
+    window.alert(
+      "確認結果を保存しました。"
+    );
+
+  }catch(error){
+
+    console.error(
+      "確認結果保存エラー:",
+      error
+    );
+
+    window.alert(
+      "確認結果を保存できませんでした。"
+    );
+
+  }finally{
+
+    samePersonBtn.disabled =
+      false;
+
+    differentPersonBtn.disabled =
+      false;
+
+    unknownBtn.disabled =
+      false;
+
+  }
+
+}
+
+
+samePersonBtn.addEventListener(
+  "click",
+  () => {
+
+    saveReview(
+      "same_person"
+    );
+
+  }
+);
+
+
+differentPersonBtn.addEventListener(
+  "click",
+  () => {
+
+    saveReview(
+      "different_person"
+    );
+
+  }
+);
+
+
+unknownBtn.addEventListener(
+  "click",
+  () => {
+
+    saveReview(
+      "unknown"
+    );
+
+  }
+);
+
+
+actions.appendChild(
+  samePersonBtn
+);
+
+actions.appendChild(
+  differentPersonBtn
+);
+
+actions.appendChild(
+  unknownBtn
+);
 
     card.appendChild(
       top
