@@ -216,30 +216,33 @@ function renderDuplicateCustomerDetails(
     ){
 
       customerMap.set(
-        row.customer_id,
-        {
-          customerId:
-            row.customer_id,
+  row.customer_id,
+  {
+    customerId:
+      row.customer_id,
 
-          name:
-            row.customer_name,
+    name:
+      row.customer_name,
 
-          phone:
-            row.phone,
+    phone:
+      row.phone,
 
-          birthMonth:
-            row.birth_month,
+    birthMonth:
+      row.birth_month,
 
-          chartNumber:
-            row.chart_number,
+    chartNumber:
+      row.chart_number,
 
-          primaryStaffId:
-            row.primary_staff_id,
+    primaryStaffId:
+      row.primary_staff_id,
 
-          appointments:
-            []
-        }
-      );
+    note:
+      row.customer_note,
+
+    appointments:
+      []
+  }
+);
 
     }
 
@@ -304,29 +307,276 @@ function renderDuplicateCustomerDetails(
       title
     );
 
-    const info =
-      document.createElement(
-        "div"
-      );
+    const editGrid =
+  document.createElement(
+    "div"
+  );
 
-    info.style.fontSize =
-      "13px";
+editGrid.style.display =
+  "grid";
 
-    info.style.lineHeight =
-      "1.8";
+editGrid.style.gridTemplateColumns =
+  "repeat(2, minmax(0, 1fr))";
 
-    info.textContent =
-      `電話番号：${customer.phone || "未登録"}　` +
-      `誕生月：${
-        customer.birthMonth
-          ? `${customer.birthMonth}月`
-          : "未登録"
-      }　` +
-      `カルテ番号：${customer.chartNumber || "未登録"}`;
+editGrid.style.gap =
+  "10px";
 
-    box.appendChild(
-      info
+editGrid.style.marginTop =
+  "12px";
+
+
+function createField(
+  labelText,
+  inputElement
+){
+
+  const wrapper =
+    document.createElement(
+      "label"
     );
+
+  wrapper.style.display =
+    "flex";
+
+  wrapper.style.flexDirection =
+    "column";
+
+  wrapper.style.gap =
+    "5px";
+
+  wrapper.style.fontSize =
+    "12px";
+
+  wrapper.style.fontWeight =
+    "700";
+
+  wrapper.style.color =
+    "#6e5b54";
+
+  const label =
+    document.createElement(
+      "span"
+    );
+
+  label.textContent =
+    labelText;
+
+  wrapper.appendChild(
+    label
+  );
+
+  inputElement.style.minHeight =
+    "40px";
+
+  inputElement.style.padding =
+    "8px 10px";
+
+  inputElement.style.border =
+    "1px solid #d8c7c0";
+
+  inputElement.style.borderRadius =
+    "8px";
+
+  inputElement.style.fontSize =
+    "14px";
+
+  inputElement.style.boxSizing =
+    "border-box";
+
+  wrapper.appendChild(
+    inputElement
+  );
+
+  return wrapper;
+}
+
+
+const nameInput =
+  document.createElement(
+    "input"
+  );
+
+nameInput.type =
+  "text";
+
+nameInput.value =
+  customer.name || "";
+
+
+const phoneInput =
+  document.createElement(
+    "input"
+  );
+
+phoneInput.type =
+  "tel";
+
+phoneInput.value =
+  customer.phone || "";
+
+
+const birthMonthSelect =
+  document.createElement(
+    "select"
+  );
+
+const birthEmptyOption =
+  document.createElement(
+    "option"
+  );
+
+birthEmptyOption.value =
+  "";
+
+birthEmptyOption.textContent =
+  "未登録";
+
+birthMonthSelect.appendChild(
+  birthEmptyOption
+);
+
+for(
+  let month = 1;
+  month <= 12;
+  month++
+){
+
+  const option =
+    document.createElement(
+      "option"
+    );
+
+  option.value =
+    String(month);
+
+  option.textContent =
+    `${month}月`;
+
+  birthMonthSelect.appendChild(
+    option
+  );
+
+}
+
+birthMonthSelect.value =
+  customer.birthMonth
+    ? String(customer.birthMonth)
+    : "";
+
+
+const chartNumberInput =
+  document.createElement(
+    "input"
+  );
+
+chartNumberInput.type =
+  "text";
+
+chartNumberInput.value =
+  customer.chartNumber || "";
+
+
+const staffSelect =
+  document.createElement(
+    "select"
+  );
+
+const staffOptions = [
+  ["", "未設定"],
+  ["kitamura", "北村"],
+  ["yamazaki", "山崎"],
+  ["takeuchi", "竹内"]
+];
+
+for(
+  const [
+    value,
+    label
+  ]
+  of staffOptions
+){
+
+  const option =
+    document.createElement(
+      "option"
+    );
+
+  option.value =
+    value;
+
+  option.textContent =
+    label;
+
+  staffSelect.appendChild(
+    option
+  );
+
+}
+
+staffSelect.value =
+  customer.primaryStaffId || "";
+
+
+const noteInput =
+  document.createElement(
+    "textarea"
+  );
+
+noteInput.rows =
+  3;
+
+noteInput.value =
+  customer.note || "";
+
+noteInput.style.resize =
+  "vertical";
+
+
+editGrid.appendChild(
+  createField(
+    "お名前",
+    nameInput
+  )
+);
+
+editGrid.appendChild(
+  createField(
+    "電話番号",
+    phoneInput
+  )
+);
+
+editGrid.appendChild(
+  createField(
+    "誕生月",
+    birthMonthSelect
+  )
+);
+
+editGrid.appendChild(
+  createField(
+    "カルテ番号",
+    chartNumberInput
+  )
+);
+
+editGrid.appendChild(
+  createField(
+    "主担当",
+    staffSelect
+  )
+);
+
+editGrid.appendChild(
+  createField(
+    "メモ",
+    noteInput
+  )
+);
+
+box.appendChild(
+  editGrid
+);
 
     const historyTitle =
       document.createElement(
