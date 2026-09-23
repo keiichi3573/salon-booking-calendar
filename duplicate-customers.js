@@ -857,19 +857,135 @@ box.appendChild(
   }
 
   assignSelect.dataset.appointmentId =
-    appointment.appointment_id;
+  appointment.appointment_id;
 
-  row.appendChild(
-    info
+
+const assignSaveBtn =
+  document.createElement(
+    "button"
   );
 
-  row.appendChild(
-    assignSelect
-  );
+assignSaveBtn.type =
+  "button";
 
-  box.appendChild(
-    row
-  );
+assignSaveBtn.className =
+  "duplicateBtn";
+
+assignSaveBtn.textContent =
+  "紐付けを保存";
+
+
+assignSaveBtn.addEventListener(
+  "click",
+  async () => {
+
+    const targetCustomerId =
+      assignSelect.value;
+
+    if(!targetCustomerId){
+      return;
+    }
+
+    const targetCustomer =
+      customerMap.get(
+        targetCustomerId
+      );
+
+    const confirmed =
+      window.confirm(
+        `この予約を「${
+          targetCustomer?.name || "選択した顧客"
+        } / 担当 ${
+          getStaffLabel(
+            targetCustomer?.primaryStaffId
+          )
+        }」に紐付け直しますか？`
+      );
+
+    if(!confirmed){
+      return;
+    }
+
+    assignSaveBtn.disabled =
+      true;
+
+    assignSaveBtn.textContent =
+      "保存中…";
+
+    try{
+
+      const {
+        error
+      } =
+        await sb
+          .from("appointments")
+          .update({
+            customer_id:
+              targetCustomerId
+          })
+          .eq(
+            "id",
+            appointment.appointment_id
+          );
+
+      if(error){
+        throw error;
+      }
+
+      window.alert(
+        "予約履歴の紐付けを変更しました。"
+      );
+
+      const refreshedRows =
+        await loadDuplicateCustomerDetails(
+          rows[0].customer_name
+            .replace(/[ 　]/g, "")
+            .toLowerCase()
+        );
+
+      renderDuplicateCustomerDetails(
+        detailArea,
+        refreshedRows
+      );
+
+    }catch(error){
+
+      console.error(
+        "予約履歴紐付け変更エラー:",
+        error
+      );
+
+      window.alert(
+        "予約履歴の紐付けを変更できませんでした。"
+      );
+
+      assignSaveBtn.disabled =
+        false;
+
+      assignSaveBtn.textContent =
+        "紐付けを保存";
+
+    }
+
+  }
+);
+
+
+row.appendChild(
+  info
+);
+
+row.appendChild(
+  assignSelect
+);
+
+row.appendChild(
+  assignSaveBtn
+);
+
+box.appendChild(
+  row
+);
 
 }
 
