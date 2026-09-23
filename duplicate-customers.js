@@ -412,22 +412,27 @@ async function initializeDuplicateCustomers(){
       ?.classList
       .remove("hidden");
 
-  }catch(error){
+}catch(error){
 
-    console.error(
-      "同名顧客確認初期化エラー:",
-      error
-    );
+  console.error(
+    "同名顧客確認初期化エラー:",
+    error
+  );
 
-    duplicateCustomersLoading
-      ?.classList
-      .add("hidden");
+  window.alert(
+    error?.message ||
+    "同名顧客確認ページの読み込み中にエラーが発生しました。"
+  );
 
-    duplicateCustomersAccessDenied
-      ?.classList
-      .remove("hidden");
+  duplicateCustomersLoading
+    ?.classList
+    .add("hidden");
 
-  }
+  duplicateCustomersAccessDenied
+    ?.classList
+    .remove("hidden");
+
+}
 
 }
 
