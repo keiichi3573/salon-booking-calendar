@@ -743,48 +743,135 @@ box.appendChild(
     }else{
 
       for(
-        const appointment
-        of customer.appointments
-      ){
+  const appointment
+  of customer.appointments
+){
 
-        const row =
-          document.createElement(
-            "div"
-          );
+  const row =
+    document.createElement(
+      "div"
+    );
 
-        row.style.padding =
-          "8px 0";
+  row.style.padding =
+    "10px 0";
 
-        row.style.borderTop =
-          "1px solid #f0e8e5";
+  row.style.borderTop =
+    "1px solid #f0e8e5";
 
-        row.style.fontSize =
-          "13px";
+  row.style.fontSize =
+    "13px";
 
-        const time =
-          appointment.start_time
-            ? appointment.start_time.slice(
-                0,
-                5
-              )
-            : "";
+  row.style.display =
+    "flex";
 
-        row.textContent =
-          `${appointment.appointment_date} ${time}` +
-          ` / 担当 ${
-            getStaffLabel(
-              appointment.appointment_staff_id
-            )
-          }` +
-          ` / ${
-            appointment.appointment_status || "—"
-          }`;
+  row.style.flexWrap =
+    "wrap";
 
-        box.appendChild(
-          row
-        );
+  row.style.alignItems =
+    "center";
 
-      }
+  row.style.gap =
+    "10px";
+
+  const info =
+    document.createElement(
+      "div"
+    );
+
+  info.style.flex =
+    "1";
+
+  info.style.minWidth =
+    "220px";
+
+  const time =
+    appointment.start_time
+      ? appointment.start_time.slice(
+          0,
+          5
+        )
+      : "";
+
+  info.textContent =
+    `${appointment.appointment_date} ${time}` +
+    ` / 担当 ${
+      getStaffLabel(
+        appointment.appointment_staff_id
+      )
+    }` +
+    ` / ${
+      appointment.appointment_status || "—"
+    }`;
+
+  const assignSelect =
+    document.createElement(
+      "select"
+    );
+
+  assignSelect.style.minHeight =
+    "38px";
+
+  assignSelect.style.padding =
+    "6px 8px";
+
+  assignSelect.style.border =
+    "1px solid #d8c7c0";
+
+  assignSelect.style.borderRadius =
+    "8px";
+
+  assignSelect.style.fontSize =
+    "13px";
+
+  for(
+    const targetCustomer
+    of customerMap.values()
+  ){
+
+    const option =
+      document.createElement(
+        "option"
+      );
+
+    option.value =
+      targetCustomer.customerId;
+
+    option.textContent =
+      `${targetCustomer.name || "—"} / ${
+        getStaffLabel(
+          targetCustomer.primaryStaffId
+        )
+      }`;
+
+    if(
+      targetCustomer.customerId ===
+      customer.customerId
+    ){
+      option.selected = true;
+    }
+
+    assignSelect.appendChild(
+      option
+    );
+
+  }
+
+  assignSelect.dataset.appointmentId =
+    appointment.appointment_id;
+
+  row.appendChild(
+    info
+  );
+
+  row.appendChild(
+    assignSelect
+  );
+
+  box.appendChild(
+    row
+  );
+
+}
 
     }
 
