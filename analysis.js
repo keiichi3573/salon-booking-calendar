@@ -489,27 +489,13 @@ const elapsedCustomerDays =
 let secondHalfDiv =
   secondHalfSalesDays;
 
-  if (sameMonth) {
-    const today = now.getDate();
+if (sameMonth) {
+  const today = now.getDate();
 
-    if (today <= 15) {
-      firstHalfDiv =
-        businessDaysInRange(
-          viewDate,
-          1,
-          salesEndDay
-        );
-
-      secondHalfDiv = 0;
-    } else {
-      secondHalfDiv =
-        businessDaysInRange(
-          viewDate,
-          16,
-          salesEndDay
-        );
-    }
+  if (today <= 15) {
+    secondHalfDiv = 0;
   }
+}
 
   const firstHalfAverage =
     firstHalfDiv > 0
