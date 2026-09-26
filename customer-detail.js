@@ -583,11 +583,21 @@ const deleteCustomerBtn =
 async function saveCustomerInfo(){
 
   const customerId =
-    getCustomerId();
+  getCustomerId();
 
-  if(!customerId){
-    return;
-  }
+if(!customerId){
+  return;
+}
+
+const nameInput =
+  document.getElementById(
+    "customerDetailNameInput"
+  );
+
+const nameKanaInput =
+  document.getElementById(
+    "customerDetailNameKanaInput"
+  );
 
 const chartNumberInput =
   document.getElementById(
