@@ -336,6 +336,8 @@ const customerSearchInput =
 
 let allCustomers = [];
 
+let selectedKanaGroup = "";
+
 function filterCustomers(){
 
   const staffFilter =
@@ -376,6 +378,19 @@ function filterCustomers(){
 
   const selectedVisitStatus =
     visitStatusFilter?.value || "";
+
+  const kanaGroups = {
+  "あ": ["あ","い","う","え","お","ア","イ","ウ","エ","オ"],
+  "か": ["か","き","く","け","こ","カ","キ","ク","ケ","コ","が","ぎ","ぐ","げ","ご","ガ","ギ","グ","ゲ","ゴ"],
+  "さ": ["さ","し","す","せ","そ","サ","シ","ス","セ","ソ","ざ","じ","ず","ぜ","ぞ","ザ","ジ","ズ","ゼ","ゾ"],
+  "た": ["た","ち","つ","て","と","タ","チ","ツ","テ","ト","だ","ぢ","づ","で","ど","ダ","ヂ","ヅ","デ","ド"],
+  "な": ["な","に","ぬ","ね","の","ナ","ニ","ヌ","ネ","ノ"],
+  "は": ["は","ひ","ふ","へ","ほ","ハ","ヒ","フ","ヘ","ホ","ば","び","ぶ","べ","ぼ","バ","ビ","ブ","ベ","ボ","ぱ","ぴ","ぷ","ぺ","ぽ","パ","ピ","プ","ペ","ポ"],
+  "ま": ["ま","み","む","め","も","マ","ミ","ム","メ","モ"],
+  "や": ["や","ゆ","よ","ヤ","ユ","ヨ"],
+  "ら": ["ら","り","る","れ","ろ","ラ","リ","ル","レ","ロ"],
+  "わ": ["わ","を","ん","ワ","ヲ","ン"]
+};
 
   const today =
     new Date();
@@ -421,6 +436,28 @@ const matchesKeyword =
         if(!matchesKeyword){
           return false;
         }
+
+        if(selectedKanaGroup){
+
+  const firstChar =
+    String(
+      customer.name ?? ""
+    ).trim().charAt(0);
+
+  const groupChars =
+    kanaGroups[
+      selectedKanaGroup
+    ] || [];
+
+  if(
+    !groupChars.includes(
+      firstChar
+    )
+  ){
+    return false;
+  }
+
+}
 
         /* =========================
            主担当
@@ -585,6 +622,29 @@ if(customerSearchInput){
     );
 
 }
+
+const kanaFilterButtons =
+  document.querySelectorAll(
+    ".kanaFilterBtn"
+  );
+
+kanaFilterButtons.forEach(
+  button => {
+
+    button.addEventListener(
+      "click",
+      () => {
+
+        selectedKanaGroup =
+          button.dataset.kana || "";
+
+        filterCustomers();
+
+      }
+    );
+
+  }
+);
 
 [
   "customerStaffFilter",
