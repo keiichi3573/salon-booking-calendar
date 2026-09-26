@@ -616,6 +616,7 @@ const chartNumberInput =
 
   if(
   !chartNumberInput ||
+  !nameKanaInput ||
   !phoneInput ||
   !postalCodeInput ||
   !addressInput ||
@@ -666,6 +667,9 @@ const chartNumberInput =
         .update({
           chart_number:
   chartNumberInput.value.trim() || null,
+
+          name_kana:
+  nameKanaInput.value.trim() || null,
           
           phone:
             phone || null,
