@@ -141,11 +141,6 @@ const chartNumberInput =
   document.getElementById(
     "customerDetailChartNumberInput"
   );
-
-  const nameKanaInput =
-  document.getElementById(
-    "customerDetailNameKanaInput"
-  );
   
 const phoneInput =
   document.getElementById(
