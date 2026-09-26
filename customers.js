@@ -305,12 +305,30 @@ function renderCustomers(customers){
   <td>${customer.chart_number ?? "—"}</td>
 
   <td>
-    <a
-      href="customer-detail.html?id=${encodeURIComponent(customer.id)}"
-    >
+  <a
+    href="customer-detail.html?id=${encodeURIComponent(customer.id)}"
+    style="
+      display:inline-flex;
+      flex-direction:column;
+      gap:2px;
+      text-decoration:none;
+    "
+  >
+    <span>
       ${customer.name ?? "—"}
-    </a>
-  </td>
+    </span>
+
+    <span
+      style="
+        font-size:12px;
+        color:#8a7a74;
+        font-weight:400;
+      "
+    >
+      ${customer.name_kana ?? "フリガナ未登録"}
+    </span>
+  </a>
+</td>
 
   <td>${customer.phone ?? "—"}</td>
   <td>${staffName}</td>
