@@ -131,6 +131,11 @@ const nameInput =
   document.getElementById(
     "customerDetailNameInput"
   );
+
+const nameInput =
+  document.getElementById(
+    "customerDetailNameInput"
+  );
   
 const chartNumberInput =
   document.getElementById(
@@ -625,6 +630,7 @@ const chartNumberInput =
     );
 
   if(
+  !nameInput ||
   !chartNumberInput ||
   !nameKanaInput ||
   !phoneInput ||
@@ -675,11 +681,14 @@ const chartNumberInput =
       await sb
         .from("customers")
         .update({
-          chart_number:
-  chartNumberInput.value.trim() || null,
+  name:
+    nameInput.value.trim(),
 
-          name_kana:
-  nameKanaInput.value.trim() || null,
+  chart_number:
+    chartNumberInput.value.trim() || null,
+
+  name_kana:
+    nameKanaInput.value.trim() || null,
           
           phone:
             phone || null,
