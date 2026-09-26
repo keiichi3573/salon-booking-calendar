@@ -174,6 +174,7 @@ async function loadCustomers(){
   id,
   chart_number,
   name,
+  name_kana,
   phone,
   birth_month,
   last_visit_date,
@@ -438,25 +439,21 @@ const matchesKeyword =
         }
 
         if(selectedKanaGroup){
-
   const firstChar =
     String(
-      customer.name ?? ""
-    ).trim().charAt(0);
+      customer.name_kana ??
+      customer.name ??
+      ""
+    )
+      .trim()
+      .charAt(0);
 
   const groupChars =
-    kanaGroups[
-      selectedKanaGroup
-    ] || [];
+    kanaGroups[selectedKanaGroup] || [];
 
-  if(
-    !groupChars.includes(
-      firstChar
-    )
-  ){
+  if(!groupChars.includes(firstChar)){
     return false;
   }
-
 }
 
         /* =========================
