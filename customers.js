@@ -95,8 +95,20 @@ async function initializeCustomers(){
   await loadCustomers();
 
 renderCustomers(
-  allCustomers
+  []
 );
+
+const customersEmpty =
+  document.getElementById(
+    "customersEmpty"
+  );
+
+if(customersEmpty){
+
+  customersEmpty.textContent =
+    "検索または50音ボタンを選択してください。";
+
+}
 
   }catch(error){
 
