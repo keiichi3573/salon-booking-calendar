@@ -132,11 +132,6 @@ const nameInput =
     "customerDetailNameInput"
   );
 
-const nameInput =
-  document.getElementById(
-    "customerDetailNameInput"
-  );
-
 const nameKanaInput =
   document.getElementById(
     "customerDetailNameKanaInput"
