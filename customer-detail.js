@@ -52,6 +52,7 @@ async function loadCustomer(
 id,
 chart_number,
 name,
+name_kana,
 phone,
 postal_code,
 address,
@@ -130,6 +131,11 @@ const chartNumberInput =
   document.getElementById(
     "customerDetailChartNumberInput"
   );
+
+  const nameKanaInput =
+  document.getElementById(
+    "customerDetailNameKanaInput"
+  );
   
 const phoneInput =
   document.getElementById(
@@ -164,6 +170,11 @@ const noteInput =
 if(chartNumberInput){
   chartNumberInput.value =
     customer.chart_number ?? "";
+}
+
+  if(nameKanaInput){
+  nameKanaInput.value =
+    customer.name_kana ?? "";
 }
   
 if(phoneInput){
