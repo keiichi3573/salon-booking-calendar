@@ -604,6 +604,30 @@ const matchesKeyword =
       }
     );
 
+filtered.sort(
+  (a, b) => {
+
+    const kanaA =
+      String(
+        a.name_kana ??
+        a.name ??
+        ""
+      );
+
+    const kanaB =
+      String(
+        b.name_kana ??
+        b.name ??
+        ""
+      );
+
+    return kanaA.localeCompare(
+      kanaB,
+      "ja"
+    );
+  }
+);
+  
   renderCustomers(
     filtered
   );
