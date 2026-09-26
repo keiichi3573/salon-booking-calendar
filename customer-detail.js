@@ -127,6 +127,11 @@ function renderCustomer(
     customer.phone ?? "—"
   );
 
+const nameInput =
+  document.getElementById(
+    "customerDetailNameInput"
+  );
+  
 const chartNumberInput =
   document.getElementById(
     "customerDetailChartNumberInput"
@@ -167,6 +172,11 @@ const noteInput =
     "customerDetailNoteInput"
   );
 
+if(nameInput){
+  nameInput.value =
+    customer.name ?? "";
+}
+  
 if(chartNumberInput){
   chartNumberInput.value =
     customer.chart_number ?? "";
