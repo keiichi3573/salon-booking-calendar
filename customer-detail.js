@@ -4,6 +4,34 @@ const sb =
     window.APP_CONFIG.SUPABASE_ANON_KEY
   );
 
+function escapeHtml(value){
+
+  return String(
+    value ?? ""
+  )
+    .replaceAll(
+      "&",
+      "&amp;"
+    )
+    .replaceAll(
+      "<",
+      "&lt;"
+    )
+    .replaceAll(
+      ">",
+      "&gt;"
+    )
+    .replaceAll(
+      '"',
+      "&quot;"
+    )
+    .replaceAll(
+      "'",
+      "&#039;"
+    );
+
+}
+
 const customerDetailApp =
   document.getElementById(
     "customerDetailApp"
