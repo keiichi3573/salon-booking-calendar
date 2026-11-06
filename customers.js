@@ -330,39 +330,65 @@ function renderCustomers(customers){
         : "—";
 
     row.innerHTML = `
-  <td>${customer.chart_number ?? "—"}</td>
+  <td>
+    ${escapeHtml(
+      customer.chart_number ?? "—"
+    )}
+  </td>
 
   <td>
-  <a
-    href="customer-detail.html?id=${encodeURIComponent(customer.id)}"
-    style="
-      display:inline-flex;
-      flex-direction:column;
-      gap:2px;
-      text-decoration:none;
-    "
-  >
-    <span>
-      ${customer.name ?? "—"}
-    </span>
-
-    <span
+    <a
+      href="customer-detail.html?id=${encodeURIComponent(customer.id)}"
       style="
-        font-size:12px;
-        color:#8a7a74;
-        font-weight:400;
+        display:inline-flex;
+        flex-direction:column;
+        gap:2px;
+        text-decoration:none;
       "
     >
-      ${customer.name_kana ?? "フリガナ未登録"}
-    </span>
-  </a>
-</td>
+      <span>
+        ${escapeHtml(
+          customer.name ?? "—"
+        )}
+      </span>
 
-  <td>${customer.phone ?? "—"}</td>
-  <td>${staffName}</td>
-  <td>${lastVisit}</td>
-  <td>${customer.visit_count ?? 0}</td>
-  <td>${birthMonth}</td>
+      <span
+        style="
+          font-size:12px;
+          color:#8a7a74;
+          font-weight:400;
+        "
+      >
+        ${escapeHtml(
+          customer.name_kana ?? "フリガナ未登録"
+        )}
+      </span>
+    </a>
+  </td>
+
+  <td>
+    ${escapeHtml(
+      customer.phone ?? "—"
+    )}
+  </td>
+
+  <td>
+    ${escapeHtml(staffName)}
+  </td>
+
+  <td>
+    ${escapeHtml(lastVisit)}
+  </td>
+
+  <td>
+    ${escapeHtml(
+      customer.visit_count ?? 0
+    )}
+  </td>
+
+  <td>
+    ${escapeHtml(birthMonth)}
+  </td>
 `;
 
     customersTableBody
