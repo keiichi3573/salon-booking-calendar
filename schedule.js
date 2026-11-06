@@ -3020,10 +3020,6 @@ function renderCustomerCandidates(
     }
   </div>
 
-  <div>
-    住所：
-    ${escapeHtml(customer.address || "未登録")}
-  </div>
 
   <div>
     主担当：
