@@ -429,29 +429,37 @@ function renderCustomerHistory(
       "10px";
 
     item.innerHTML = `
-      <div>
-        <strong>
-          ${appointment.appointment_date}
-          ${appointment.start_time?.slice(0, 5) ?? ""}
-        </strong>
-      </div>
+  <div>
+    <strong>
+      ${escapeHtml(
+        appointment.appointment_date
+      )}
+      ${escapeHtml(
+        appointment.start_time?.slice(0, 5) ?? ""
+      )}
+    </strong>
+  </div>
 
-      <div>
-        担当：${staffName}
-      </div>
+  <div>
+    担当：${escapeHtml(staffName)}
+  </div>
 
-      <div>
-        メニュー：${menu}
-      </div>
+  <div>
+    メニュー：${escapeHtml(menu)}
+  </div>
 
-      <div>
-        状態：${appointment.status ?? "—"}
-      </div>
+  <div>
+    状態：${escapeHtml(
+      appointment.status ?? "—"
+    )}
+  </div>
 
-      <div>
-        予約経路：${appointment.source ?? "—"}
-      </div>
-    `;
+  <div>
+    予約経路：${escapeHtml(
+      appointment.source ?? "—"
+    )}
+  </div>
+`;
 
     list.appendChild(
       item
